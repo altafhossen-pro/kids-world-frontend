@@ -22,7 +22,6 @@ import ShopByCategory from "@/components/NewHomepage/ShopByCategory/ShopByCatego
 import PromoBanners from "@/components/NewHomepage/PromoBanners/PromoBanners";
 import TrendingProducts from "@/components/NewHomepage/Products/TrendingProducts";
 import BestSellers from "@/components/NewHomepage/Products/BestSellers";
-import CategoryProducts from "@/components/NewHomepage/Products/CategoryProducts";
 import NewArrivals from "@/components/NewHomepage/Products/NewArrivals";
 import DealOfTheDay from "@/components/NewHomepage/DealOfTheDay/DealOfTheDay";
 import TopBrands from "@/components/NewHomepage/TopBrands/TopBrands";
@@ -41,13 +40,12 @@ export default function Home() {
       <TrendingProducts />
       <BestSellers />
       <DealOfTheDay />
-      <CategoryProducts />
       <NewArrivals />
-      <PromoBanners />
-      <Testimonials />
-      <TopBrands />
-      <Newsletter />
+      {/* <PromoBanners /> */}
       <JustForYou />
+      <TopBrands />
+      <Testimonials />
+      <Newsletter />
 
     </div>
   );

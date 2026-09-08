@@ -2,17 +2,41 @@
 
 import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
-import { ArrowRight } from 'lucide-react';
-import { productAPI } from '@/services/api';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { productAPI, notificationAPI } from '@/services/api';
+
+// Need to import swiper
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 const TrendingProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [layoutConfig, setLayoutConfig] = useState({
+    isVisible: true,
+    displayType: 'grid'
+  });
 
   useEffect(() => {
-    const fetchTrendingProducts = async () => {
+    const fetchData = async () => {
       try {
-        const response = await productAPI.getTrendingProducts(10);
+        // Fetch layout settings
+        const layoutRes = await notificationAPI.getHomepageLayout();
+        let currentLayout = { isVisible: true, displayType: 'grid', maxProducts: 10 };
+        
+        if (layoutRes.success && layoutRes.data && layoutRes.data.trending) {
+          currentLayout = layoutRes.data.trending;
+          setLayoutConfig(currentLayout);
+        }
+
+        if (!currentLayout.isVisible) {
+          setLoading(false);
+          return;
+        }
+
+        const response = await productAPI.getTrendingProducts(currentLayout.maxProducts || 10);
         if (response.success) {
           setProducts(response.data);
         }
@@ -23,7 +47,7 @@ const TrendingProducts = () => {
       }
     };
 
-    fetchTrendingProducts();
+    fetchData();
   }, []);
 
   if (loading) {
@@ -44,25 +68,67 @@ const TrendingProducts = () => {
     );
   }
 
-  if (!products || products.length === 0) return null;
+  if (!layoutConfig.isVisible || !products || products.length === 0) return null;
 
   return (
-    <section className="container mx-auto px-4 sm:px-6 lg:px-8 mt-16">
+    <section className="container mx-auto px-4 sm:px-6 lg:px-8 mt-16 relative group">
       <div className="flex justify-between items-end mb-8 border-b border-gray-100 pb-4">
         <div>
           <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Trending Now</h2>
           <p className="text-gray-500 font-medium">Top picks for your little ones</p>
         </div>
-        <a href="/shop" className="text-blue-600 font-bold flex items-center gap-1 hover:text-blue-700 transition-colors pb-1">
-          View All <ArrowRight className="w-4 h-4 ml-1" />
-        </a>
+        
+        <div className="flex items-center gap-4">
+          {layoutConfig.displayType !== 'slider' && (
+            <a href="/shop?sort=trending" className="text-blue-600 font-bold flex items-center gap-1 hover:text-blue-700 transition-colors pb-1">
+              View All <ArrowRight className="w-4 h-4 ml-1" />
+            </a>
+          )}
+
+          {layoutConfig.displayType === 'slider' && products.length > 0 && (
+            <div className="flex gap-2">
+              <button className="trending-prev w-10 h-10 flex items-center justify-center rounded border border-gray-200 text-gray-600 hover:text-blue-600 hover:border-blue-600 transition-colors bg-white cursor-pointer">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button className="trending-next w-10 h-10 flex items-center justify-center rounded border border-gray-200 text-gray-600 hover:text-blue-600 hover:border-blue-600 transition-colors bg-white cursor-pointer">
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
       
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
-        {products.map(product => (
-          <ProductCard key={product._id || product.id} product={product} />
-        ))}
-      </div>
+      {layoutConfig.displayType === 'slider' ? (
+        <Swiper
+          modules={[Navigation]}
+          loop={true}
+          navigation={{
+            prevEl: '.trending-prev',
+            nextEl: '.trending-next',
+          }}
+          spaceBetween={16}
+          slidesPerView={2}
+          breakpoints={{
+            640: { slidesPerView: 2, spaceBetween: 16 },
+            768: { slidesPerView: 3, spaceBetween: 16 },
+            1024: { slidesPerView: 4, spaceBetween: 24 },
+            1280: { slidesPerView: 5, spaceBetween: 24 },
+          }}
+          className="pb-4"
+        >
+          {products.map(product => (
+            <SwiperSlide key={product._id || product.id} className="h-auto flex">
+              <ProductCard product={product} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
+          {products.map(product => (
+            <ProductCard key={product._id || product.id} product={product} />
+          ))}
+        </div>
+      )}
     </section>
   );
 };

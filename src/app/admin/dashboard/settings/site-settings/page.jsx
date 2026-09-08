@@ -16,7 +16,8 @@ export default function SiteSettingsPage() {
         logoUrl: '',
         ogImage: '',
         isVideoAutoplayEnabled: true,
-        trendingSortOrder: 'latest'
+        trendingSortOrder: 'latest',
+        bestsellerSortOrder: 'latest'
     });
 
     useEffect(() => {
@@ -32,7 +33,8 @@ export default function SiteSettingsPage() {
                     logoUrl: res.data.logoUrl || '',
                     ogImage: res.data.ogImage || '',
                     isVideoAutoplayEnabled: res.data.isVideoAutoplayEnabled ?? true,
-                    trendingSortOrder: res.data.trendingSortOrder || 'latest'
+                    trendingSortOrder: res.data.trendingSortOrder || 'latest',
+                    bestsellerSortOrder: res.data.bestsellerSortOrder || 'latest'
                 });
             }
         } catch (error) {
@@ -306,6 +308,33 @@ export default function SiteSettingsPage() {
                                 </select>
                                 <p className="mt-2 text-xs text-gray-500">
                                     Choose how trending products are displayed on the homepage.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Best Sellers Settings */}
+                    <div>
+                        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                            Best Sellers Settings
+                        </h2>
+
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Best Sellers Sort Order
+                                </label>
+                                <select
+                                    name="bestsellerSortOrder"
+                                    value={formData.bestsellerSortOrder}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-blue-500 transition-colors"
+                                >
+                                    <option value="latest">Latest Added First</option>
+                                    <option value="random">Randomized</option>
+                                </select>
+                                <p className="mt-2 text-xs text-gray-500">
+                                    Choose how best seller products are displayed on the homepage.
                                 </p>
                             </div>
                         </div>

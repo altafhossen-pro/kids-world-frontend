@@ -36,7 +36,8 @@ import {
     Bell,
     KeyRound,
     Printer,
-    Presentation
+    Presentation,
+    Clock
 } from 'lucide-react'
 
 const navigation = [
@@ -87,7 +88,7 @@ const navigation = [
         icon: Home,
         type: 'group',
         children: [
-            { name: 'Hero Banner Top', href: '/admin/dashboard/hero-banner-top', icon: Image },
+            { name: 'Deal of the Day', href: '/admin/dashboard/deal-of-the-day', icon: Clock },
             { name: 'Hero Offers', href: '/admin/dashboard/hero-offer', icon: Grid3X3 },
             { name: 'Hero Banners', href: '/admin/dashboard/hero-banner', icon: Image },
             { name: 'Hero Products', href: '/admin/dashboard/hero-products', icon: Grid3X3 },

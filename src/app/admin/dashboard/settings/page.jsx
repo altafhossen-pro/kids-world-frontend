@@ -117,6 +117,14 @@ export default function AdminSettingsPage() {
       icon: SettingsIcon,
       color: 'bg-yellow-100 text-yellow-600',
       href: '/admin/dashboard/settings/product-subtitle'
+    },
+    {
+      id: 'homepage-layout',
+      title: 'Homepage Layout',
+      description: 'Trending & Best Sellers display options',
+      icon: Menu,
+      color: 'bg-pink-100 text-pink-600',
+      href: '/admin/dashboard/settings/homepage-layout'
     }
   ];
 

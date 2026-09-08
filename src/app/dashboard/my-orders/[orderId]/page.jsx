@@ -227,9 +227,9 @@ export default function OrderDetails() {
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
                                                 <img
-                                                    src={item.image || '/images/placeholder.png'}
+                                                    src={item.variant?.image || item.product?.featuredImage || item.image || '/images/placeholder.png'}
                                                     alt={item.name}
-                                                    className="h-16 w-16 object-cover rounded-lg mr-4"
+                                                    className="h-16 w-16 object-cover rounded-lg shrink-0 mr-4 border border-gray-100"
                                                 />
                                                 <div>
                                                     <div className="text-sm font-medium text-gray-900">{item.name}</div>

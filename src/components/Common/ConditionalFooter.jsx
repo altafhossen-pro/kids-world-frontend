@@ -10,7 +10,8 @@ export default function ConditionalFooter() {
     '/admin',
     '/login',
     '/register',
-    '/forgot-password'
+    '/forgot-password',
+    '/dashboard/my-orders'
   ];
   
   const shouldHideFooter = noFooterRoutes.some(route => pathname.startsWith(route));

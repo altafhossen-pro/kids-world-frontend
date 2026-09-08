@@ -17,6 +17,7 @@ export default function AdminProductsPage() {
     const [loading, setLoading] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
     const [filterStatus, setFilterStatus] = useState('all')
+    const [filterType, setFilterType] = useState('all')
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
     const [total, setTotal] = useState(0)
@@ -50,6 +51,10 @@ export default function AdminProductsPage() {
 
             if (filterStatus && filterStatus !== 'all') {
                 params.status = filterStatus
+            }
+
+            if (filterType && filterType !== 'all') {
+                params.filterType = filterType
             }
 
             const data = await productAPI.getAdminProducts(params, token)
@@ -100,13 +105,13 @@ export default function AdminProductsPage() {
         } finally {
             setLoading(false)
         }
-    }, [currentPage, searchTerm, filterStatus, limit])
+    }, [currentPage, searchTerm, filterStatus, filterType, limit])
 
     // Reset to page 1 and clear selection when search/filter changes
     useEffect(() => {
         setCurrentPage(1)
         setSelectedProducts([])
-    }, [searchTerm, filterStatus])
+    }, [searchTerm, filterStatus, filterType])
 
     // Debounce search - fetch after user stops typing (500ms delay)
     useEffect(() => {
@@ -115,7 +120,7 @@ export default function AdminProductsPage() {
         }, 500)
 
         return () => clearTimeout(timer)
-    }, [searchTerm, filterStatus, currentPage, fetchProducts])
+    }, [searchTerm, filterStatus, filterType, currentPage, fetchProducts])
 
     const handlePageChange = (page) => {
         setCurrentPage(page)
@@ -159,6 +164,11 @@ export default function AdminProductsPage() {
 
     const handleStatusChange = (status) => {
         setFilterStatus(status)
+        setCurrentPage(1) // Reset to first page on filter change
+    }
+
+    const handleTypeChange = (type) => {
+        setFilterType(type)
         setCurrentPage(1) // Reset to first page on filter change
     }
 
@@ -405,6 +415,19 @@ export default function AdminProductsPage() {
                                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                         </div>
+                    </div>
+                    <div className="sm:w-48">
+                        <select
+                            value={filterType}
+                            onChange={(e) => handleTypeChange(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                            <option value="all">All Types</option>
+                            <option value="bestselling">Best Selling</option>
+                            <option value="trending">Trending</option>
+                            <option value="featured">Featured</option>
+                            <option value="new_arrival">New Arrival</option>
+                        </select>
                     </div>
                     <div className="sm:w-48">
                         <select

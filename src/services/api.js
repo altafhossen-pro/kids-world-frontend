@@ -40,6 +40,63 @@ const apiCall = async (endpoint, options = {}) => {
     }
 };
 
+// Deal of the Day API functions
+export const dealOfTheDayAPI = {
+    getAllDeals: (token) => {
+        return apiCall('/deal-of-the-day', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    },
+    getActiveDeal: () => {
+        return apiCall('/deal-of-the-day/active');
+    },
+    getDealById: (id, token) => {
+        return apiCall(`/deal-of-the-day/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    },
+    createDeal: (data, token) => {
+        return apiCall('/deal-of-the-day', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(data)
+        });
+    },
+    updateDeal: (id, data, token) => {
+        return apiCall(`/deal-of-the-day/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(data)
+        });
+    },
+    deleteDeal: (id, token) => {
+        return apiCall(`/deal-of-the-day/${id}`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    },
+    toggleStatus: (id, token) => {
+        return apiCall(`/deal-of-the-day/${id}/toggle-status`, {
+            method: 'PATCH',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    }
+};
+
 // Product API functions
 export const productAPI = {
     // Get all products with pagination and filters
@@ -113,6 +170,11 @@ export const productAPI = {
     // Get single product by ID
     getProductById: (id) => {
         return apiCall(`/product/${id}`);
+    },
+
+    // Get bestselling products
+    getBestsellingProducts: (limit = 10) => {
+        return apiCall(`/product/bestselling?limit=${limit}`);
     },
 
     // Get product by slug
@@ -235,6 +297,23 @@ export const notificationAPI = {
     // Get single notification by ID
     getNotificationById: (id) => {
         return apiCall(`/notification/${id}`);
+    },
+
+    // Get homepage layout settings
+    getHomepageLayout: () => {
+        return apiCall('/settings/homepage-layout');
+    },
+
+    // Admin: Update homepage layout settings
+    updateHomepageLayout: (layoutData, token) => {
+        return apiCall('/settings/homepage-layout', {
+            method: 'PUT',
+            body: JSON.stringify(layoutData),
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
     },
 
     // Admin: Create notification

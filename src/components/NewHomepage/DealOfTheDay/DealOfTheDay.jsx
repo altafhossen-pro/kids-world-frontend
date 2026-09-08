@@ -1,33 +1,65 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, Clock } from 'lucide-react';
+import { dealOfTheDayAPI } from '@/services/api';
 
 const DealOfTheDay = () => {
-  // Simple countdown timer logic for UI purposes
+  const [deal, setDeal] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const [timeLeft, setTimeLeft] = useState({
-    hours: 12,
-    minutes: 45,
-    seconds: 30
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0
   });
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        let { hours, minutes, seconds } = prev;
-        if (seconds > 0) seconds--;
-        else {
-          seconds = 59;
-          if (minutes > 0) minutes--;
-          else {
-            minutes = 59;
-            if (hours > 0) hours--;
-          }
+    const fetchDeal = async () => {
+      try {
+        const response = await dealOfTheDayAPI.getActiveDeal();
+        if (response.success && response.data) {
+          setDeal(response.data);
         }
-        return { hours, minutes, seconds };
-      });
-    }, 1000);
-    return () => clearInterval(timer);
+      } catch (error) {
+        console.error('Failed to fetch deal of the day:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDeal();
   }, []);
+
+  useEffect(() => {
+    if (!deal || !deal.endTime) return;
+
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const endTime = new Date(deal.endTime).getTime();
+      const distance = endTime - now;
+
+      if (distance < 0) {
+        clearInterval(timer);
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      } else {
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        setTimeLeft({ days, hours, minutes, seconds });
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [deal]);
+
+  if (loading) return null; // Don't show anything while loading
+  if (!deal) return null; // If no active deal, hide the component
+
+  // If time has passed, optionally we could hide the component or just show 00:00:00
+  // For now, we will just show it with 0s if expired.
 
   return (
     <section className="container mx-auto px-4 sm:px-6 lg:px-8 mt-20">
@@ -40,54 +72,60 @@ const DealOfTheDay = () => {
           </div>
 
           <h2 className="text-4xl lg:text-5xl font-black mb-4 leading-tight">
-            Deal of the Day!
+            {deal.title}
           </h2>
           <p className="text-blue-100 text-lg mb-8 max-w-md">
-            Get the ultimate kids electric ride-on sports car at a massive discount. Don't miss out!
+            {deal.subtitle}
           </p>
 
           {/* Countdown */}
-          <div className="flex gap-4 mb-10">
+          <div className="flex gap-2 sm:gap-4 mb-10">
+            {timeLeft.days > 0 && (
+              <>
+                <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white text-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black shadow-lg">
+                    {String(timeLeft.days).padStart(2, '0')}
+                  </div>
+                  <span className="text-[10px] sm:text-xs font-bold mt-2 text-blue-100 uppercase">Days</span>
+                </div>
+                <div className="text-2xl sm:text-3xl font-bold mt-2 sm:mt-3">:</div>
+              </>
+            )}
             <div className="flex flex-col items-center">
-              <div className="w-16 h-16 bg-white text-blue-600 rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white text-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black shadow-lg">
                 {String(timeLeft.hours).padStart(2, '0')}
               </div>
-              <span className="text-xs font-bold mt-2 text-blue-100 uppercase">Hours</span>
+              <span className="text-[10px] sm:text-xs font-bold mt-2 text-blue-100 uppercase">Hours</span>
             </div>
-            <div className="text-3xl font-bold mt-3">:</div>
+            <div className="text-2xl sm:text-3xl font-bold mt-2 sm:mt-3">:</div>
             <div className="flex flex-col items-center">
-              <div className="w-16 h-16 bg-white text-blue-600 rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white text-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black shadow-lg">
                 {String(timeLeft.minutes).padStart(2, '0')}
               </div>
-              <span className="text-xs font-bold mt-2 text-blue-100 uppercase">Mins</span>
+              <span className="text-[10px] sm:text-xs font-bold mt-2 text-blue-100 uppercase">Mins</span>
             </div>
-            <div className="text-3xl font-bold mt-3">:</div>
+            <div className="text-2xl sm:text-3xl font-bold mt-2 sm:mt-3">:</div>
             <div className="flex flex-col items-center">
-              <div className="w-16 h-16 bg-white text-blue-600 rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white text-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black shadow-lg">
                 {String(timeLeft.seconds).padStart(2, '0')}
               </div>
-              <span className="text-xs font-bold mt-2 text-blue-100 uppercase">Secs</span>
+              <span className="text-[10px] sm:text-xs font-bold mt-2 text-blue-100 uppercase">Secs</span>
             </div>
           </div>
 
-          <button className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-black py-4 px-10 rounded-xl shadow-lg transition-all duration-300 flex items-center gap-2">
-            Shop Deal Now <ArrowRight className="w-5 h-5" />
-          </button>
+          <a href={deal.buttonLink} className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-black py-4 px-10 rounded-xl shadow-lg transition-all duration-300 inline-flex items-center gap-2">
+            {deal.buttonText} <ArrowRight className="w-5 h-5" />
+          </a>
         </div>
 
         {/* Right: Image */}
-        <div className="w-full md:w-1/2 relative h-[400px] md:h-auto">
+        <div className="w-full md:w-1/2 relative h-[400px] md:h-auto p-4">
           <div className="absolute inset-0 bg-blue-500/20 mix-blend-overlay z-10"></div>
           <img
-            src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=800&q=80"
-            alt="Deal of the day"
-            className="w-full h-full object-cover"
+            src={deal.image}
+            alt={deal.title}
+            className="w-full h-full object-cover rounded-xl"
           />
-          {/* Price Tag */}
-          <div className="absolute top-10 right-10 z-20 bg-blue-500 text-white p-4 rounded-full w-24 h-24 flex flex-col items-center justify-center shadow-2xl transform rotate-12 ring-4 ring-white">
-            <span className="text-[10px] font-bold line-through">৳4500</span>
-            <span className="text-xl font-black">৳3200</span>
-          </div>
         </div>
 
       </div>
