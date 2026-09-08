@@ -127,8 +127,8 @@ export default function PrivacyPolicy() {
       <div className="max-w-4xl mx-auto px-4 py-12">
         {/* Header Section */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-pink-100 rounded-full mb-6">
-            <Shield className="w-8 h-8 text-pink-500" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-6">
+            <Shield className="w-8 h-8 text-blue-500" />
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Privacy Policy</h1>
           <p className="text-gray-600 text-lg">Your privacy is important to us</p>
@@ -143,8 +143,8 @@ export default function PrivacyPolicy() {
             <div key={section.id} className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
-                  <div className="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
-                    <section.icon className="w-5 h-5 text-pink-500" />
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <section.icon className="w-5 h-5 text-blue-500" />
                   </div>
                 </div>
                 <div className="flex-1">
@@ -167,8 +167,8 @@ export default function PrivacyPolicy() {
         {/* Contact Section */}
         <div className="mt-12 bg-white rounded-lg p-8 shadow-sm border border-gray-100">
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-pink-100 rounded-full mb-4">
-              <Mail className="w-6 h-6 text-pink-500" />
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full mb-4">
+              <Mail className="w-6 h-6 text-blue-500" />
             </div>
             <h3 className="text-2xl font-semibold text-gray-900 mb-4">Contact Us</h3>
             <p className="text-gray-600 mb-6">
@@ -176,7 +176,7 @@ export default function PrivacyPolicy() {
             </p>
             <div className="text-sm">
               <div className="flex items-center justify-center space-x-2 text-gray-700 mb-2">
-                <Mail className="w-4 h-4 text-pink-500" />
+                <Mail className="w-4 h-4 text-blue-500" />
                 {loadingContact ? (
                   <div className="h-4 w-32 bg-gray-200 animate-pulse rounded"></div>
                 ) : (

@@ -20,7 +20,7 @@ const categories = [
   {
     id: 'scooters',
     label: 'Scooters',
-    color: 'bg-pink-500',
+    color: 'bg-blue-500',
     products: [
       { id: 201, name: '3-Wheel LED Light Kick Scooter - Pink', category: 'Scooters', price: 2100, originalPrice: 2500, discount: 16, rating: 4.9, image: 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?auto=format&fit=crop&w=400&q=80' },
       { id: 202, name: 'Kids Stunt Scooter Pro - Black', category: 'Scooters', price: 3200, originalPrice: 3800, discount: 16, rating: 4.8, image: 'https://images.unsplash.com/photo-1587654780228-6a454f9a0e69?auto=format&fit=crop&w=400&q=80' },
@@ -78,11 +78,10 @@ const CategoryProducts = () => {
           <button
             key={cat.id}
             onClick={() => setActiveTab(cat.id)}
-            className={`px-5 py-2 rounded-full text-sm font-bold transition-all duration-200 ${
-              activeTab === cat.id
+            className={`px-5 py-2 rounded-full text-sm font-bold transition-all duration-200 ${activeTab === cat.id
                 ? `${cat.color} text-white shadow-md`
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
+              }`}
           >
             {cat.label}
           </button>

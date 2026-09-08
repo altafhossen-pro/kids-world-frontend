@@ -58,7 +58,7 @@ export default function HeroBannerManagement() {
             setLoading(true);
             const token = getCookie('token');
             const response = await heroBannerAPI.getAllHeroBanners(token);
-            
+
             if (response.success) {
                 setBanners(response.data || []);
             } else {
@@ -118,7 +118,7 @@ export default function HeroBannerManagement() {
             setDeleting(true);
             const token = getCookie('token');
             const response = await heroBannerAPI.deleteHeroBanner(bannerToDelete._id, token);
-            
+
             if (response.success) {
                 toast.success('Banner deleted successfully');
                 fetchBanners();
@@ -142,7 +142,7 @@ export default function HeroBannerManagement() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         try {
             const token = getCookie('token');
             let response;
@@ -192,7 +192,7 @@ export default function HeroBannerManagement() {
                 order: banner.order || 0
             };
             const response = await heroBannerAPI.updateHeroBanner(banner._id, updatedData, token);
-            
+
             if (response.success) {
                 toast.success(`Banner ${!banner.isActive ? 'activated' : 'deactivated'} successfully`);
                 fetchBanners();
@@ -208,7 +208,7 @@ export default function HeroBannerManagement() {
     if (checkingPermission || contextLoading || loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
             </div>
         );
     }
@@ -235,7 +235,7 @@ export default function HeroBannerManagement() {
                 {(hasUpdatePermission || hasCreatePermission) && (
                     <button
                         onClick={handleAddNew}
-                        className="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition-colors duration-200 flex items-center gap-2"
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center gap-2"
                     >
                         <Plus className="w-4 h-4" />
                         Add New Banner
@@ -247,8 +247,8 @@ export default function HeroBannerManagement() {
             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                 {banners.length === 0 ? (
                     <div className="text-center py-16">
-                        <div className="w-20 h-20 mx-auto mb-6 bg-pink-100 rounded-full flex items-center justify-center">
-                            <svg className="w-10 h-10 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div className="w-20 h-20 mx-auto mb-6 bg-blue-100 rounded-full flex items-center justify-center">
+                            <svg className="w-10 h-10 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </div>
@@ -259,7 +259,7 @@ export default function HeroBannerManagement() {
                         <div className="space-y-3">
                             <button
                                 onClick={handleAddNew}
-                                className="bg-pink-500 text-white px-6 py-3 rounded-lg hover:bg-pink-600 transition-colors duration-200 font-medium flex items-center gap-2 mx-auto"
+                                className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors duration-200 font-medium flex items-center gap-2 mx-auto"
                             >
                                 <Plus className="w-5 h-5" />
                                 Create First Banner
@@ -301,11 +301,10 @@ export default function HeroBannerManagement() {
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <button
                                                 onClick={() => toggleBannerStatus(banner)}
-                                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                                    banner.isActive 
-                                                        ? 'bg-green-100 text-green-800' 
-                                                        : 'bg-gray-100 text-gray-800'
-                                                }`}
+                                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${banner.isActive
+                                                    ? 'bg-green-100 text-green-800'
+                                                    : 'bg-gray-100 text-gray-800'
+                                                    }`}
                                             >
                                                 {banner.isActive ? (
                                                     <>
@@ -387,7 +386,7 @@ export default function HeroBannerManagement() {
                                         name="link"
                                         value={formData.link}
                                         onChange={handleInputChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500"
                                         placeholder="e.g., /shop or https://example.com"
                                     />
                                     <p className="mt-1 text-xs text-gray-500">
@@ -405,7 +404,7 @@ export default function HeroBannerManagement() {
                                         value={formData.order}
                                         onChange={handleInputChange}
                                         min="0"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500"
                                     />
                                     <p className="mt-1 text-xs text-gray-500">
                                         Lower numbers appear first. Default: 0
@@ -419,7 +418,7 @@ export default function HeroBannerManagement() {
                                             name="isActive"
                                             checked={formData.isActive}
                                             onChange={handleInputChange}
-                                            className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
+                                            className="h-4 w-4 text-blue-600 focus:ring-pink-500 border-gray-300 rounded"
                                         />
                                         <label className="ml-2 text-sm text-gray-700">
                                             Active (visible on website)
@@ -438,7 +437,7 @@ export default function HeroBannerManagement() {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 text-sm font-medium text-white bg-pink-500 border border-transparent rounded-md hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transition-all duration-200 cursor-pointer"
+                                    className="px-4 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transition-all duration-200 cursor-pointer"
                                 >
                                     {editingBanner ? 'Update Banner' : 'Create Banner'}
                                 </button>

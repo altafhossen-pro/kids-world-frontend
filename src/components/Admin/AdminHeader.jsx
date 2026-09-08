@@ -192,12 +192,12 @@ export default function AdminHeader({ onMobileMenuToggle }) {
                 setIsSearching(true);
                 const token = getCookie('token');
                 const orderParams = new URLSearchParams({ search: searchQuery.trim(), limit: 5 }).toString();
-                
+
                 const [ordersRes, usersRes] = await Promise.all([
                     orderAPI.getAdminOrders(token, orderParams),
                     userAPI.getUsers({ search: searchQuery.trim(), limit: 5 }, token)
                 ]);
-                
+
                 setSearchResults({
                     orders: (ordersRes?.success && Array.isArray(ordersRes.data)) ? ordersRes.data : [],
                     users: (usersRes?.success && Array.isArray(usersRes.data)) ? usersRes.data : []
@@ -285,7 +285,7 @@ export default function AdminHeader({ onMobileMenuToggle }) {
                                                         Orders
                                                     </div>
                                                     {searchResults.orders.map(order => (
-                                                        <Link 
+                                                        <Link
                                                             key={`order-${order._id}`}
                                                             href={`/admin/dashboard/orders/${order._id}`}
                                                             onClick={() => {
@@ -308,7 +308,7 @@ export default function AdminHeader({ onMobileMenuToggle }) {
                                                     ))}
                                                 </div>
                                             )}
-                                            
+
                                             {/* Users Section */}
                                             {searchResults.users.length > 0 && (
                                                 <div>
@@ -316,7 +316,7 @@ export default function AdminHeader({ onMobileMenuToggle }) {
                                                         Customers
                                                     </div>
                                                     {searchResults.users.map(u => (
-                                                        <Link 
+                                                        <Link
                                                             key={`user-${u._id}`}
                                                             href={`/admin/dashboard/customers/${u._id}`}
                                                             onClick={() => {
@@ -397,7 +397,7 @@ export default function AdminHeader({ onMobileMenuToggle }) {
                                                         className={`px-4 py-3 border-b border-gray-100 cursor-pointer transition-colors relative ${order.isReadByAdmin ? 'hover:bg-gray-50' : 'bg-blue-50/50 hover:bg-blue-100'}`}
                                                     >
                                                         {!order.isReadByAdmin && (
-                                                            <div className="absolute top-4 right-4 w-2 h-2 bg-pink-500 rounded-full"></div>
+                                                            <div className="absolute top-4 right-4 w-2 h-2 bg-blue-500 rounded-full"></div>
                                                         )}
                                                         <div className="flex items-start gap-3">
                                                             <div className={`p-2 rounded-full ${order.isReadByAdmin ? 'bg-gray-100 text-gray-500' : 'bg-blue-100 text-blue-600'}`}>

@@ -7,16 +7,16 @@ const TopBar = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
         {/* Left */}
         <div className="flex items-center gap-2">
-          <Heart className="w-4 h-4 text-pink-300" />
+          <Heart className="w-4 h-4 text-blue-300" />
           <span>Welcome to <span className="font-bold text-yellow-300 tracking-wide">Kids World</span></span>
         </div>
-        
+
         {/* Center */}
         <div className="hidden md:flex items-center gap-2 font-medium">
           <Truck className="w-4 h-4" />
           <span>Free Delivery on orders over ৳2,000</span>
         </div>
-        
+
         {/* Right */}
         <div className="flex items-center gap-5">
           <div className="hidden sm:flex items-center gap-1.5 cursor-pointer hover:text-blue-200 transition-colors font-medium">

@@ -1,8 +1,14 @@
+'use client';
+
 import React from 'react';
 import { Search, ChevronDown, User, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
+import { useAppContext } from '@/context/AppContext';
+import CartModal from '@/components/Cart/CartModal';
 
 const MiddleBar = () => {
+  const { user, isCartOpen, setIsCartOpen, cartTotal, cartCount } = useAppContext();
+
   return (
     <div className="bg-white py-5 border-b border-gray-100">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-8 lg:gap-12">
@@ -38,31 +44,51 @@ const MiddleBar = () => {
 
         {/* Actions (Right) */}
         <div className="flex items-center gap-6 lg:gap-8 flex-shrink-0">
-          <Link href="/login" className="flex items-center gap-3 group">
-            <div className="p-2.5 rounded-full bg-gray-50 border border-gray-100 group-hover:bg-blue-50 group-hover:border-blue-100 transition-all">
-              <User className="w-5 h-5 text-gray-600 group-hover:text-blue-600" />
-            </div>
-            <div className="hidden lg:block text-left">
-              <p className="text-xs text-gray-500 font-semibold">My Account</p>
-              <p className="text-sm font-extrabold text-gray-800">Login / Register</p>
-            </div>
-          </Link>
+          {user ? (
+            <Link href={user.role === 'admin' ? '/admin/dashboard' : '/dashboard'} className="flex items-center gap-3 group">
+              <div className="w-10 h-10 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center overflow-hidden">
+                {user.avatar ? (
+                  <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                ) : (
+                  <User className="w-5 h-5 text-blue-600" />
+                )}
+              </div>
+              <div className="hidden lg:block text-left">
+                <p className="text-xs text-blue-500 font-semibold">Welcome</p>
+                <p className="text-sm font-extrabold text-gray-800 truncate max-w-[120px]">{user.name || 'User'}</p>
+              </div>
+            </Link>
+          ) : (
+            <Link href="/login" className="flex items-center gap-3 group">
+              <div className="p-2.5 rounded-full bg-gray-50 border border-gray-100 group-hover:bg-blue-50 group-hover:border-blue-100 transition-all">
+                <User className="w-5 h-5 text-gray-600 group-hover:text-blue-600" />
+              </div>
+              <div className="hidden lg:block text-left">
+                <p className="text-xs text-gray-500 font-semibold">My Account</p>
+                <p className="text-sm font-extrabold text-gray-800">Login / Register</p>
+              </div>
+            </Link>
+          )}
 
-          <Link href="/cart" className="flex items-center gap-3 group">
+          <button 
+            onClick={() => setIsCartOpen(true)}
+            className="flex items-center gap-3 group border-none bg-transparent outline-none cursor-pointer"
+          >
             <div className="relative p-2.5 rounded-full bg-gray-50 border border-gray-100 group-hover:bg-blue-50 group-hover:border-blue-100 transition-all">
               <ShoppingCart className="w-5 h-5 text-gray-600 group-hover:text-blue-600" />
-              <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-[11px] font-bold w-[22px] h-[22px] rounded-full flex items-center justify-center shadow-sm">
-                2
+              <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-[11px] font-bold w-[22px] h-[22px] rounded-full flex items-center justify-center shadow-sm">
+                {cartCount || 0}
               </span>
             </div>
             <div className="hidden lg:block text-left">
               <p className="text-xs text-gray-500 font-semibold">My Cart</p>
-              <p className="text-sm font-extrabold text-gray-800">৳0.00</p>
+              <p className="text-sm font-extrabold text-gray-800">৳{cartTotal?.toLocaleString() || '0.00'}</p>
             </div>
-          </Link>
+          </button>
         </div>
 
       </div>
+      <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </div>
   );
 };

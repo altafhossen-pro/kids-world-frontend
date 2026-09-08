@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { 
-  Settings, 
-  Store, 
-  Package, 
-  ShoppingCart, 
-  Users, 
+import {
+  Settings,
+  Store,
+  Package,
+  ShoppingCart,
+  Users,
   CreditCard,
   Bell,
   Shield,
@@ -29,34 +29,34 @@ export default function SettingsPage() {
     contactEmail: 'info@goldecommerce.com',
     contactPhone: '+8801234567890',
     address: 'Dhaka, Bangladesh',
-    
+
     // Product Settings
     defaultCurrency: 'BDT',
     currencySymbol: '৳',
     lowStockThreshold: 5,
     autoApproveReviews: false,
     allowGuestCheckout: true,
-    
+
     // Order Settings
     orderPrefix: 'ORD',
     autoConfirmOrders: false,
     defaultOrderStatus: 'pending',
     allowOrderCancellation: true,
     cancellationTimeLimit: 24, // hours
-    
+
     // Payment Settings
     paymentMethods: ['cod', 'card', 'bkash', 'nagad'],
     codEnabled: true,
     cardEnabled: true,
     bkashEnabled: true,
     nagadEnabled: true,
-    
+
     // Notification Settings
     emailNotifications: true,
     smsNotifications: false,
     orderNotifications: true,
     lowStockNotifications: true,
-    
+
     // Security Settings
     requireEmailVerification: false,
     requirePhoneVerification: false,
@@ -96,11 +96,11 @@ export default function SettingsPage() {
           <input
             type="text"
             value={settings.siteName}
-            onChange={(e) => setSettings({...settings, siteName: e.target.value})}
+            onChange={(e) => setSettings({ ...settings, siteName: e.target.value })}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Contact Email
@@ -108,11 +108,11 @@ export default function SettingsPage() {
           <input
             type="email"
             value={settings.contactEmail}
-            onChange={(e) => setSettings({...settings, contactEmail: e.target.value})}
+            onChange={(e) => setSettings({ ...settings, contactEmail: e.target.value })}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Contact Phone
@@ -120,11 +120,11 @@ export default function SettingsPage() {
           <input
             type="tel"
             value={settings.contactPhone}
-            onChange={(e) => setSettings({...settings, contactPhone: e.target.value})}
+            onChange={(e) => setSettings({ ...settings, contactPhone: e.target.value })}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Address
@@ -132,19 +132,19 @@ export default function SettingsPage() {
           <input
             type="text"
             value={settings.address}
-            onChange={(e) => setSettings({...settings, address: e.target.value})}
+            onChange={(e) => setSettings({ ...settings, address: e.target.value })}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
         </div>
       </div>
-      
+
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Site Description
         </label>
         <textarea
           value={settings.siteDescription}
-          onChange={(e) => setSettings({...settings, siteDescription: e.target.value})}
+          onChange={(e) => setSettings({ ...settings, siteDescription: e.target.value })}
           rows={3}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
         />
@@ -161,7 +161,7 @@ export default function SettingsPage() {
           </label>
           <select
             value={settings.defaultCurrency}
-            onChange={(e) => setSettings({...settings, defaultCurrency: e.target.value})}
+            onChange={(e) => setSettings({ ...settings, defaultCurrency: e.target.value })}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
           >
             <option value="BDT">Bangladeshi Taka (BDT)</option>
@@ -169,7 +169,7 @@ export default function SettingsPage() {
             <option value="EUR">Euro (EUR)</option>
           </select>
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Currency Symbol
@@ -177,11 +177,11 @@ export default function SettingsPage() {
           <input
             type="text"
             value={settings.currencySymbol}
-            onChange={(e) => setSettings({...settings, currencySymbol: e.target.value})}
+            onChange={(e) => setSettings({ ...settings, currencySymbol: e.target.value })}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Low Stock Threshold
@@ -189,12 +189,12 @@ export default function SettingsPage() {
           <input
             type="number"
             value={settings.lowStockThreshold}
-            onChange={(e) => setSettings({...settings, lowStockThreshold: parseInt(e.target.value)})}
+            onChange={(e) => setSettings({ ...settings, lowStockThreshold: parseInt(e.target.value) })}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
         </div>
       </div>
-      
+
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
@@ -205,13 +205,13 @@ export default function SettingsPage() {
             <input
               type="checkbox"
               checked={settings.autoApproveReviews}
-              onChange={(e) => setSettings({...settings, autoApproveReviews: e.target.checked})}
+              onChange={(e) => setSettings({ ...settings, autoApproveReviews: e.target.checked })}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
           </label>
         </div>
-        
+
         <div className="flex items-center justify-between">
           <div>
             <h4 className="text-sm font-medium text-gray-700">Allow Guest Checkout</h4>
@@ -221,10 +221,10 @@ export default function SettingsPage() {
             <input
               type="checkbox"
               checked={settings.allowGuestCheckout}
-              onChange={(e) => setSettings({...settings, allowGuestCheckout: e.target.checked})}
+              onChange={(e) => setSettings({ ...settings, allowGuestCheckout: e.target.checked })}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
           </label>
         </div>
       </div>
@@ -241,18 +241,18 @@ export default function SettingsPage() {
           <input
             type="text"
             value={settings.orderPrefix}
-            onChange={(e) => setSettings({...settings, orderPrefix: e.target.value})}
+            onChange={(e) => setSettings({ ...settings, orderPrefix: e.target.value })}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Default Order Status
           </label>
           <select
             value={settings.defaultOrderStatus}
-            onChange={(e) => setSettings({...settings, defaultOrderStatus: e.target.value})}
+            onChange={(e) => setSettings({ ...settings, defaultOrderStatus: e.target.value })}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
           >
             <option value="pending">Pending</option>
@@ -260,7 +260,7 @@ export default function SettingsPage() {
             <option value="processing">Processing</option>
           </select>
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Cancellation Time Limit (Hours)
@@ -268,12 +268,12 @@ export default function SettingsPage() {
           <input
             type="number"
             value={settings.cancellationTimeLimit}
-            onChange={(e) => setSettings({...settings, cancellationTimeLimit: parseInt(e.target.value)})}
+            onChange={(e) => setSettings({ ...settings, cancellationTimeLimit: parseInt(e.target.value) })}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
         </div>
       </div>
-      
+
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
@@ -284,13 +284,13 @@ export default function SettingsPage() {
             <input
               type="checkbox"
               checked={settings.autoConfirmOrders}
-              onChange={(e) => setSettings({...settings, autoConfirmOrders: e.target.checked})}
+              onChange={(e) => setSettings({ ...settings, autoConfirmOrders: e.target.checked })}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
           </label>
         </div>
-        
+
         <div className="flex items-center justify-between">
           <div>
             <h4 className="text-sm font-medium text-gray-700">Allow Order Cancellation</h4>
@@ -300,10 +300,10 @@ export default function SettingsPage() {
             <input
               type="checkbox"
               checked={settings.allowOrderCancellation}
-              onChange={(e) => setSettings({...settings, allowOrderCancellation: e.target.checked})}
+              onChange={(e) => setSettings({ ...settings, allowOrderCancellation: e.target.checked })}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
           </label>
         </div>
       </div>
@@ -314,7 +314,7 @@ export default function SettingsPage() {
     <div className="space-y-6">
       <div className="space-y-4">
         <h4 className="text-sm font-medium text-gray-700">Payment Methods</h4>
-        
+
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
@@ -325,13 +325,13 @@ export default function SettingsPage() {
               <input
                 type="checkbox"
                 checked={settings.codEnabled}
-                onChange={(e) => setSettings({...settings, codEnabled: e.target.checked})}
+                onChange={(e) => setSettings({ ...settings, codEnabled: e.target.checked })}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
             </label>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <h5 className="text-sm font-medium text-gray-600">Credit/Debit Card</h5>
@@ -341,13 +341,13 @@ export default function SettingsPage() {
               <input
                 type="checkbox"
                 checked={settings.cardEnabled}
-                onChange={(e) => setSettings({...settings, cardEnabled: e.target.checked})}
+                onChange={(e) => setSettings({ ...settings, cardEnabled: e.target.checked })}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
             </label>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <h5 className="text-sm font-medium text-gray-600">bKash</h5>
@@ -357,13 +357,13 @@ export default function SettingsPage() {
               <input
                 type="checkbox"
                 checked={settings.bkashEnabled}
-                onChange={(e) => setSettings({...settings, bkashEnabled: e.target.checked})}
+                onChange={(e) => setSettings({ ...settings, bkashEnabled: e.target.checked })}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
             </label>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <h5 className="text-sm font-medium text-gray-600">Nagad</h5>
@@ -373,10 +373,10 @@ export default function SettingsPage() {
               <input
                 type="checkbox"
                 checked={settings.nagadEnabled}
-                onChange={(e) => setSettings({...settings, nagadEnabled: e.target.checked})}
+                onChange={(e) => setSettings({ ...settings, nagadEnabled: e.target.checked })}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
             </label>
           </div>
         </div>
@@ -396,13 +396,13 @@ export default function SettingsPage() {
             <input
               type="checkbox"
               checked={settings.emailNotifications}
-              onChange={(e) => setSettings({...settings, emailNotifications: e.target.checked})}
+              onChange={(e) => setSettings({ ...settings, emailNotifications: e.target.checked })}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
           </label>
         </div>
-        
+
         <div className="flex items-center justify-between">
           <div>
             <h4 className="text-sm font-medium text-gray-700">SMS Notifications</h4>
@@ -412,13 +412,13 @@ export default function SettingsPage() {
             <input
               type="checkbox"
               checked={settings.smsNotifications}
-              onChange={(e) => setSettings({...settings, smsNotifications: e.target.checked})}
+              onChange={(e) => setSettings({ ...settings, smsNotifications: e.target.checked })}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
           </label>
         </div>
-        
+
         <div className="flex items-center justify-between">
           <div>
             <h4 className="text-sm font-medium text-gray-700">Order Notifications</h4>
@@ -428,13 +428,13 @@ export default function SettingsPage() {
             <input
               type="checkbox"
               checked={settings.orderNotifications}
-              onChange={(e) => setSettings({...settings, orderNotifications: e.target.checked})}
+              onChange={(e) => setSettings({ ...settings, orderNotifications: e.target.checked })}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
           </label>
         </div>
-        
+
         <div className="flex items-center justify-between">
           <div>
             <h4 className="text-sm font-medium text-gray-700">Low Stock Notifications</h4>
@@ -444,10 +444,10 @@ export default function SettingsPage() {
             <input
               type="checkbox"
               checked={settings.lowStockNotifications}
-              onChange={(e) => setSettings({...settings, lowStockNotifications: e.target.checked})}
+              onChange={(e) => setSettings({ ...settings, lowStockNotifications: e.target.checked })}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
           </label>
         </div>
       </div>
@@ -464,11 +464,11 @@ export default function SettingsPage() {
           <input
             type="number"
             value={settings.maxLoginAttempts}
-            onChange={(e) => setSettings({...settings, maxLoginAttempts: parseInt(e.target.value)})}
+            onChange={(e) => setSettings({ ...settings, maxLoginAttempts: parseInt(e.target.value) })}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Session Timeout (Minutes)
@@ -476,12 +476,12 @@ export default function SettingsPage() {
           <input
             type="number"
             value={settings.sessionTimeout}
-            onChange={(e) => setSettings({...settings, sessionTimeout: parseInt(e.target.value)})}
+            onChange={(e) => setSettings({ ...settings, sessionTimeout: parseInt(e.target.value) })}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
         </div>
       </div>
-      
+
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
@@ -492,13 +492,13 @@ export default function SettingsPage() {
             <input
               type="checkbox"
               checked={settings.requireEmailVerification}
-              onChange={(e) => setSettings({...settings, requireEmailVerification: e.target.checked})}
+              onChange={(e) => setSettings({ ...settings, requireEmailVerification: e.target.checked })}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
           </label>
         </div>
-        
+
         <div className="flex items-center justify-between">
           <div>
             <h4 className="text-sm font-medium text-gray-700">Require Phone Verification</h4>
@@ -508,10 +508,10 @@ export default function SettingsPage() {
             <input
               type="checkbox"
               checked={settings.requirePhoneVerification}
-              onChange={(e) => setSettings({...settings, requirePhoneVerification: e.target.checked})}
+              onChange={(e) => setSettings({ ...settings, requirePhoneVerification: e.target.checked })}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
           </label>
         </div>
       </div>
@@ -541,7 +541,7 @@ export default function SettingsPage() {
     <div className="p-6">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-          <Settings className="h-6 w-6 text-pink-600" />
+          <Settings className="h-6 w-6 text-blue-600" />
           Settings
         </h1>
         <p className="text-gray-600">Manage your store settings and preferences</p>
@@ -557,11 +557,10 @@ export default function SettingsPage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${
-                    activeTab === tab.id
-                      ? 'border-pink-500 text-pink-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
+                  className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${activeTab === tab.id
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
                 >
                   <Icon className="h-4 w-4" />
                   {tab.label}
@@ -574,13 +573,13 @@ export default function SettingsPage() {
         {/* Tab Content */}
         <div className="p-6">
           {renderTabContent()}
-          
+
           {/* Save Button */}
           <div className="mt-8 flex justify-end">
             <button
               onClick={() => handleSave(activeTab)}
               disabled={loading}
-              className="bg-pink-600 text-white px-6 py-2 rounded-md hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-pink-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {loading ? (
                 <RefreshCw className="h-4 w-4 animate-spin" />

@@ -55,8 +55,8 @@ export default function CustomerHeader() {
                             <input
                                 type="text"
                                 className={`block w-full pl-10 pr-3 py-2 border rounded-lg text-sm placeholder-gray-500 transition-all duration-200 ${isSearchFocused
-                                        ? 'border-blue-300 ring-2 ring-blue-100'
-                                        : 'border-gray-300 hover:border-gray-400'
+                                    ? 'border-blue-300 ring-2 ring-blue-100'
+                                    : 'border-gray-300 hover:border-gray-400'
                                     } focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100`}
                                 placeholder="Search products..."
                                 onFocus={() => setIsSearchFocused(true)}
@@ -82,7 +82,7 @@ export default function CustomerHeader() {
                     <Link href="/wishlist" className="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
                         <Heart className="h-6 w-6" />
                         {wishlistCount > 0 && (
-                            <span className="absolute -top-1 -right-1 h-5 w-5 bg-pink-500 text-white text-xs rounded-full flex items-center justify-center">
+                            <span className="absolute -top-1 -right-1 h-5 w-5 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center">
                                 {wishlistCount}
                             </span>
                         )}

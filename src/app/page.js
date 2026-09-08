@@ -49,17 +49,6 @@ export default function Home() {
       <Newsletter />
       <JustForYou />
 
-      {/* OLD COMMENTED COMPONENTS */}
-      {/* 
-      <HeroBanner />
-      <StoreFeatures />
-      <HeroOffers />
-      <CategorySlider />
-      <ProductForYou />
-      <CustomerTestimonial />
-      <Footer />
-      <FloatingContact />
-      */}
     </div>
   );
 }

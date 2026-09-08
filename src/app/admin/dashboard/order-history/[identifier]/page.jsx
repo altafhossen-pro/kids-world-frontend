@@ -348,7 +348,7 @@ export default function OrderHistoryPage() {
         if (name === 'N/A' || name === '') {
             name = latestOrder.guestInfo?.name || latestOrder.manualOrderInfo?.name || latestOrder.shippingAddress?.name || 'N/A';
         }
-        
+
         if (phone === 'N/A' || phone === '') {
             phone = shippingPhone;
             shippingPhone = 'N/A';
@@ -636,7 +636,7 @@ export default function OrderHistoryPage() {
                                     >
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center gap-2">
-                                                {!order.isReadByAdmin && <span className="h-2 w-2 bg-pink-500 rounded-full"></span>}
+                                                {!order.isReadByAdmin && <span className="h-2 w-2 bg-blue-500 rounded-full"></span>}
                                                 <div className="text-sm font-medium text-gray-900">
                                                     #{order.orderId || order._id.slice(-8).toUpperCase()}
                                                 </div>

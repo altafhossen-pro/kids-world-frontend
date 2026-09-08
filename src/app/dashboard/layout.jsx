@@ -37,10 +37,10 @@ function CustomerDashboardLayoutContent({ children }) {
         const checkAuth = async () => {
             try {
                 setIsLoading(true)
-                
+
                 // Get token from cookies
                 const token = getCookie('token')
-                
+
                 if (!token) {
                     // No token, redirect to login
                     router.push('/login')
@@ -49,7 +49,7 @@ function CustomerDashboardLayoutContent({ children }) {
 
                 // Token exists, verify with backend
                 const response = await userAPI.getProfile(token)
-                
+
                 if (response.success && response.data) {
                     // User data found, set user and allow access
                     setUser(response.data)
@@ -76,7 +76,7 @@ function CustomerDashboardLayoutContent({ children }) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="h-12 w-12 border-4 border-pink-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <div className="h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                     <p className="text-gray-600">Loading...</p>
                 </div>
             </div>
@@ -119,26 +119,18 @@ function CustomerDashboardLayoutContent({ children }) {
                 {isMobileMenuOpen && (
                     <>
                         {/* Backdrop */}
-                        <div 
+                        <div
                             className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
                             onClick={() => setIsMobileMenuOpen(false)}
                         />
                         {/* Mobile Sidebar */}
                         <div className="md:hidden fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 shadow-lg z-50 flex flex-col">
-                            {/* Logo - Fixed height */}
-                            <div className="flex items-center justify-center h-16 px-6 border-b border-gray-200 flex-shrink-0">
-                                <div className="flex items-center space-x-2">
-                                    <svg className="h-8 w-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                                    </svg>
-                                    <span className="text-xl font-bold text-gray-900">My Account</span>
-                                </div>
-                            </div>
+
 
                             {/* Navigation - Scrollable */}
                             <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-                                <Link 
-                                    href="/dashboard" 
+                                <Link
+                                    href="/dashboard"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                                 >
@@ -147,8 +139,8 @@ function CustomerDashboardLayoutContent({ children }) {
                                     </svg>
                                     Overview
                                 </Link>
-                                <Link 
-                                    href="/dashboard/my-orders" 
+                                <Link
+                                    href="/dashboard/my-orders"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                                 >
@@ -157,8 +149,8 @@ function CustomerDashboardLayoutContent({ children }) {
                                     </svg>
                                     My Orders
                                 </Link>
-                                <Link 
-                                    href="/dashboard/loyalty" 
+                                <Link
+                                    href="/dashboard/loyalty"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                                 >
@@ -167,8 +159,8 @@ function CustomerDashboardLayoutContent({ children }) {
                                     </svg>
                                     Loyalty Points
                                 </Link>
-                                <Link 
-                                    href="/dashboard/affiliate" 
+                                <Link
+                                    href="/dashboard/affiliate"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                                 >
@@ -177,8 +169,8 @@ function CustomerDashboardLayoutContent({ children }) {
                                     </svg>
                                     Affiliate
                                 </Link>
-                                <Link 
-                                    href="/dashboard/my-reviews" 
+                                <Link
+                                    href="/dashboard/my-reviews"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                                 >
@@ -187,8 +179,8 @@ function CustomerDashboardLayoutContent({ children }) {
                                     </svg>
                                     My Reviews
                                 </Link>
-                                <Link 
-                                    href="/dashboard/wishlist" 
+                                <Link
+                                    href="/dashboard/wishlist"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                                 >
@@ -197,8 +189,8 @@ function CustomerDashboardLayoutContent({ children }) {
                                     </svg>
                                     Wishlist
                                 </Link>
-                                <Link 
-                                    href="/dashboard/profile" 
+                                <Link
+                                    href="/dashboard/profile"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                                 >
@@ -248,7 +240,7 @@ export default function CustomerDashboardLayout({ children }) {
         <Suspense fallback={
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="h-12 w-12 border-4 border-pink-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <div className="h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                     <p className="text-gray-600">Loading dashboard...</p>
                 </div>
             </div>

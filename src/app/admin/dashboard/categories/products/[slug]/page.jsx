@@ -129,7 +129,7 @@ export default function CategoryProductsPage() {
                 } else {
                     toast.error('Category not found')
                 }
-            } catch(e) {
+            } catch (e) {
                 toast.error('Error loading category')
             } finally {
                 setLoadingCategory(false)
@@ -576,7 +576,7 @@ export default function CategoryProductsPage() {
                                                             setProductToShare(product)
                                                             setShowShareModal(true)
                                                         }}
-                                                        className="text-pink-600 hover:text-pink-900 p-1 cursor-pointer"
+                                                        className="text-blue-600 hover:text-blue-900 p-1 cursor-pointer"
                                                         title="Share"
                                                     >
                                                         <Share2 className="h-4 w-4" />
@@ -716,8 +716,8 @@ export default function CategoryProductsPage() {
                                                 key={page}
                                                 onClick={() => handlePageChange(page)}
                                                 className={`px-3 py-2 text-sm font-medium rounded-lg ${currentPage === page
-                                                        ? 'bg-blue-600 text-white'
-                                                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                                    ? 'bg-blue-600 text-white'
+                                                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                                                     }`}
                                             >
                                                 {page}
@@ -800,9 +800,9 @@ export default function CategoryProductsPage() {
             {hoveredImage && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none bg-black/10 backdrop-blur-[2px] transition-all duration-300">
                     <div className="bg-white p-3 rounded-2xl shadow-2xl animate-fade-in">
-                        <img 
-                            src={hoveredImage} 
-                            alt="Product Preview" 
+                        <img
+                            src={hoveredImage}
+                            alt="Product Preview"
                             className="max-w-[80vw] max-h-[80vh] w-auto h-auto object-contain rounded-lg"
                         />
                     </div>

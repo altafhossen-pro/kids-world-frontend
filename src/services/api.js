@@ -66,6 +66,11 @@ export const productAPI = {
         return apiCall(`/product/bestselling?limit=${limit}`);
     },
 
+    // Get trending products
+    getTrendingProducts: (limit = 10) => {
+        return apiCall(`/product/trending?limit=${limit}`);
+    },
+
     // Get new arrival products
     getNewArrivalProducts: (limit = 10) => {
         return apiCall(`/product/new-arrivals?limit=${limit}`);

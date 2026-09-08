@@ -14,7 +14,7 @@ function GoogleAuthSuccessContent() {
     useEffect(() => {
         // Prevent multiple executions
         if (processedRef.current) return;
-        
+
         const token = searchParams.get('token');
         const userId = searchParams.get('userId');
         const name = searchParams.get('name');
@@ -61,7 +61,7 @@ function GoogleAuthSuccessContent() {
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
             <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600 mx-auto"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
                 <p className="mt-4 text-gray-600">Completing Google login...</p>
             </div>
         </div>
@@ -73,7 +73,7 @@ export default function GoogleAuthSuccessPage() {
         <Suspense fallback={
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600 mx-auto"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
                     <p className="mt-4 text-gray-600">Loading...</p>
                 </div>
             </div>

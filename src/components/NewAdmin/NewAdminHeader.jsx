@@ -32,7 +32,7 @@ export default function NewAdminHeader({ onMenuToggle }) {
                 {/* Notifications */}
                 <button className="relative p-2 text-gray-500 hover:bg-gray-100 rounded-xl transition-colors">
                     <Bell className="w-5 h-5" />
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-pink-500 rounded-full border border-white"></span>
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full border border-white"></span>
                 </button>
 
                 {/* Messages */}

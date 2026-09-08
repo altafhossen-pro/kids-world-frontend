@@ -11,11 +11,12 @@ export default function SiteSettingsPage() {
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(true);
     const [uploading, setUploading] = useState(false);
-    
+
     const [formData, setFormData] = useState({
         logoUrl: '',
         ogImage: '',
-        isVideoAutoplayEnabled: true
+        isVideoAutoplayEnabled: true,
+        trendingSortOrder: 'latest'
     });
 
     useEffect(() => {
@@ -30,7 +31,8 @@ export default function SiteSettingsPage() {
                 setFormData({
                     logoUrl: res.data.logoUrl || '',
                     ogImage: res.data.ogImage || '',
-                    isVideoAutoplayEnabled: res.data.isVideoAutoplayEnabled ?? true
+                    isVideoAutoplayEnabled: res.data.isVideoAutoplayEnabled ?? true,
+                    trendingSortOrder: res.data.trendingSortOrder || 'latest'
                 });
             }
         } catch (error) {
@@ -61,7 +63,7 @@ export default function SiteSettingsPage() {
             uploadData.append('image', file);
 
             const response = await uploadAPI.uploadSingle(uploadData);
-            
+
             if (response.success) {
                 const imageUrl = response.data.url || response.data.imageUrl;
                 setFormData(prev => ({
@@ -89,12 +91,12 @@ export default function SiteSettingsPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         try {
             setLoading(true);
-            
+
             const res = await settingsAPI.updateSiteSettings(formData, token);
-            
+
             if (res.success) {
                 toast.success('Site settings updated successfully');
             } else {
@@ -111,7 +113,7 @@ export default function SiteSettingsPage() {
     if (fetching) {
         return (
             <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             </div>
         );
     }
@@ -131,7 +133,7 @@ export default function SiteSettingsPage() {
                             <ImageIcon className="w-5 h-5 mr-2 text-gray-500" />
                             Header Logo
                         </h2>
-                        
+
                         <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -143,20 +145,20 @@ export default function SiteSettingsPage() {
                                     value={formData.logoUrl}
                                     onChange={handleChange}
                                     placeholder="https://example.com/logo.png"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-blue-500 transition-colors"
                                 />
                                 <p className="mt-2 text-xs text-gray-500">
                                     Paste an image URL here, or upload an image file below. (Recommended format: PNG or SVG)
                                 </p>
                             </div>
-                            
+
                             <div className="flex items-start space-x-4">
                                 {formData.logoUrl ? (
                                     <div className="relative">
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img 
-                                            src={formData.logoUrl} 
-                                            alt="Logo Preview" 
+                                        <img
+                                            src={formData.logoUrl}
+                                            alt="Logo Preview"
                                             className="w-48 h-auto object-contain bg-white border border-gray-200 rounded p-2"
                                             onError={(e) => { e.target.src = '/images/placeholder.png' }}
                                         />
@@ -173,17 +175,17 @@ export default function SiteSettingsPage() {
                                         <ImageIcon className="w-8 h-8 text-gray-400" />
                                     </div>
                                 )}
-                                
+
                                 <div className="flex-1 mt-2">
                                     <input
                                         type="file"
                                         accept="image/*"
                                         onChange={(e) => handleImageUpload(e, 'logoUrl')}
                                         disabled={uploading}
-                                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100 disabled:opacity-50"
+                                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
                                     />
                                     {uploading && (
-                                        <p className="mt-1 text-sm text-pink-600">Uploading...</p>
+                                        <p className="mt-1 text-sm text-blue-600">Uploading...</p>
                                     )}
                                 </div>
                             </div>
@@ -196,7 +198,7 @@ export default function SiteSettingsPage() {
                             <ImageIcon className="w-5 h-5 mr-2 text-gray-500" />
                             Social Media Preview Image (OG Image)
                         </h2>
-                        
+
                         <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -208,20 +210,20 @@ export default function SiteSettingsPage() {
                                     value={formData.ogImage}
                                     onChange={handleChange}
                                     placeholder="https://example.com/social-banner.png"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-blue-500 transition-colors"
                                 />
                                 <p className="mt-2 text-xs text-gray-500">
                                     This image will be displayed when someone shares your homepage link on Facebook, WhatsApp, etc. (Recommended format: 1200x630px or 600x600px)
                                 </p>
                             </div>
-                            
+
                             <div className="flex items-start space-x-4">
                                 {formData.ogImage ? (
                                     <div className="relative">
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img 
-                                            src={formData.ogImage} 
-                                            alt="OG Preview" 
+                                        <img
+                                            src={formData.ogImage}
+                                            alt="OG Preview"
                                             className="w-48 h-auto object-contain bg-white border border-gray-200 rounded p-2"
                                             onError={(e) => { e.target.src = '/images/placeholder.png' }}
                                         />
@@ -238,17 +240,17 @@ export default function SiteSettingsPage() {
                                         <ImageIcon className="w-8 h-8 text-gray-400" />
                                     </div>
                                 )}
-                                
+
                                 <div className="flex-1 mt-2">
                                     <input
                                         type="file"
                                         accept="image/*"
                                         onChange={(e) => handleImageUpload(e, 'ogImage')}
                                         disabled={uploading}
-                                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100 disabled:opacity-50"
+                                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
                                     />
                                     {uploading && (
-                                        <p className="mt-1 text-sm text-pink-600">Uploading...</p>
+                                        <p className="mt-1 text-sm text-blue-600">Uploading...</p>
                                     )}
                                 </div>
                             </div>
@@ -260,7 +262,7 @@ export default function SiteSettingsPage() {
                         <h2 className="text-lg font-semibold text-gray-900 mb-4">
                             Video Settings
                         </h2>
-                        
+
                         <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -270,16 +272,41 @@ export default function SiteSettingsPage() {
                                 <button
                                     type="button"
                                     onClick={() => setFormData(prev => ({ ...prev, isVideoAutoplayEnabled: !prev.isVideoAutoplayEnabled }))}
-                                    className={`${
-                                        formData.isVideoAutoplayEnabled ? 'bg-pink-600' : 'bg-gray-200'
-                                    } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2`}
+                                    className={`${formData.isVideoAutoplayEnabled ? 'bg-blue-600' : 'bg-gray-200'
+                                        } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2`}
                                 >
                                     <span
-                                        className={`${
-                                            formData.isVideoAutoplayEnabled ? 'translate-x-5' : 'translate-x-0'
-                                        } pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out`}
+                                        className={`${formData.isVideoAutoplayEnabled ? 'translate-x-5' : 'translate-x-0'
+                                            } pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out`}
                                     />
                                 </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Trending Products Settings */}
+                    <div>
+                        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                            Trending Products Settings
+                        </h2>
+
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Trending Products Sort Order
+                                </label>
+                                <select
+                                    name="trendingSortOrder"
+                                    value={formData.trendingSortOrder}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-blue-500 transition-colors"
+                                >
+                                    <option value="latest">Latest Added First</option>
+                                    <option value="random">Randomized</option>
+                                </select>
+                                <p className="mt-2 text-xs text-gray-500">
+                                    Choose how trending products are displayed on the homepage.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -290,7 +317,7 @@ export default function SiteSettingsPage() {
                     <button
                         type="submit"
                         disabled={loading || uploading}
-                        className="flex items-center px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50 transition-colors"
+                        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50 transition-colors"
                     >
                         {loading ? (
                             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>

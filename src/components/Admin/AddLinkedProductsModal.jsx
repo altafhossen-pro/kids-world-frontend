@@ -56,7 +56,7 @@ export default function AddLinkedProductsModal({ isOpen, onClose, upsell, onSucc
     const handleSearchChange = (e) => {
         const value = e.target.value;
         setSearchQuery(value);
-        
+
         // Debounce search
         const timeoutId = setTimeout(() => {
             searchProducts(value);
@@ -91,7 +91,7 @@ export default function AddLinkedProductsModal({ isOpen, onClose, upsell, onSucc
         try {
             setAdding(true);
             const token = getAdminToken();
-            
+
             // Add each selected product
             for (let i = 0; i < selectedProducts.length; i++) {
                 const product = selectedProducts[i];
@@ -191,12 +191,12 @@ export default function AddLinkedProductsModal({ isOpen, onClose, upsell, onSucc
                         <div className="mb-6">
                             <h3 className="text-sm font-medium text-gray-700 mb-3">
                                 Search Results
-                                {loading && <span className="ml-2 text-pink-500">(Searching...)</span>}
+                                {loading && <span className="ml-2 text-blue-500">(Searching...)</span>}
                             </h3>
-                            
+
                             {loading ? (
                                 <div className="text-center py-8">
-                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 mx-auto"></div>
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
                                     <p className="mt-2 text-gray-500">Searching products...</p>
                                 </div>
                             ) : searchResults.length === 0 && searchPerformed ? (
@@ -209,7 +209,7 @@ export default function AddLinkedProductsModal({ isOpen, onClose, upsell, onSucc
                                     {searchResults.map((product) => (
                                         <div
                                             key={product._id}
-                                            className="border border-gray-200 rounded-lg p-4 hover:border-pink-300 transition-colors"
+                                            className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors"
                                         >
                                             <div className="flex items-start space-x-3">
                                                 <img
@@ -224,16 +224,16 @@ export default function AddLinkedProductsModal({ isOpen, onClose, upsell, onSucc
                                                     <p className="text-xs text-gray-500 mt-1">
                                                         {product.slug}
                                                     </p>
-                                                    <p className="text-sm font-semibold text-pink-600 mt-1">
+                                                    <p className="text-sm font-semibold text-blue-600 mt-1">
                                                         ৳{product.priceRange?.min || 0}
-                                                        {product.priceRange?.max && product.priceRange.max !== product.priceRange.min && 
+                                                        {product.priceRange?.max && product.priceRange.max !== product.priceRange.min &&
                                                             ` - ৳${product.priceRange.max}`
                                                         }
                                                     </p>
                                                 </div>
                                                 <button
                                                     onClick={() => addProductToSelection(product)}
-                                                    className="text-pink-600 hover:text-pink-800 transition-colors"
+                                                    className="text-blue-600 hover:text-blue-800 transition-colors"
                                                     title="Add to selection"
                                                 >
                                                     <Plus className="w-4 h-4" />
@@ -314,7 +314,7 @@ export default function AddLinkedProductsModal({ isOpen, onClose, upsell, onSucc
                     <button
                         onClick={addSelectedProducts}
                         disabled={selectedProducts.length === 0 || adding}
-                        className="px-4 py-2 text-sm font-medium text-white bg-pink-600 border border-transparent rounded-lg hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+                        className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
                     >
                         {adding ? (
                             <>

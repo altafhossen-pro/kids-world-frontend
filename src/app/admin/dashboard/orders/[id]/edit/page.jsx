@@ -355,8 +355,8 @@ export default function OrderEditPage() {
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-medium text-slate-600">Status:</span>
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${order.status === 'returned'
-                                    ? 'bg-pink-100 text-pink-800 border-pink-200'
-                                    : 'bg-red-100 text-red-800 border-red-200'
+                                ? 'bg-blue-100 text-blue-800 border-blue-200'
+                                : 'bg-red-100 text-red-800 border-red-200'
                                 }`}>
                                 {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                             </span>
@@ -425,8 +425,8 @@ export default function OrderEditPage() {
                                 onClick={handleSave}
                                 disabled={saving}
                                 className={`flex-1 sm:flex-none inline-flex items-center justify-center px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${saving
-                                        ? 'bg-gray-400 cursor-not-allowed text-white'
-                                        : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                    ? 'bg-gray-400 cursor-not-allowed text-white'
+                                    : 'bg-blue-600 hover:bg-blue-700 text-white'
                                     }`}
                             >
                                 <Save className="h-4 w-4 mr-1 sm:mr-2" />
@@ -919,8 +919,8 @@ export default function OrderEditPage() {
                                             setNewItemPrice(product.priceRange?.min || 0);
                                         }}
                                         className={`p-4 border rounded-lg cursor-pointer transition-colors ${selectedProduct?._id === product._id
-                                                ? 'border-blue-500 bg-blue-50'
-                                                : 'border-gray-200 hover:border-gray-300'
+                                            ? 'border-blue-500 bg-blue-50'
+                                            : 'border-gray-200 hover:border-gray-300'
                                             }`}
                                     >
                                         <img

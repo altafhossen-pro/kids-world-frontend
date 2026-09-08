@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCookie } from 'cookies-next';
 import { settingsAPI, categoryAPI, deliveryRuleAPI } from '@/services/api';
-import { 
+import {
   ArrowLeft,
-  Truck, 
-  MapPin, 
-  DollarSign, 
+  Truck,
+  MapPin,
+  DollarSign,
   Save,
   AlertCircle,
   Tag
@@ -21,14 +21,14 @@ import PermissionDenied from '@/components/Common/PermissionDenied';
 export default function DeliverySettingsPage() {
   const router = useRouter();
   const { hasPermission, contextLoading } = useAppContext();
-  
+
   const [settings, setSettings] = useState({
     insideDhaka: 80,
     subDhaka: 120,
     outsideDhaka: 150,
     shippingFreeRequiredAmount: 1500
   });
-  
+
   const [excludedCategories, setExcludedCategories] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -64,8 +64,8 @@ export default function DeliverySettingsPage() {
 
       if (settingsRes.success && settingsRes.data?.deliveryChargeSettings) {
         setSettings(prev => ({
-            ...prev,
-            ...settingsRes.data.deliveryChargeSettings
+          ...prev,
+          ...settingsRes.data.deliveryChargeSettings
         }));
       }
 
@@ -98,7 +98,7 @@ export default function DeliverySettingsPage() {
     const { name, value } = e.target;
     // Allow empty string for backspace, otherwise parse as float
     const newValue = value === '' ? '' : parseFloat(value);
-    
+
     setSettings(prev => ({
       ...prev,
       [name]: newValue
@@ -150,10 +150,10 @@ export default function DeliverySettingsPage() {
 
       const updateData = {
         deliveryChargeSettings: {
-            insideDhaka: Number(settings.insideDhaka),
-            subDhaka: Number(settings.subDhaka),
-            outsideDhaka: Number(settings.outsideDhaka),
-            shippingFreeRequiredAmount: Number(settings.shippingFreeRequiredAmount)
+          insideDhaka: Number(settings.insideDhaka),
+          subDhaka: Number(settings.subDhaka),
+          outsideDhaka: Number(settings.outsideDhaka),
+          shippingFreeRequiredAmount: Number(settings.shippingFreeRequiredAmount)
         }
       };
 
@@ -203,7 +203,7 @@ export default function DeliverySettingsPage() {
       {/* Header */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <button 
+          <button
             onClick={() => router.push('/admin/dashboard/settings')}
             className="flex items-center text-gray-600 hover:text-gray-900 mb-4 transition-colors"
           >
@@ -225,7 +225,7 @@ export default function DeliverySettingsPage() {
           <button
             onClick={handleSave}
             disabled={saving || loading}
-            className="flex items-center justify-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 disabled:opacity-50 transition-colors shadow-sm"
+            className="flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-sm"
           >
             {saving ? (
               <>
@@ -244,9 +244,8 @@ export default function DeliverySettingsPage() {
 
       {/* Global Message */}
       {message.text && (
-        <div className={`mb-6 p-4 rounded-lg flex items-start ${
-          message.type === 'error' ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-green-50 text-green-700 border border-green-200'
-        }`}>
+        <div className={`mb-6 p-4 rounded-lg flex items-start ${message.type === 'error' ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-green-50 text-green-700 border border-green-200'
+          }`}>
           <AlertCircle className={`h-5 w-5 mr-3 shrink-0 ${message.type === 'error' ? 'text-red-400' : 'text-green-400'}`} />
           <p>{message.text}</p>
         </div>
@@ -274,10 +273,10 @@ export default function DeliverySettingsPage() {
               </h2>
               <p className="text-sm text-gray-500 mt-1">Configure standard delivery fees for different areas.</p>
             </div>
-            
+
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                
+
                 {/* Inside Dhaka */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -294,9 +293,8 @@ export default function DeliverySettingsPage() {
                       onChange={handleInputChange}
                       min="0"
                       disabled={!hasUpdatePermission}
-                      className={`block w-full pl-10 pr-3 py-2 sm:text-sm border rounded-lg focus:ring-1 focus:ring-pink-500 focus:border-pink-500 transition-colors ${
-                        errors.insideDhaka ? 'border-red-300' : 'border-gray-300'
-                      }`}
+                      className={`block w-full pl-10 pr-3 py-2 sm:text-sm border rounded-lg focus:ring-1 focus:ring-pink-500 focus:border-blue-500 transition-colors ${errors.insideDhaka ? 'border-red-300' : 'border-gray-300'
+                        }`}
                       placeholder="e.g. 80"
                     />
                   </div>
@@ -319,9 +317,8 @@ export default function DeliverySettingsPage() {
                       onChange={handleInputChange}
                       min="0"
                       disabled={!hasUpdatePermission}
-                      className={`block w-full pl-10 pr-3 py-2 sm:text-sm border rounded-lg focus:ring-1 focus:ring-pink-500 focus:border-pink-500 transition-colors ${
-                        errors.subDhaka ? 'border-red-300' : 'border-gray-300'
-                      }`}
+                      className={`block w-full pl-10 pr-3 py-2 sm:text-sm border rounded-lg focus:ring-1 focus:ring-pink-500 focus:border-blue-500 transition-colors ${errors.subDhaka ? 'border-red-300' : 'border-gray-300'
+                        }`}
                       placeholder="e.g. 120"
                     />
                   </div>
@@ -344,9 +341,8 @@ export default function DeliverySettingsPage() {
                       onChange={handleInputChange}
                       min="0"
                       disabled={!hasUpdatePermission}
-                      className={`block w-full pl-10 pr-3 py-2 sm:text-sm border rounded-lg focus:ring-1 focus:ring-pink-500 focus:border-pink-500 transition-colors ${
-                        errors.outsideDhaka ? 'border-red-300' : 'border-gray-300'
-                      }`}
+                      className={`block w-full pl-10 pr-3 py-2 sm:text-sm border rounded-lg focus:ring-1 focus:ring-pink-500 focus:border-blue-500 transition-colors ${errors.outsideDhaka ? 'border-red-300' : 'border-gray-300'
+                        }`}
                       placeholder="e.g. 150"
                     />
                   </div>
@@ -370,7 +366,7 @@ export default function DeliverySettingsPage() {
                 Active Feature
               </div>
             </div>
-            
+
             <div className="p-6">
               <div className="max-w-md">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -387,9 +383,8 @@ export default function DeliverySettingsPage() {
                     onChange={handleInputChange}
                     min="0"
                     disabled={!hasUpdatePermission}
-                    className={`block w-full pl-10 pr-3 py-2 sm:text-sm border rounded-lg focus:ring-1 focus:ring-green-500 focus:border-green-500 transition-colors ${
-                      errors.shippingFreeRequiredAmount ? 'border-red-300' : 'border-gray-300'
-                    }`}
+                    className={`block w-full pl-10 pr-3 py-2 sm:text-sm border rounded-lg focus:ring-1 focus:ring-green-500 focus:border-green-500 transition-colors ${errors.shippingFreeRequiredAmount ? 'border-red-300' : 'border-gray-300'
+                      }`}
                     placeholder="e.g. 1500"
                   />
                 </div>
@@ -402,7 +397,7 @@ export default function DeliverySettingsPage() {
               {/* Category Exclusion Section */}
               <div className="mt-8 border-t border-gray-200 pt-6">
                 <h3 className="text-md font-medium text-gray-900 mb-2 flex items-center">
-                  <Tag className="h-4 w-4 mr-2 text-pink-500" />
+                  <Tag className="h-4 w-4 mr-2 text-blue-500" />
                   Excluded Categories
                 </h3>
                 <p className="text-sm text-gray-500 mb-4">
@@ -418,19 +413,18 @@ export default function DeliverySettingsPage() {
                         // Assuming category has slug or name we can use. We will use lowercased name to match frontend cart logic.
                         const catSlug = category.name.toLowerCase();
                         const isChecked = excludedCategories.includes(catSlug);
-                        
+
                         return (
-                          <label key={category._id} className={`flex items-center p-3 rounded-lg border cursor-pointer transition-colors ${
-                            isChecked ? 'bg-pink-50 border-pink-200' : 'bg-white border-gray-200 hover:border-pink-300'
-                          }`}>
+                          <label key={category._id} className={`flex items-center p-3 rounded-lg border cursor-pointer transition-colors ${isChecked ? 'bg-blue-50 border-blue-200' : 'bg-white border-gray-200 hover:border-blue-300'
+                            }`}>
                             <input
                               type="checkbox"
                               checked={isChecked}
                               onChange={() => handleCategoryToggle(catSlug)}
                               disabled={!hasUpdatePermission}
-                              className="h-4 w-4 text-pink-600 rounded border-gray-300 focus:ring-pink-500 cursor-pointer disabled:opacity-50"
+                              className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-pink-500 cursor-pointer disabled:opacity-50"
                             />
-                            <span className={`ml-3 text-sm font-medium ${isChecked ? 'text-pink-900' : 'text-gray-700'}`}>
+                            <span className={`ml-3 text-sm font-medium ${isChecked ? 'text-blue-900' : 'text-gray-700'}`}>
                               {category.name}
                             </span>
                           </label>

@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { AppProvider } from "@/context/AppContext";
@@ -11,10 +11,9 @@ import AffiliateTracker from "@/components/Common/AffiliateTracker";
 import Script from "next/script";
 import VisitorTracker from "@/components/VisitorTracker/VisitorTracker";
 
-const inter = Inter({
+const geist = Geist({
   subsets: ["latin"],
-  variable: "--font-inter",
-  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-geist",
 });
 
 export const viewport = generateViewport();
@@ -88,7 +87,7 @@ export default async function RootLayout({ children }) {
         />
       </head>
       <body
-        className={`${inter.variable} font-sans antialiased`}
+        className={`${geist.variable} font-sans antialiased`}
       >
         <AppProvider>
           <VisitorTracker />

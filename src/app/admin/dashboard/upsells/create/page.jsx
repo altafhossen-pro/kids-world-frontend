@@ -60,7 +60,7 @@ export default function CreateUpsellPage() {
     const handleSearchChange = (e) => {
         const value = e.target.value;
         setSearchQuery(value);
-        
+
         // Debounce search
         const timeoutId = setTimeout(() => {
             searchProducts(value);
@@ -109,7 +109,7 @@ export default function CreateUpsellPage() {
         try {
             setCreating(true);
             const token = getAdminToken();
-            
+
             const upsellData = {
                 mainProduct: selectedMainProduct._id,
                 linkedProducts: selectedLinkedProducts.map((product, index) => ({
@@ -119,7 +119,7 @@ export default function CreateUpsellPage() {
             };
 
             const response = await upsellAPI.createUpsell(upsellData, token);
-            
+
             if (response.success) {
                 toast.success('Upsell created successfully');
                 router.push('/admin/dashboard/upsells');
@@ -158,7 +158,7 @@ export default function CreateUpsellPage() {
                     <h2 className="text-lg font-semibold text-gray-900 mb-4">
                         Step 1: Select Main Product
                     </h2>
-                    
+
                     {!selectedMainProduct ? (
                         <div>
                             <div className="relative mb-4">
@@ -174,7 +174,7 @@ export default function CreateUpsellPage() {
 
                             {loading && (
                                 <div className="text-center py-8">
-                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 mx-auto"></div>
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
                                     <p className="mt-2 text-gray-500">Searching products...</p>
                                 </div>
                             )}
@@ -184,7 +184,7 @@ export default function CreateUpsellPage() {
                                     {searchResults.map((product) => (
                                         <div
                                             key={product._id}
-                                            className="border border-gray-200 rounded-lg p-4 hover:border-pink-300 transition-colors cursor-pointer"
+                                            className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors cursor-pointer"
                                             onClick={() => selectMainProduct(product)}
                                         >
                                             <div className="flex items-start space-x-3">
@@ -200,14 +200,14 @@ export default function CreateUpsellPage() {
                                                     <p className="text-xs text-gray-500 mt-1">
                                                         {product.slug}
                                                     </p>
-                                                    <p className="text-sm font-semibold text-pink-600 mt-1">
+                                                    <p className="text-sm font-semibold text-blue-600 mt-1">
                                                         ৳{product.priceRange?.min || 0}
-                                                        {product.priceRange?.max && product.priceRange.max !== product.priceRange.min && 
+                                                        {product.priceRange?.max && product.priceRange.max !== product.priceRange.min &&
                                                             ` - ৳${product.priceRange.max}`
                                                         }
                                                     </p>
                                                 </div>
-                                                <Plus className="w-4 h-4 text-pink-600" />
+                                                <Plus className="w-4 h-4 text-blue-600" />
                                             </div>
                                         </div>
                                     ))}
@@ -254,7 +254,7 @@ export default function CreateUpsellPage() {
                         <h2 className="text-lg font-semibold text-gray-900 mb-4">
                             Step 2: Select Linked Products
                         </h2>
-                        
+
                         <div className="relative mb-4">
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                             <input
@@ -268,7 +268,7 @@ export default function CreateUpsellPage() {
 
                         {loading && (
                             <div className="text-center py-8">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 mx-auto"></div>
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
                                 <p className="mt-2 text-gray-500">Searching products...</p>
                             </div>
                         )}
@@ -278,7 +278,7 @@ export default function CreateUpsellPage() {
                                 {searchResults.map((product) => (
                                     <div
                                         key={product._id}
-                                        className="border border-gray-200 rounded-lg p-4 hover:border-pink-300 transition-colors cursor-pointer"
+                                        className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors cursor-pointer"
                                         onClick={() => addLinkedProduct(product)}
                                     >
                                         <div className="flex items-start space-x-3">
@@ -294,14 +294,14 @@ export default function CreateUpsellPage() {
                                                 <p className="text-xs text-gray-500 mt-1">
                                                     {product.slug}
                                                 </p>
-                                                <p className="text-sm font-semibold text-pink-600 mt-1">
+                                                <p className="text-sm font-semibold text-blue-600 mt-1">
                                                     ৳{product.priceRange?.min || 0}
-                                                    {product.priceRange?.max && product.priceRange.max !== product.priceRange.min && 
+                                                    {product.priceRange?.max && product.priceRange.max !== product.priceRange.min &&
                                                         ` - ৳${product.priceRange.max}`
                                                     }
                                                 </p>
                                             </div>
-                                            <Plus className="w-4 h-4 text-pink-600" />
+                                            <Plus className="w-4 h-4 text-blue-600" />
                                         </div>
                                     </div>
                                 ))}
@@ -358,7 +358,7 @@ export default function CreateUpsellPage() {
                         <button
                             onClick={createUpsell}
                             disabled={creating}
-                            className="px-6 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+                            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
                         >
                             {creating ? (
                                 <>

@@ -29,8 +29,8 @@ import AppContext from '@/context/AppContext'
 const navigation = [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'My Orders', href: '/dashboard/my-orders', icon: ShoppingCart },
-    { name: 'Loyalty Points', href: '/dashboard/loyalty', icon: Coins },
-    { name: 'Affiliate', href: '/dashboard/affiliate', icon: Users },
+    // { name: 'Loyalty Points', href: '/dashboard/loyalty', icon: Coins },
+    // { name: 'Affiliate', href: '/dashboard/affiliate', icon: Users },
     { name: 'My Reviews', href: '/dashboard/my-reviews', icon: Star },
     { name: 'Wishlist', href: '/dashboard/wishlist', icon: Heart },
     { name: 'Profile', href: '/dashboard/profile', icon: User }
@@ -46,16 +46,16 @@ export default function CustomerSidebar() {
         try {
             // Clear token from cookies
             deleteCookie('token')
-            
+
             // Call logout from context
             logout()
-            
+
             // Show success message
             toast.success('Logged out successfully!')
-            
+
             // Redirect to home page
             router.push('/')
-            
+
             // Close mobile menu if open
             setIsMobileOpen(false)
         } catch (error) {
@@ -85,19 +85,13 @@ export default function CustomerSidebar() {
                 fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out flex flex-col
                 ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0
             `}>
-                {/* Logo - Fixed height */}
-                <div className="flex items-center justify-center h-16 px-6 border-b border-gray-200 flex-shrink-0">
-                    <div className="flex items-center space-x-2">
-                        <ShoppingBag className="h-8 w-8 text-pink-600" />
-                        <span className="text-xl font-bold text-gray-900">My Account</span>
-                    </div>
-                </div>
+
 
                 {/* Navigation - Scrollable */}
                 <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
                     {navigation.map((item) => {
                         // Special handling for orders page to stay active on order details
-                        const isActive = item.href === '/dashboard/my-orders' 
+                        const isActive = item.href === '/dashboard/my-orders'
                             ? pathname.startsWith(item.href)
                             : pathname === item.href
                         return (
@@ -106,12 +100,12 @@ export default function CustomerSidebar() {
                                 href={item.href}
                                 onClick={() => setIsMobileOpen(false)}
                                 className={`group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${isActive
-                                        ? 'bg-pink-50 text-pink-700 border-r-2 border-pink-600'
-                                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                    ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600'
+                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                                     }`}
                             >
                                 <item.icon
-                                    className={`mr-3 h-5 w-5 transition-colors ${isActive ? 'text-pink-600' : 'text-gray-400 group-hover:text-gray-500'
+                                    className={`mr-3 h-5 w-5 transition-colors ${isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'
                                         }`}
                                 />
                                 {item.name}
@@ -134,7 +128,7 @@ export default function CustomerSidebar() {
 
             {/* Mobile Overlay */}
             {isMobileOpen && (
-                <div 
+                <div
                     className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-30"
                     onClick={() => setIsMobileOpen(false)}
                 />

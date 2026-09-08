@@ -1216,11 +1216,11 @@ export default function AdminOrdersPage() {
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center gap-2">
                                                 {!order.isReadByAdmin && (
-                                                    <span className="h-2 w-2 bg-pink-500 rounded-full" title="Unread Order"></span>
+                                                    <span className="h-2 w-2 bg-blue-500 rounded-full" title="Unread Order"></span>
                                                 )}
-                                                <Link 
-                                                  href={`/admin/dashboard/orders/${order._id}`}
-                                                  className="text-sm font-medium text-blue-600 hover:text-pink-600 hover:underline transition-colors"
+                                                <Link
+                                                    href={`/admin/dashboard/orders/${order._id}`}
+                                                    className="text-sm font-medium text-blue-600 hover:text-blue-600 hover:underline transition-colors"
                                                 >
                                                     #{order.orderId || order._id.slice(-8).toUpperCase()}
                                                 </Link>
@@ -1230,7 +1230,7 @@ export default function AdminOrdersPage() {
                                                     href={`https://steadfast.com.bd/user/consignment/${order.steadfastConsignmentId}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="text-xs font-medium text-pink-600 mt-1 hover:text-pink-700 hover:underline cursor-pointer block"
+                                                    className="text-xs font-medium text-blue-600 mt-1 hover:text-blue-700 hover:underline cursor-pointer block"
                                                 >
                                                     Steadfast: {order.steadfastConsignmentId}
                                                 </a>
@@ -1304,7 +1304,7 @@ export default function AdminOrdersPage() {
                                                             </div>
                                                         )}
                                                         {order.loyaltyDiscount > 0 && (
-                                                            <div className="text-pink-600 font-medium">
+                                                            <div className="text-blue-600 font-medium">
                                                                 -৳{order.loyaltyDiscount} (Loyalty)
                                                             </div>
                                                         )}

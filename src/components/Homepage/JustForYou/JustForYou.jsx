@@ -173,7 +173,7 @@ export default function JustForYou() {
                             <p className="text-sm sm:text-base text-gray-600 mb-4">{error}</p>
                             <button
                                 onClick={fetchRandomProducts}
-                                className="bg-pink-500 text-white px-4 sm:px-6 py-2 rounded-lg font-semibold text-sm hover:bg-pink-600 transition-colors cursor-pointer"
+                                className="bg-blue-500 text-white px-4 sm:px-6 py-2 rounded-lg font-semibold text-sm hover:bg-blue-600 transition-colors cursor-pointer"
                             >
                                 Try Again
                             </button>
@@ -199,7 +199,7 @@ export default function JustForYou() {
                                 <button
                                     onClick={handleShowMore}
                                     disabled={loadingMore}
-                                    className="bg-white text-pink-500 px-6 sm:px-8 py-3 rounded-lg font-semibold text-sm sm:text-base border-2 border-pink-500 hover:bg-pink-500 hover:text-white transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="bg-white text-blue-500 px-6 sm:px-8 py-3 rounded-lg font-semibold text-sm sm:text-base border-2 border-blue-500 hover:bg-blue-500 hover:text-white transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {loadingMore ? 'Loading...' : 'Show More'}
                                 </button>

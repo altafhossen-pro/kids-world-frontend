@@ -180,7 +180,7 @@ export default function ProductForYou() {
                     <p className="text-red-500">{error}</p>
                     <button
                         onClick={() => fetchProducts(1)}
-                        className="mt-4 px-4 py-2 bg-pink-500 text-white rounded hover:bg-pink-600 transition"
+                        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
                     >
                         Try Again
                     </button>
@@ -195,7 +195,7 @@ export default function ProductForYou() {
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-10">
                         <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Product For You</h2>
-                        <div className="w-24 h-1 bg-pink-500 mx-auto rounded-full"></div>
+                        <div className="w-24 h-1 bg-blue-500 mx-auto rounded-full"></div>
                     </div>
                     {/* Skeleton loading grid */}
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 gap-4 sm:gap-6">
@@ -217,7 +217,7 @@ export default function ProductForYou() {
             <div className="container mx-auto px-4">
                 {/* <div className="text-center mb-10">
                     <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Product For You</h2>
-                    <div className="w-24 h-1 bg-pink-500 mx-auto rounded-full"></div>
+                    <div className="w-24 h-1 bg-blue-500 mx-auto rounded-full"></div>
                 </div> */}
 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 gap-4 sm:gap-6">
@@ -246,7 +246,7 @@ export default function ProductForYou() {
                                         return nextPage;
                                     });
                                 }}
-                                className="px-8 py-3 bg-pink-500 text-white font-medium rounded-full hover:bg-pink-600 hover:shadow-lg transition-all duration-300"
+                                className="px-8 py-3 bg-blue-500 text-white font-medium rounded-full hover:bg-blue-600 hover:shadow-lg transition-all duration-300"
                             >
                                 Load Next
                             </button>

@@ -138,11 +138,11 @@ export default function ReturnRefundPolicy() {
                 <div className="flex-shrink-0">
                   <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${section.highlight
                     ? 'bg-red-100'
-                    : 'bg-pink-100'
+                    : 'bg-blue-100'
                     }`}>
                     <section.icon className={`w-5 h-5 ${section.highlight
                       ? 'text-red-500'
-                      : 'text-pink-500'
+                      : 'text-blue-500'
                       }`} />
                   </div>
                 </div>
@@ -180,7 +180,7 @@ export default function ReturnRefundPolicy() {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div className="flex items-center justify-center space-x-2 text-gray-600">
-                <Mail className="w-4 h-4 text-pink-500" />
+                <Mail className="w-4 h-4 text-blue-500" />
                 {loadingContact ? (
                   <div className="h-4 w-32 bg-gray-200 animate-pulse rounded"></div>
                 ) : (
@@ -188,7 +188,7 @@ export default function ReturnRefundPolicy() {
                 )}
               </div>
               <div className="flex items-center justify-center space-x-2 text-gray-600">
-                <Phone className="w-4 h-4 text-pink-500" />
+                <Phone className="w-4 h-4 text-blue-500" />
                 {loadingContact ? (
                   <div className="h-4 w-32 bg-gray-200 animate-pulse rounded"></div>
                 ) : (

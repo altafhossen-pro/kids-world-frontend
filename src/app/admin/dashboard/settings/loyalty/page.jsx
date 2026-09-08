@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCookie } from 'cookies-next';
 import { settingsAPI } from '@/services/api';
-import { 
+import {
   ArrowLeft,
-  Coins, 
-  Percent, 
-  DollarSign, 
+  Coins,
+  Percent,
+  DollarSign,
   Save,
   AlertCircle,
   Settings as SettingsIcon
@@ -97,7 +97,7 @@ export default function LoyaltySettingsPage() {
 
       const token = getCookie('token');
       const response = await settingsAPI.updateLoyaltySettings(processedSettings, token);
-      
+
       if (response.success) {
         setMessage({ type: 'success', text: 'Settings saved successfully!' });
         setSettings(response.data);
@@ -144,14 +144,14 @@ export default function LoyaltySettingsPage() {
         [field]: ''
       }));
     }
-    
+
     // Only allow numbers and decimal point
     const numericValue = value.replace(/[^0-9.]/g, '');
-    
+
     // Prevent multiple decimal points
     const parts = numericValue.split('.');
     const finalValue = parts.length > 2 ? parts[0] + '.' + parts.slice(1).join('') : numericValue;
-    
+
     setSettings(prev => ({
       ...prev,
       [field]: finalValue
@@ -168,7 +168,7 @@ export default function LoyaltySettingsPage() {
   if (checkingPermission || contextLoading || loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
       </div>
     );
   }
@@ -198,7 +198,7 @@ export default function LoyaltySettingsPage() {
               <span>Back</span>
             </button>
             <div className="flex items-center space-x-3">
-              <Coins className="h-8 w-8 text-pink-500" />
+              <Coins className="h-8 w-8 text-blue-500" />
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">Loyalty Settings</h1>
                 <p className="text-gray-600">Configure coins, points and rewards system</p>
@@ -209,7 +209,7 @@ export default function LoyaltySettingsPage() {
             <button
               onClick={handleSave}
               disabled={saving || !hasUpdatePermission}
-              className="flex items-center space-x-2 px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 disabled:opacity-50"
+              className="flex items-center space-x-2 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
             >
               <Save className="h-4 w-4" />
               <span>{saving ? 'Saving...' : 'Save Settings'}</span>
@@ -219,11 +219,10 @@ export default function LoyaltySettingsPage() {
 
         {/* Message */}
         {message.text && (
-          <div className={`mb-6 p-4 rounded-lg flex items-center space-x-2 ${
-            message.type === 'success' 
-              ? 'bg-green-50 text-green-700 border border-green-200' 
-              : 'bg-red-50 text-red-700 border border-red-200'
-          }`}>
+          <div className={`mb-6 p-4 rounded-lg flex items-center space-x-2 ${message.type === 'success'
+            ? 'bg-green-50 text-green-700 border border-green-200'
+            : 'bg-red-50 text-red-700 border border-red-200'
+            }`}>
             <AlertCircle className="h-5 w-5" />
             <span>{message.text}</span>
           </div>
@@ -233,7 +232,7 @@ export default function LoyaltySettingsPage() {
           {/* Loyalty System Settings */}
           <div className="bg-white rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center space-x-2">
-              <Coins className="h-5 w-5 text-pink-500" />
+              <Coins className="h-5 w-5 text-blue-500" />
               <span>Loyalty System</span>
             </h2>
 
@@ -250,9 +249,8 @@ export default function LoyaltySettingsPage() {
                     value={settings.coinPerItem}
                     onChange={(e) => handleInputChange('coinPerItem', e.target.value)}
                     onWheel={handleWheel}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                      errors.coinPerItem ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                    }`}
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${errors.coinPerItem ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                      }`}
                   />
                   <span className="absolute right-3 top-2 text-sm text-gray-500">coins</span>
                 </div>
@@ -275,9 +273,8 @@ export default function LoyaltySettingsPage() {
                     value={settings.coinValue}
                     onChange={(e) => handleInputChange('coinValue', e.target.value)}
                     onWheel={handleWheel}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                      errors.coinValue ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                    }`}
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${errors.coinValue ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                      }`}
                   />
                   <span className="absolute right-3 top-2 text-sm text-gray-500">৳</span>
                 </div>
@@ -293,7 +290,7 @@ export default function LoyaltySettingsPage() {
           {/* Earning Rules */}
           <div className="bg-white rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center space-x-2">
-              <DollarSign className="h-5 w-5 text-pink-500" />
+              <DollarSign className="h-5 w-5 text-blue-500" />
               <span>Earning Rules</span>
             </h2>
 
@@ -319,7 +316,7 @@ export default function LoyaltySettingsPage() {
           {/* Redemption Rules */}
           <div className="bg-white rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center space-x-2">
-              <Percent className="h-5 w-5 text-pink-500" />
+              <Percent className="h-5 w-5 text-blue-500" />
               <span>Redemption Rules</span>
             </h2>
 
@@ -336,9 +333,8 @@ export default function LoyaltySettingsPage() {
                     value={settings.minRedeemAmount}
                     onChange={(e) => handleInputChange('minRedeemAmount', e.target.value)}
                     onWheel={handleWheel}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                      errors.minRedeemAmount ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                    }`}
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${errors.minRedeemAmount ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                      }`}
                   />
                   <span className="absolute right-3 top-2 text-sm text-gray-500">৳</span>
                 </div>
@@ -355,29 +351,28 @@ export default function LoyaltySettingsPage() {
           {/* Summary */}
           <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">Current Settings Summary</h2>
-            
+
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Loyalty System:</span>
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  settings.isLoyaltyEnabled 
-                    ? 'bg-green-100 text-green-800' 
-                    : 'bg-red-100 text-red-800'
-                }`}>
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${settings.isLoyaltyEnabled
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-red-100 text-red-800'
+                  }`}>
                   {settings.isLoyaltyEnabled ? 'Enabled' : 'Disabled'}
                 </span>
               </div>
-              
+
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Coins per Item:</span>
                 <span className="font-medium">{settings.coinPerItem} coins</span>
               </div>
-              
+
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Coin Value:</span>
                 <span className="font-medium">৳{settings.coinValue}</span>
               </div>
-              
+
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Min Redeem:</span>
                 <span className="font-medium">৳{settings.minRedeemAmount}</span>

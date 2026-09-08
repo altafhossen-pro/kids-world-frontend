@@ -337,7 +337,7 @@ export default function OrderDetailsPage() {
             case 'cancelled':
                 return 'bg-red-100 text-red-800 border-red-200';
             case 'returned':
-                return 'bg-pink-100 text-pink-800 border-pink-200';
+                return 'bg-blue-100 text-blue-800 border-blue-200';
             default:
                 return 'bg-gray-100 text-gray-800 border-gray-200';
         }
@@ -796,7 +796,7 @@ export default function OrderDetailsPage() {
                                     <button
                                         onClick={handleAddToSteadfast}
                                         disabled={addingToSteadfast}
-                                        className="inline-flex items-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors text-sm font-medium disabled:opacity-50 cursor-pointer"
+                                        className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium disabled:opacity-50 cursor-pointer"
                                     >
                                         {addingToSteadfast ? (
                                             <>
@@ -1228,7 +1228,7 @@ export default function OrderDetailsPage() {
                                 {order.loyaltyDiscount > 0 && (
                                     <div className="flex justify-between items-center py-3 border-b border-slate-100">
                                         <span className="text-slate-600 font-medium">Loyalty Points Discount</span>
-                                        <span className="font-bold text-pink-600">-৳{order.loyaltyDiscount}</span>
+                                        <span className="font-bold text-blue-600">-৳{order.loyaltyDiscount}</span>
                                     </div>
                                 )}
                                 {order.affiliateOrder?.affiliateDiscount > 0 && (
@@ -1244,12 +1244,12 @@ export default function OrderDetailsPage() {
                                     </div>
                                 </div>
                                 {order.loyaltyPointsUsed > 0 && (
-                                    <div className="mt-4 p-4 bg-pink-50 rounded-xl border border-pink-200">
+                                    <div className="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
                                         <div className="flex items-center justify-center">
-                                            <Coins className="h-5 w-5 text-pink-600 mr-2" />
+                                            <Coins className="h-5 w-5 text-blue-600 mr-2" />
                                             <div className="text-center">
-                                                <div className="text-sm font-bold text-pink-800">Paid with {order.loyaltyPointsUsed} coins</div>
-                                                <div className="text-xs text-pink-600">No additional payment required</div>
+                                                <div className="text-sm font-bold text-blue-800">Paid with {order.loyaltyPointsUsed} coins</div>
+                                                <div className="text-xs text-blue-600">No additional payment required</div>
                                             </div>
                                         </div>
                                     </div>
@@ -1336,15 +1336,15 @@ export default function OrderDetailsPage() {
                                 </div>
 
                                 {!!order.loyaltyPointsUsed && order.loyaltyPointsUsed > 0 && (
-                                    <div className="flex items-center p-3 sm:p-4 bg-pink-50 rounded-xl border border-pink-200">
-                                        <div className="p-2 bg-pink-100 rounded-lg">
-                                            <Coins className="h-4 w-4 text-pink-600" />
+                                    <div className="flex items-center p-3 sm:p-4 bg-blue-50 rounded-xl border border-blue-200">
+                                        <div className="p-2 bg-blue-100 rounded-lg">
+                                            <Coins className="h-4 w-4 text-blue-600" />
                                         </div>
                                         <div className="ml-4">
-                                            <p className="font-semibold text-pink-800">
+                                            <p className="font-semibold text-blue-800">
                                                 Paid with {order.loyaltyPointsUsed} coins (৳{order.loyaltyDiscount})
                                             </p>
-                                            <p className="text-xs text-pink-600 font-medium">Loyalty Points Payment</p>
+                                            <p className="text-xs text-blue-600 font-medium">Loyalty Points Payment</p>
                                         </div>
                                     </div>
                                 )}
@@ -1405,14 +1405,14 @@ export default function OrderDetailsPage() {
                         {(order.status === 'shipped' || order.status === 'delivered') && order.isAddedIntoSteadfast && order.steadfastConsignmentId && (
                             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6 lg:p-8">
                                 <h2 className="text-lg sm:text-xl font-bold text-slate-900 mb-4 sm:mb-6 flex items-center">
-                                    <Truck className="h-6 w-6 mr-3 text-pink-600" />
+                                    <Truck className="h-6 w-6 mr-3 text-blue-600" />
                                     Steadfast Courier Tracking
                                 </h2>
-                                <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-xl p-6 border border-pink-200">
+                                <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-xl p-6 border border-blue-200">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center">
-                                            <div className="p-2 bg-pink-100 rounded-lg">
-                                                <Truck className="h-5 w-5 text-pink-600" />
+                                            <div className="p-2 bg-blue-100 rounded-lg">
+                                                <Truck className="h-5 w-5 text-blue-600" />
                                             </div>
                                             <div className="ml-4">
                                                 <p className="font-bold text-slate-900">Consignment ID: {order.steadfastConsignmentId}</p>
@@ -1431,7 +1431,7 @@ export default function OrderDetailsPage() {
                                                 href={`https://steadfast.com.bd/user/consignment/${order.steadfastConsignmentId}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors text-sm font-medium flex items-center"
+                                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex items-center"
                                             >
                                                 <Truck className="h-4 w-4 mr-2" />
                                                 Track Order
@@ -1439,7 +1439,7 @@ export default function OrderDetailsPage() {
                                         </div>
                                     </div>
                                     {order.steadfastTrackingCode && (
-                                        <div className="mt-4 pt-4 border-t border-pink-200">
+                                        <div className="mt-4 pt-4 border-t border-blue-200">
                                             <p className="text-sm text-slate-600 mb-2">
                                                 <span className="font-medium">Tracking Code:</span> {order.steadfastTrackingCode}
                                             </p>
@@ -1447,7 +1447,7 @@ export default function OrderDetailsPage() {
                                                 href={`https://steadfast.com.bd/t/${order.steadfastTrackingCode}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="text-sm text-pink-600 hover:text-pink-700 hover:underline"
+                                                className="text-sm text-blue-600 hover:text-blue-700 hover:underline"
                                             >
                                                 View Tracking Details →
                                             </a>
@@ -1468,8 +1468,8 @@ export default function OrderDetailsPage() {
                                                 onClick={openNextStatusModal}
                                                 disabled={order.status === 'confirmed' && selectedItems.size !== order.items.length}
                                                 className={`group flex items-center justify-center px-6 py-3 rounded-xl transition-all duration-200 shadow-lg ${order.status === 'confirmed' && selectedItems.size !== order.items.length
-                                                        ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
-                                                        : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 hover:shadow-xl cursor-pointer'
+                                                    ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
+                                                    : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 hover:shadow-xl cursor-pointer'
                                                     }`}
                                             >
                                                 <CheckCircle className={`h-5 w-5 mr-3 ${order.status === 'confirmed' && selectedItems.size !== order.items.length ? '' : 'group-hover:scale-110 transition-transform'}`} />
@@ -1643,7 +1643,7 @@ export default function OrderDetailsPage() {
                                 Are you sure you want to move this order from <span className="font-semibold text-gray-900">{order.status}</span> to <span className="font-semibold text-blue-600">{getNextStatus(order.status)}</span>?
                             </p>
                             {getNextStatus(order.status) === 'shipped' && (
-                                <p className="text-sm text-pink-600 mt-2 p-2 bg-pink-50 rounded border border-pink-100">
+                                <p className="text-sm text-blue-600 mt-2 p-2 bg-blue-50 rounded border border-blue-100">
                                     This will also add the order to Steadfast Courier.
                                 </p>
                             )}
@@ -1684,7 +1684,7 @@ export default function OrderDetailsPage() {
                                     </div>
                                     <div>
                                         <h3 className="text-base font-bold text-white">Process Return</h3>
-                                        <p className="text-pink-100 text-xs">Specify quantities for returned items</p>
+                                        <p className="text-blue-100 text-xs">Specify quantities for returned items</p>
                                     </div>
                                 </div>
                                 <button
@@ -1814,7 +1814,7 @@ export default function OrderDetailsPage() {
                                                                         handleReturnQuantityChange(index, numValue);
                                                                     }
                                                                 }}
-                                                                className="w-16 px-2 py-1 border border-gray-300 rounded-md text-center font-medium text-gray-900 focus:ring-2 focus:ring-pink-600 focus:border-pink-600 transition-colors text-sm"
+                                                                className="w-16 px-2 py-1 border border-gray-300 rounded-md text-center font-medium text-gray-900 focus:ring-2 focus:ring-pink-600 focus:border-blue-600 transition-colors text-sm"
                                                                 placeholder="0"
                                                             />
                                                         </div>

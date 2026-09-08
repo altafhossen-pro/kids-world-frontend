@@ -47,7 +47,7 @@ export default function TopHeroBannerManagement() {
             if (response.success && response.data?.topHeroBanner) {
                 const fetchedType = response.data.topHeroBanner.type;
                 const mappedType = fetchedType === 'image' ? 'single' : (fetchedType || 'single');
-                
+
                 setFormData({
                     type: mappedType,
                     image: response.data.topHeroBanner.image || '',
@@ -66,7 +66,7 @@ export default function TopHeroBannerManagement() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!hasUpdatePermission) {
             toast.error("You don't have permission to update settings");
             return;
@@ -124,7 +124,7 @@ export default function TopHeroBannerManagement() {
     if (checkingPermission || contextLoading || loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
             </div>
         );
     }
@@ -161,7 +161,7 @@ export default function TopHeroBannerManagement() {
                                 name="type"
                                 value={formData.type}
                                 onChange={handleInputChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 cursor-pointer"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500 cursor-pointer"
                             >
                                 <option value="single">Single Image</option>
                                 <option value="slider">Multiple Images (Slider)</option>
@@ -176,7 +176,7 @@ export default function TopHeroBannerManagement() {
                                     currentImage={formData.image}
                                     label="Banner Image Upload"
                                 />
-                                
+
                                 <div className="mt-4 flex items-center justify-center">
                                     <span className="text-gray-400 font-medium px-4">OR</span>
                                 </div>
@@ -190,11 +190,11 @@ export default function TopHeroBannerManagement() {
                                         name="image"
                                         value={formData.image}
                                         onChange={handleInputChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500"
                                         placeholder="https://example.com/image.jpg"
                                     />
                                 </div>
-                                
+
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2 mt-4">
                                         Link (Optional)
@@ -204,7 +204,7 @@ export default function TopHeroBannerManagement() {
                                         name="link"
                                         value={formData.link}
                                         onChange={handleInputChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500"
                                         placeholder="e.g., /shop or https://example.com"
                                     />
                                     <p className="mt-1 text-xs text-gray-500">
@@ -214,9 +214,9 @@ export default function TopHeroBannerManagement() {
                                 <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded-md border border-blue-200">
                                     <p className="text-sm font-semibold mb-1">Recommended Image Size:</p>
                                     <p className="text-sm">Desktop: <strong>1920 x 384 pixels</strong> (5:1 ratio)<br />
-                                    Mobile: <strong>1000 x 400 pixels</strong> (5:2 ratio)</p>
+                                        Mobile: <strong>1000 x 400 pixels</strong> (5:2 ratio)</p>
                                     <p className="text-xs mt-2 opacity-80">
-                                    * To use 1 image for both, upload a 1920x384 image and keep all important text/content in the <strong>absolute center</strong>. The sides will be automatically cropped on mobile devices.
+                                        * To use 1 image for both, upload a 1920x384 image and keep all important text/content in the <strong>absolute center</strong>. The sides will be automatically cropped on mobile devices.
                                     </p>
                                 </div>
                             </div>
@@ -231,9 +231,9 @@ export default function TopHeroBannerManagement() {
                                         >
                                             <Trash2 className="w-5 h-5" />
                                         </button>
-                                        
+
                                         <h4 className="font-medium text-gray-700 mb-4">Slide {index + 1}</h4>
-                                        
+
                                         <div className="space-y-4">
                                             <ImageUpload
                                                 onImageUpload={(url) => handleSlideChange(index, 'image', url)}
@@ -241,7 +241,7 @@ export default function TopHeroBannerManagement() {
                                                 currentImage={slide.image}
                                                 label="Slide Image"
                                             />
-                                            
+
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                                     Image URL (Or paste directly)
@@ -250,7 +250,7 @@ export default function TopHeroBannerManagement() {
                                                     type="text"
                                                     value={slide.image}
                                                     onChange={(e) => handleSlideChange(index, 'image', e.target.value)}
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500"
                                                     placeholder="https://example.com/image.jpg"
                                                 />
                                             </div>
@@ -263,7 +263,7 @@ export default function TopHeroBannerManagement() {
                                                     type="text"
                                                     value={slide.link}
                                                     onChange={(e) => handleSlideChange(index, 'link', e.target.value)}
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500"
                                                     placeholder="e.g., /shop or https://example.com"
                                                 />
                                             </div>
@@ -274,7 +274,7 @@ export default function TopHeroBannerManagement() {
                                 <button
                                     type="button"
                                     onClick={handleAddSlide}
-                                    className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-pink-500 hover:text-pink-500 transition-colors flex items-center justify-center cursor-pointer font-medium"
+                                    className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-500 hover:text-blue-500 transition-colors flex items-center justify-center cursor-pointer font-medium"
                                 >
                                     <Plus className="w-5 h-5 mr-2" />
                                     Add Slide
@@ -282,9 +282,9 @@ export default function TopHeroBannerManagement() {
                                 <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded-md border border-blue-200">
                                     <p className="text-sm font-semibold mb-1">Recommended Image Size:</p>
                                     <p className="text-sm">Desktop: <strong>1920 x 384 pixels</strong> (5:1 ratio)<br />
-                                    Mobile: <strong>1000 x 400 pixels</strong> (5:2 ratio)</p>
+                                        Mobile: <strong>1000 x 400 pixels</strong> (5:2 ratio)</p>
                                     <p className="text-xs mt-2 opacity-80">
-                                    * To use 1 image for both, upload a 1920x384 image and keep all important text/content in the <strong>absolute center</strong>. The sides will be automatically cropped on mobile devices.
+                                        * To use 1 image for both, upload a 1920x384 image and keep all important text/content in the <strong>absolute center</strong>. The sides will be automatically cropped on mobile devices.
                                     </p>
                                 </div>
                             </div>
@@ -297,7 +297,7 @@ export default function TopHeroBannerManagement() {
                                     name="isActive"
                                     checked={formData.isActive}
                                     onChange={handleInputChange}
-                                    className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded cursor-pointer"
+                                    className="h-4 w-4 text-blue-600 focus:ring-pink-500 border-gray-300 rounded cursor-pointer"
                                 />
                                 <label className="ml-2 text-sm text-gray-700">
                                     Active (visible on website)
@@ -314,7 +314,7 @@ export default function TopHeroBannerManagement() {
                             <button
                                 type="submit"
                                 disabled={saving}
-                                className="px-6 py-2 text-sm font-medium text-white bg-pink-500 border border-transparent rounded-md hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50 flex items-center cursor-pointer"
+                                className="px-6 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50 flex items-center cursor-pointer"
                             >
                                 {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                                 <Save className="w-4 h-4 mr-2" />

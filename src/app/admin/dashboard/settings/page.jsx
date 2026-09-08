@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { 
-  Settings as SettingsIcon, 
-  Coins, 
+import {
+  Settings as SettingsIcon,
+  Coins,
   Menu,
   MapPin,
   Mail,
@@ -35,7 +35,7 @@ export default function AdminSettingsPage() {
       title: 'Loyalty System',
       description: 'Coins & rewards',
       icon: Coins,
-      color: 'bg-pink-100 text-pink-600',
+      color: 'bg-blue-100 text-blue-600',
       href: '/admin/dashboard/settings/loyalty'
     },
     {
@@ -99,7 +99,7 @@ export default function AdminSettingsPage() {
       title: 'Store Features',
       description: 'Homepage feature banner',
       icon: Truck,
-      color: 'bg-pink-100 text-pink-600',
+      color: 'bg-blue-100 text-blue-600',
       href: '/admin/dashboard/settings/store-features'
     },
     {
@@ -151,7 +151,7 @@ export default function AdminSettingsPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center space-x-3 mb-2">
-            <SettingsIcon className="h-8 w-8 text-pink-500" />
+            <SettingsIcon className="h-8 w-8 text-blue-500" />
             <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
           </div>
           <p className="text-gray-600">Manage your store configuration and preferences</p>
@@ -172,7 +172,7 @@ export default function AdminSettingsPage() {
                     <Icon className="h-5 w-5" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-sm font-semibold text-gray-900 group-hover:text-pink-600 transition-colors">
+                    <h3 className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
                       {menu.title}
                     </h3>
                     <p className="text-xs text-gray-500">
@@ -180,10 +180,10 @@ export default function AdminSettingsPage() {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-400">Configure</span>
-                  <div className="w-1.5 h-1.5 bg-pink-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </div>
               </div>
             );

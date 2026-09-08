@@ -93,7 +93,7 @@ export default function BestSellingProducts() {
                     {/* Navigation Buttons */}
                     <div className="flex gap-2">
                         <button
-                            className="best-selling-prev-btn w-10 h-10 rounded-lg border border-pink-300 text-gray-800 hover:bg-pink-50 transition-colors flex items-center justify-center"
+                            className="best-selling-prev-btn w-10 h-10 rounded-lg border border-blue-300 text-gray-800 hover:bg-blue-50 transition-colors flex items-center justify-center"
                             aria-label="Previous best selling products"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,7 +101,7 @@ export default function BestSellingProducts() {
                             </svg>
                         </button>
                         <button
-                            className="best-selling-next-btn w-10 h-10 rounded-lg border border-pink-300 text-gray-800 hover:bg-pink-50 transition-colors flex items-center justify-center"
+                            className="best-selling-next-btn w-10 h-10 rounded-lg border border-blue-300 text-gray-800 hover:bg-blue-50 transition-colors flex items-center justify-center"
                             aria-label="Next best selling products"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -136,7 +136,7 @@ export default function BestSellingProducts() {
                             </p>
                             <button
                                 onClick={fetchBestsellingProducts}
-                                className="bg-pink-500 text-white px-4 sm:px-6 py-2 rounded-lg font-semibold text-sm hover:bg-pink-600 transition-colors"
+                                className="bg-blue-500 text-white px-4 sm:px-6 py-2 rounded-lg font-semibold text-sm hover:bg-blue-600 transition-colors"
                             >
                                 Try Again
                             </button>

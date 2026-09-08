@@ -234,7 +234,7 @@ const UpsellProducts = ({ currentProductId }) => {
                 <div className="max-w-7xl mx-auto px-0  lg:px-8">
                     <h2 className="text-2xl font-bold text-gray-900 mb-6">Frequently Bought Together</h2>
                     <div className="flex items-center justify-center py-8">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
                     </div>
                 </div>
             </div>
@@ -279,8 +279,8 @@ const UpsellProducts = ({ currentProductId }) => {
                                         title={selectedProducts.includes(link.product._id) ? 'Remove from selection' : 'Add to selection'}
                                         onClick={() => toggleProductSelection(link.product._id)}
                                         className={`absolute top-2 right-2 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all cursor-pointer ${selectedProducts.includes(link.product._id)
-                                                ? 'bg-blue-500 border-blue-500 text-white'
-                                                : 'bg-white border-gray-300 hover:border-blue-400'
+                                            ? 'bg-blue-500 border-blue-500 text-white'
+                                            : 'bg-white border-gray-300 hover:border-blue-400'
                                             }`}
                                     >
                                         {selectedProducts.includes(link.product._id) && (
@@ -292,12 +292,12 @@ const UpsellProducts = ({ currentProductId }) => {
                                 {/* Product Info */}
                                 <div>
                                     <Link href={`/product/${link.product.slug}`}>
-                                        <h3 className="text-gray-900 text-sm line-clamp-2 hover:text-pink-600 transition-colors">
+                                        <h3 className="text-gray-900 text-sm line-clamp-2 hover:text-blue-600 transition-colors">
                                             {link.product.title}
                                         </h3>
                                     </Link>
                                     <div className="flex items-center gap-2 mt-1">
-                                        <span className="text-lg font-semibold text-pink-600">
+                                        <span className="text-lg font-semibold text-blue-600">
                                             ৳{link.product.priceRange?.min || 0}
                                         </span>
                                         {/* Check if any variant has originalPrice different from currentPrice */}
@@ -344,7 +344,7 @@ const UpsellProducts = ({ currentProductId }) => {
                     <div className="bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl p-4 flex flex-col justify-center shadow-lg">
                         <div className="text-center">
                             <div className="mb-3">
-                                <ShoppingCart className="w-6 h-6 text-pink-600 mx-auto mb-1" />
+                                <ShoppingCart className="w-6 h-6 text-blue-600 mx-auto mb-1" />
                                 <h3 className="text-base font-bold text-gray-900">
                                     Add all {selectedProducts.length} to Cart
                                 </h3>
@@ -383,7 +383,7 @@ const UpsellProducts = ({ currentProductId }) => {
                                     {/* Total */}
                                     <div className="flex justify-between items-center pt-2 border-t border-gray-200 mt-2">
                                         <span className="text-gray-900 font-bold text-base">Total:</span>
-                                        <span className="text-xl font-bold text-pink-600">
+                                        <span className="text-xl font-bold text-blue-600">
                                             ৳{calculateTotalPrice().toFixed(2)}
                                         </span>
                                     </div>

@@ -28,6 +28,7 @@ import React from 'react';
 
 // Static product details page — all routes currently show the same
 // fake product. Replace NewProductDetails with the dynamic version later.
-export default function ProductPage() {
-  return <NewProductDetails />;
+export default async function ProductPage({ params }) {
+  const { productSlug } = await params;
+  return <NewProductDetails productSlug={productSlug} />;
 }

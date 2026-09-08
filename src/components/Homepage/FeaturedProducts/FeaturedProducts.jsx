@@ -128,8 +128,8 @@ export default function FeaturedProducts() {
                                 key={category.id}
                                 onClick={() => setActiveFilter(category.id)}
                                 className={`px-3 sm:px-6 py-2 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-300 ${activeFilter === category.id
-                                    ? 'bg-pink-500 text-white'
-                                    : 'bg-white text-gray-700 border border-gray-200 hover:border-pink-300'
+                                    ? 'bg-blue-500 text-white'
+                                    : 'bg-white text-gray-700 border border-gray-200 hover:border-blue-300'
                                     }`}
                             >
                                 {category.name}
@@ -163,7 +163,7 @@ export default function FeaturedProducts() {
                             </p>
                             <button
                                 onClick={fetchFeaturedProducts}
-                                className="bg-pink-500 text-white px-4 sm:px-6 py-2 rounded-lg font-semibold text-sm hover:bg-pink-600 transition-colors"
+                                className="bg-blue-500 text-white px-4 sm:px-6 py-2 rounded-lg font-semibold text-sm hover:bg-blue-600 transition-colors"
                             >
                                 Try Again
                             </button>
@@ -191,11 +191,11 @@ export default function FeaturedProducts() {
                             </div>
                             <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">No Products Found</h3>
                             <p className="text-sm sm:text-base text-gray-600 mb-4">
-                                No products found based on your filter: <span className="font-medium text-pink-500">{filterCategories.find(cat => cat.id === activeFilter)?.name}</span>
+                                No products found based on your filter: <span className="font-medium text-blue-500">{filterCategories.find(cat => cat.id === activeFilter)?.name}</span>
                             </p>
                             <button
                                 onClick={() => setActiveFilter('all')}
-                                className="bg-pink-500 text-white px-4 sm:px-6 py-2 rounded-lg font-semibold text-sm hover:bg-pink-600 transition-colors"
+                                className="bg-blue-500 text-white px-4 sm:px-6 py-2 rounded-lg font-semibold text-sm hover:bg-blue-600 transition-colors"
                             >
                                 View All Products
                             </button>
@@ -208,7 +208,7 @@ export default function FeaturedProducts() {
                     <div className="text-center mt-8 sm:mt-12">
                         <button
                             onClick={() => router.push('/shop')}
-                            className="bg-white text-pink-500 px-6 sm:px-8 py-3 rounded-lg font-semibold text-sm sm:text-base border-2 border-pink-500 hover:bg-pink-500 hover:text-white transition-all duration-300 shadow-sm hover:shadow-md"
+                            className="bg-white text-blue-500 px-6 sm:px-8 py-3 rounded-lg font-semibold text-sm sm:text-base border-2 border-blue-500 hover:bg-blue-500 hover:text-white transition-all duration-300 shadow-sm hover:shadow-md"
                         >
                             See More Products
                         </button>

@@ -45,7 +45,7 @@ function Header({ isTrackingShow = true }) {
     if (href === '/' && pathname === '/') {
       return true;
     }
-    
+
     // Handle New Arrivals - check for specific shop sort parameter
     if (href === '/shop?sort=new-arrivals') {
       if (pathname === '/shop') {
@@ -54,7 +54,7 @@ function Header({ isTrackingShow = true }) {
       }
       return false;
     }
-    
+
     // Handle regular Shop - only active when on /shop without sort parameter
     if (href === '/shop') {
       if (pathname === '/shop') {
@@ -64,27 +64,27 @@ function Header({ isTrackingShow = true }) {
       }
       return false;
     }
-    
+
     // Handle other routes - check if current pathname starts with the href
     if (href !== '/' && pathname.startsWith(href)) {
       return true;
     }
-    
+
     // Handle categories route
     if (href === '/categories' && pathname.startsWith('/categories')) {
       return true;
     }
-    
+
     // Handle offers route
     if (href === '/offers' && pathname.startsWith('/offers')) {
       return true;
     }
-    
+
     // Handle contact route
     if (href === '/contact-us' && pathname.startsWith('/contact-us')) {
       return true;
     }
-    
+
     return false;
   };
 
@@ -173,8 +173,8 @@ function Header({ isTrackingShow = true }) {
                     href={item.href}
                     target={item.target}
                     className={`font-medium transition-colors ${isActive
-                      ? 'text-pink-500'
-                      : 'text-gray-700 hover:text-pink-500'
+                      ? 'text-blue-500'
+                      : 'text-gray-700 hover:text-blue-500'
                       }`}
                   >
                     {item.name}
@@ -227,7 +227,7 @@ function Header({ isTrackingShow = true }) {
                 aria-label={`Wishlist with ${wishlistCount} items`}
               >
                 <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
-                <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
                   {wishlistCount}
                 </span>
               </button>
@@ -239,7 +239,7 @@ function Header({ isTrackingShow = true }) {
                 aria-label={`Shopping cart with ${cartCount} items`}
               >
                 <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
-                <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
                   {cartLoading ? (
                     <div className="">0</div>
                   ) : (
@@ -293,8 +293,8 @@ function Header({ isTrackingShow = true }) {
                       href={item.href}
                       target={item.target}
                       className={`font-medium py-2 transition-colors ${isActive
-                        ? 'text-pink-500'
-                        : 'text-gray-700 hover:text-pink-500'
+                        ? 'text-blue-500'
+                        : 'text-gray-700 hover:text-blue-500'
                         }`}
                     >
                       {item.name}

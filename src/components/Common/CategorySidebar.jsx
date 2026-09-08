@@ -21,7 +21,7 @@ export default function CategorySidebar({ isOpen, onClose }) {
     try {
       setLoading(true);
       const response = await categoryAPI.getMainCategories();
-      
+
       if (response.success) {
         setCategories(response.data || []);
       }
@@ -52,7 +52,7 @@ export default function CategorySidebar({ isOpen, onClose }) {
     if (isOpen) {
       // Save current scroll position
       scrollY = window.scrollY;
-      
+
       // Calculate scrollbar width to prevent layout shift
       const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
 
@@ -65,7 +65,7 @@ export default function CategorySidebar({ isOpen, onClose }) {
     } else {
       // Restore body scroll and position
       const savedScrollY = parseInt(document.body.style.top || '0') * -1;
-      
+
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
       document.body.style.position = '';
@@ -81,7 +81,7 @@ export default function CategorySidebar({ isOpen, onClose }) {
     // Cleanup function
     return () => {
       const savedScrollY = parseInt(document.body.style.top || '0') * -1;
-      
+
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
       document.body.style.position = '';
@@ -127,8 +127,8 @@ export default function CategorySidebar({ isOpen, onClose }) {
             // Loading skeleton
             <div className="p-4 space-y-3">
               {Array.from({ length: 8 }).map((_, index) => (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className={`h-12 bg-gray-100 rounded-lg animate-pulse transition-all duration-300 ease-out ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}
                   style={{ transitionDelay: `${index * 50}ms` }}
                 ></div>
@@ -146,7 +146,7 @@ export default function CategorySidebar({ isOpen, onClose }) {
                 <button
                   key={category._id || index}
                   onClick={() => handleCategoryClick(category)}
-                  className={`w-full flex items-center justify-between p-4 rounded-lg hover:bg-pink-50 transition-all duration-200 group ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}
+                  className={`w-full flex items-center justify-between p-4 rounded-lg hover:bg-blue-50 transition-all duration-200 group ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}
                   style={{ transitionDelay: `${index * 50}ms` }}
                 >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -166,7 +166,7 @@ export default function CategorySidebar({ isOpen, onClose }) {
                         </span>
                       </div>
                     )}
-                    
+
                     {/* Category Name */}
                     <div className="flex-1 min-w-0 text-left">
                       <h3 className="font-medium text-gray-800 group-hover:text-[#EF3D6A] transition-colors truncate">
@@ -179,7 +179,7 @@ export default function CategorySidebar({ isOpen, onClose }) {
                       )}
                     </div>
                   </div>
-                  
+
                   {/* Chevron Icon */}
                   <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-[#EF3D6A] transition-colors flex-shrink-0" />
                 </button>

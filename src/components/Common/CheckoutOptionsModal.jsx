@@ -42,8 +42,8 @@ export default function CheckoutOptionsModal({ isOpen, onClose, onGuestCheckout 
           <div className="bg-white rounded-lg shadow-2xl max-w-xl w-full mx-4 p-4 max-h-[95vh] overflow-y-auto">
             {/* Header */}
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
-                <AlertTriangle className="w-4 h-4 text-pink-500" />
+              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                <AlertTriangle className="w-4 h-4 text-blue-500" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900">
                 Choose Checkout Option
@@ -55,21 +55,21 @@ export default function CheckoutOptionsModal({ isOpen, onClose, onGuestCheckout 
               <p className="text-gray-600 mb-4 text-center text-sm">
                 How would you like to proceed with your checkout?
               </p>
-              
+
               {/* Login Option */}
               <div className="mb-3">
                 <button
                   onClick={handleLoginRedirect}
-                  className="w-full p-3 border-2 border-pink-200 rounded-lg hover:border-pink-300 hover:bg-pink-50 transition-all duration-200 group cursor-pointer"
+                  className="w-full p-3 border-2 border-blue-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 group cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center group-hover:bg-pink-200 transition-colors">
-                      <UserCheck className="w-5 h-5 text-pink-600" />
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                      <UserCheck className="w-5 h-5 text-blue-600" />
                     </div>
                     <div className="text-left flex-1">
                       <div className="flex items-center gap-2">
                         <h4 className="font-semibold text-gray-900 text-sm">Login to Account</h4>
-                        <span className="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full font-medium">
+                        <span className="bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full font-medium">
                           Recommended
                         </span>
                       </div>
@@ -77,7 +77,7 @@ export default function CheckoutOptionsModal({ isOpen, onClose, onGuestCheckout 
                         Access order history, loyalty points, faster checkout
                       </p>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-pink-500 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-4 h-4 text-blue-500 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </button>
               </div>

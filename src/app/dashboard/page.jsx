@@ -107,13 +107,13 @@ const CustomerDashboardContent = () => {
             name: 'Wishlist Items',
             value: wishlistCount.toString(),
             icon: Heart,
-            color: 'bg-pink-500'
+            color: 'bg-blue-500'
         },
         {
             name: 'Loyalty Coins',
             value: dashboardData.loyaltyCoins.toString(),
             icon: Coins,
-            color: 'bg-yellow-500'
+            color: 'bg-blue-500'
         }
     ]
 
@@ -272,7 +272,7 @@ export default dynamic(() => Promise.resolve(CustomerDashboardContent), {
     loading: () => (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
             <div className="text-center">
-                <div className="h-12 w-12 border-4 border-pink-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <div className="h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                 <p className="text-gray-600">Loading dashboard...</p>
             </div>
         </div>

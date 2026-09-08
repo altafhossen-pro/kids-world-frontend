@@ -36,10 +36,10 @@ export default function CategoryDiscountPage() {
         try {
             setLoading(true);
             const data = await categoryAPI.getCategories({ sort: 'sortOrder', limit: 1000 });
-            
+
             if (data.success) {
                 setCategories(data.data);
-                
+
                 // Initialize local state for edits
                 const initialDiscounts = {};
                 data.data.forEach(cat => {
@@ -102,16 +102,16 @@ export default function CategoryDiscountPage() {
             setSavingId(categoryId);
             const token = getCookie('token');
             const data = await categoryAPI.updateCategory(
-                categoryId, 
-                { categoryDiscount: discountData }, 
+                categoryId,
+                { categoryDiscount: discountData },
                 token
             );
 
             if (data.success) {
                 toast.success('Category discount updated successfully');
                 // Update the main categories state to reflect the saved changes
-                setCategories(prev => prev.map(cat => 
-                    cat._id === categoryId 
+                setCategories(prev => prev.map(cat =>
+                    cat._id === categoryId
                         ? { ...cat, categoryDiscount: discountData }
                         : cat
                 ));
@@ -129,20 +129,20 @@ export default function CategoryDiscountPage() {
     if (contextLoading || loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
             </div>
         );
     }
 
     if (!hasReadPermission) {
-        return <PermissionDenied 
+        return <PermissionDenied
             title="Access Denied"
             message="You don't have permission to view categories."
             action="Contact your administrator for access."
         />;
     }
 
-    const filteredCategories = categories.filter(cat => 
+    const filteredCategories = categories.filter(cat =>
         cat.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -152,7 +152,7 @@ export default function CategoryDiscountPage() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-                        <Tag className="h-6 w-6 mr-2 text-pink-600" />
+                        <Tag className="h-6 w-6 mr-2 text-blue-600" />
                         Category Discounts
                     </h1>
                     <p className="mt-1 text-sm text-gray-500">
@@ -172,7 +172,7 @@ export default function CategoryDiscountPage() {
                         placeholder="Search categories..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
+                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-pink-500 focus:border-blue-500 sm:text-sm"
                     />
                 </div>
             </div>
@@ -202,7 +202,7 @@ export default function CategoryDiscountPage() {
                                 filteredCategories.map((category) => {
                                     const isSaving = savingId === category._id;
                                     const currentValues = localDiscounts[category._id] || { percentage: 0, isActive: false };
-                                    
+
                                     return (
                                         <tr key={category._id} className="hover:bg-gray-50 transition-colors">
                                             <td className="px-6 py-4 whitespace-nowrap">
@@ -239,7 +239,7 @@ export default function CategoryDiscountPage() {
                                                             const val = e.target.value.replace(/[^0-9]/g, '');
                                                             handleLocalChange(category._id, 'percentage', val === '' ? '' : Number(val));
                                                         }}
-                                                        className="w-20 px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-pink-500 focus:border-pink-500"
+                                                        className="w-20 px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-pink-500 focus:border-blue-500"
                                                         disabled={!hasUpdatePermission || isSaving}
                                                     />
                                                     <span className="ml-2 text-gray-500 font-medium">%</span>
@@ -254,7 +254,7 @@ export default function CategoryDiscountPage() {
                                                         onChange={(e) => handleLocalChange(category._id, 'isActive', e.target.checked)}
                                                         disabled={!hasUpdatePermission || isSaving}
                                                     />
-                                                    <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+                                                    <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                                                     <span className="ms-3 text-sm font-medium text-gray-700">
                                                         {currentValues.isActive ? 'Active' : 'Disabled'}
                                                     </span>
@@ -307,7 +307,7 @@ export default function CategoryDiscountPage() {
                     </table>
                 </div>
             </div>
-            
+
             {/* Category Exclusion Modal */}
             <CategoryExclusionModal
                 isOpen={exclusionModal.isOpen}

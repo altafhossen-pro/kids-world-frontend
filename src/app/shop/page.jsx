@@ -18,7 +18,7 @@ import React from 'react';
       <div className="bg-[#fcf8f3]">
         <Suspense fallback={
           <div className="flex justify-center items-center min-h-[50vh]">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
           </div>
         }>
           <ShopContainer />

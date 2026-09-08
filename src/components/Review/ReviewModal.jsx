@@ -50,7 +50,7 @@ export default function ReviewModal({ isOpen, onClose, product, onReviewSubmitte
                         }
                         throw new Error(response.message || 'Failed to upload image')
                     })
-                    
+
                     uploadedImageUrls = await Promise.all(uploadPromises)
                 } catch (error) {
                     console.error('Error uploading images:', error)
@@ -100,16 +100,16 @@ export default function ReviewModal({ isOpen, onClose, product, onReviewSubmitte
             toast.error('You can upload maximum 5 images')
             return
         }
-        
+
         files.forEach(file => {
             if (file.size > 5 * 1024 * 1024) { // 5MB limit
                 toast.error('Image size should be less than 5MB')
                 return
             }
-            
+
             // Add file to imageFiles array
             setImageFiles(prev => [...prev, file])
-            
+
             // Create preview URL for display
             const reader = new FileReader()
             reader.onload = (e) => {
@@ -175,8 +175,8 @@ export default function ReviewModal({ isOpen, onClose, product, onReviewSubmitte
                                 >
                                     <Star
                                         className={`h-8 w-8 ${star <= rating
-                                                ? 'text-yellow-400 fill-current'
-                                                : 'text-gray-300'
+                                            ? 'text-yellow-400 fill-current'
+                                            : 'text-gray-300'
                                             }`}
                                     />
                                 </button>
@@ -269,7 +269,7 @@ export default function ReviewModal({ isOpen, onClose, product, onReviewSubmitte
                         <button
                             type="submit"
                             disabled={isSubmitting || isUploadingImages}
-                            className="px-4 py-2 text-sm font-medium text-white bg-pink-600 border border-transparent rounded-md hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isUploadingImages ? 'Uploading Images...' : isSubmitting ? 'Submitting...' : 'Submit Review'}
                         </button>

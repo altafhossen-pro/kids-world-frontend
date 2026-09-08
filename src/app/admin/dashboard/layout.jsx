@@ -18,12 +18,42 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import NewAdminSidebar from '@/components/NewAdmin/NewAdminSidebar'
 import NewAdminHeader from '@/components/NewAdmin/NewAdminHeader'
+import { useAppContext } from '@/context/AppContext'
 
 export default function AdminLayout({ children }) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const router = useRouter();
+    const { user, isAuthenticated, loading } = useAppContext();
+
+    useEffect(() => {
+        // Only run checks after AppContext finishes its initial loading
+        if (!loading) {
+            if (!isAuthenticated) {
+                router.push('/login');
+            } else if (user?.role !== 'admin' && user?.role !== 'superadmin' && user?.role !== 'staff') {
+                // If the user is a normal customer, redirect to homepage or customer dashboard
+                router.push('/');
+            }
+        }
+    }, [loading, isAuthenticated, user, router]);
+
+    // Show a loading screen while auth is being checked
+    if (loading) {
+        return (
+            <div className="flex h-screen items-center justify-center bg-[#F4F6FA]">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+        );
+    }
+
+    // Don't render the dashboard layout if not authorized to prevent flickering
+    if (!isAuthenticated || (user?.role !== 'admin' && user?.role !== 'superadmin' && user?.role !== 'staff')) {
+        return null;
+    }
 
     return (
         <div className="flex h-screen bg-[#F4F6FA] font-sans overflow-hidden">

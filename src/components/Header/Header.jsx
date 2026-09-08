@@ -115,10 +115,10 @@ function Header({ isTrackingShow = true, logoUrl }) {
               target: '_self',
               showChildAsSubMenu: cat.showChildAsSubMenu,
               children: cat.children?.map(child => ({
-                  id: child._id,
-                  name: child.name,
-                  href: `/shop?category=${child.slug}`,
-                  target: '_self'
+                id: child._id,
+                name: child.name,
+                href: `/shop?category=${child.slug}`,
+                target: '_self'
               })) || []
             }));
           setNavigationMenu(transformedCategories);
@@ -238,7 +238,7 @@ function Header({ isTrackingShow = true, logoUrl }) {
                   aria-label={`Wishlist with ${wishlistCount} items`}
                 >
                   <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
-                  <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
                     {wishlistCount}
                   </span>
                 </button>
@@ -250,7 +250,7 @@ function Header({ isTrackingShow = true, logoUrl }) {
                   aria-label={`Shopping cart with ${cartCount} items`}
                 >
                   <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
-                  <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
                     {cartLoading ? (
                       <div className="">0</div>
                     ) : (
@@ -299,7 +299,7 @@ function Header({ isTrackingShow = true, logoUrl }) {
                           <div key={item.id} className="relative group py-4">
                             <Link
                               href={item.href}
-                              className={`text-sm font-medium transition-colors hover:text-pink-600 flex items-center ${isMenuItemActive(item.href) ? 'text-pink-600' : 'text-gray-700'
+                              className={`text-sm font-medium transition-colors hover:text-blue-600 flex items-center ${isMenuItemActive(item.href) ? 'text-blue-600' : 'text-gray-700'
                                 }`}
                             >
                               {item.name}
@@ -311,7 +311,7 @@ function Header({ isTrackingShow = true, logoUrl }) {
                                   <Link
                                     key={child.id}
                                     href={child.href}
-                                    className={`block px-4 py-2.5 text-sm transition-colors ${isMenuItemActive(child.href) ? 'bg-pink-50 text-pink-600 font-medium' : 'text-gray-700 hover:bg-gray-50 hover:text-pink-600'}`}
+                                    className={`block px-4 py-2.5 text-sm transition-colors ${isMenuItemActive(child.href) ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600'}`}
                                   >
                                     {child.name}
                                   </Link>
@@ -323,7 +323,7 @@ function Header({ isTrackingShow = true, logoUrl }) {
                           <Link
                             key={item.id}
                             href={item.href}
-                            className={`text-sm font-medium transition-colors hover:text-pink-600 ${isMenuItemActive(item.href) ? 'text-pink-600' : 'text-gray-700'
+                            className={`text-sm font-medium transition-colors hover:text-blue-600 ${isMenuItemActive(item.href) ? 'text-blue-600' : 'text-gray-700'
                               }`}
                           >
                             {item.name}
@@ -399,7 +399,7 @@ function Header({ isTrackingShow = true, logoUrl }) {
                 ) : (
                   navigationMenu.map((item, index) => {
                     const isActive = isMenuItemActive(item.href);
-                    
+
                     if (item.showChildAsSubMenu && item.children?.length > 0) {
                       return (
                         <div key={item.id} className="flex flex-col mb-1" style={{ animationDelay: `${index * 0.05}s` }}>
@@ -408,33 +408,33 @@ function Header({ isTrackingShow = true, logoUrl }) {
                             onClick={() => setIsMobileMenuOpen(false)}
                             className={`mobile-menu-item px-4 py-3 rounded-lg font-medium transition-all duration-200 ${isActive
                               ? 'bg-[#EF3D6A] text-white shadow-sm'
-                              : 'text-gray-700 hover:bg-pink-50 hover:text-[#EF3D6A]'
+                              : 'text-gray-700 hover:bg-blue-50 hover:text-[#EF3D6A]'
                               }`}
                           >
                             {item.name}
                           </Link>
-                          <div className="pl-6 pr-2 py-1 flex flex-col space-y-1 mt-1 border-l-2 border-pink-100 ml-4">
+                          <div className="pl-6 pr-2 py-1 flex flex-col space-y-1 mt-1 border-l-2 border-blue-100 ml-4">
                             {item.children.map(child => {
-                                const isChildActive = isMenuItemActive(child.href);
-                                return (
-                                  <Link
-                                    key={child.id}
-                                    href={child.href}
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className={`px-3 py-2 rounded-md text-sm transition-all duration-200 ${isChildActive
-                                      ? 'bg-pink-50 text-pink-600 font-medium'
-                                      : 'text-gray-600 hover:text-pink-600 hover:bg-gray-50'
+                              const isChildActive = isMenuItemActive(child.href);
+                              return (
+                                <Link
+                                  key={child.id}
+                                  href={child.href}
+                                  onClick={() => setIsMobileMenuOpen(false)}
+                                  className={`px-3 py-2 rounded-md text-sm transition-all duration-200 ${isChildActive
+                                    ? 'bg-blue-50 text-blue-600 font-medium'
+                                    : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'
                                     }`}
-                                  >
-                                    {child.name}
-                                  </Link>
-                                )
+                                >
+                                  {child.name}
+                                </Link>
+                              )
                             })}
                           </div>
                         </div>
                       );
                     }
-                    
+
                     return (
                       <Link
                         key={item.id}
@@ -443,7 +443,7 @@ function Header({ isTrackingShow = true, logoUrl }) {
                         onClick={() => setIsMobileMenuOpen(false)}
                         className={`mobile-menu-item px-4 py-3 rounded-lg font-medium transition-all duration-200 ${isActive
                           ? 'bg-[#EF3D6A] text-white shadow-sm'
-                          : 'text-gray-700 hover:bg-pink-50 hover:text-[#EF3D6A]'
+                          : 'text-gray-700 hover:bg-blue-50 hover:text-[#EF3D6A]'
                           }`}
                         style={{
                           animationDelay: `${index * 0.05}s`

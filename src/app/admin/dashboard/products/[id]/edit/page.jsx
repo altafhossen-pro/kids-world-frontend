@@ -48,10 +48,18 @@ export default function EditProductPage() {
         brand: '',
         tags: [],
         status: 'draft',
+        totalStock: 0,
+        totalSold: 0,
+        salesAnalytics: {
+            isActive: false,
+            startDate: '',
+            dailyAverage: 0
+        },
         isActive: true,
         isFeatured: false,
         isBestselling: false,
         isNewArrival: false,
+        isTrending: false,
         // Jewelry specific properties
         isBracelet: false,
         isRing: false,
@@ -135,10 +143,18 @@ export default function EditProductPage() {
                     brand: product.brand || '',
                     tags: product.tags || [],
                     status: product.status || 'draft',
+                    totalStock: product.totalStock || 0,
+                    totalSold: product.totalSold || 0,
+                    salesAnalytics: {
+                        isActive: product.salesAnalytics?.isActive || false,
+                        startDate: product.salesAnalytics?.startDate ? new Date(product.salesAnalytics.startDate).toISOString().split('T')[0] : '',
+                        dailyAverage: product.salesAnalytics?.dailyAverage || 0
+                    },
                     isActive: product.isActive !== undefined ? product.isActive : true,
                     isFeatured: product.isFeatured || false,
                     isBestselling: product.isBestselling || false,
                     isNewArrival: product.isNewArrival || false,
+                    isTrending: product.isTrending || false,
                     isBracelet: product.isBracelet || false,
                     isRing: product.isRing || false,
                     braceletSizes: product.braceletSizes || [],

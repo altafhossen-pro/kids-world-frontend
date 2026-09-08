@@ -173,7 +173,7 @@ export default function CategoryMegamenu() {
                           </div>
                         ) : (
                           <div className="w-10 h-10 rounded-full bg-[#f18daa] flex items-center justify-center flex-shrink-0">
-                            <span className="text-pink-600 text-sm font-semibold">
+                            <span className="text-blue-600 text-sm font-semibold">
                               {category.name?.charAt(0)?.toUpperCase() || 'C'}
                             </span>
                           </div>
@@ -182,9 +182,9 @@ export default function CategoryMegamenu() {
                         {/* Category Name */}
                         <span
                           className={`font-medium text-sm ${hoveredCategory?._id === category._id
-                            ? 'text-pink-600'
+                            ? 'text-blue-600'
                             : 'text-gray-700'
-                            } group-hover:text-pink-600 transition-colors`}
+                            } group-hover:text-blue-600 transition-colors`}
                         >
                           {category.name}
                         </span>

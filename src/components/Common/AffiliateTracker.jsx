@@ -11,9 +11,9 @@ export default function AffiliateTracker() {
   const [showModal, setShowModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const { 
-    setAffiliateCode, 
-    setIsAvailableAffiliateCode, 
+  const {
+    setAffiliateCode,
+    setIsAvailableAffiliateCode,
     setAffiliateCodeExpireTime,
     token,
     isAuthenticated
@@ -36,27 +36,27 @@ export default function AffiliateTracker() {
         // Guest users will be checked on checkout page
         if (isAuthenticated && token) {
           const checkResponse = await affiliateAPI.checkAffiliateCodeUsage(affiliateCode, token);
-          
+
           if (checkResponse.success && checkResponse.data) {
             // If user is trying to use their own affiliate code
             if (!checkResponse.data.canUse && checkResponse.data.reason === 'own_code') {
               setErrorMessage(checkResponse.data.message || 'You cannot use your own affiliate link');
               setShowErrorModal(true);
               toast.error(checkResponse.data.message || 'You cannot use your own affiliate link');
-              
+
               // Clear any previous affiliate code from state and cookie
               deleteCookie('affiliateCode');
               deleteCookie('affiliateCodeExpiry');
               setAffiliateCode(null);
               setIsAvailableAffiliateCode(false);
               setAffiliateCodeExpireTime(null);
-              
+
               // Clean URL - remove affiliate parameter
               urlParams.delete('affiliate');
               const newQueryString = urlParams.toString();
               const pathname = window.location.pathname;
-              const newUrl = newQueryString 
-                ? `${pathname}?${newQueryString}` 
+              const newUrl = newQueryString
+                ? `${pathname}?${newQueryString}`
                 : pathname;
               window.history.replaceState({}, '', newUrl);
               return; // Don't proceed with setting cookie/state
@@ -67,68 +67,68 @@ export default function AffiliateTracker() {
               setErrorMessage('You have already used this affiliate code earlier. Each affiliate code can only be used once per user.');
               setShowErrorModal(true);
               toast.error('You have already used this affiliate code');
-              
+
               // Clear any previous affiliate code from state and cookie
               deleteCookie('affiliateCode');
               deleteCookie('affiliateCodeExpiry');
               setAffiliateCode(null);
               setIsAvailableAffiliateCode(false);
               setAffiliateCodeExpireTime(null);
-              
+
               // Clean URL - remove affiliate parameter
               urlParams.delete('affiliate');
               const newQueryString = urlParams.toString();
               const pathname = window.location.pathname;
-              const newUrl = newQueryString 
-                ? `${pathname}?${newQueryString}` 
+              const newUrl = newQueryString
+                ? `${pathname}?${newQueryString}`
                 : pathname;
               window.history.replaceState({}, '', newUrl);
               return; // Don't proceed with setting cookie/state
             }
-            
+
             // If code is invalid
             if (!checkResponse.data.canUse || checkResponse.data.reason !== 'valid') {
               setErrorMessage('Invalid affiliate code');
               setShowErrorModal(true);
               toast.error('Invalid affiliate code');
-              
+
               // Clear any previous affiliate code from state and cookie
               deleteCookie('affiliateCode');
               deleteCookie('affiliateCodeExpiry');
               setAffiliateCode(null);
               setIsAvailableAffiliateCode(false);
               setAffiliateCodeExpireTime(null);
-              
+
               // Clean URL
               urlParams.delete('affiliate');
               const newQueryString = urlParams.toString();
               const pathname = window.location.pathname;
-              const newUrl = newQueryString 
-                ? `${pathname}?${newQueryString}` 
+              const newUrl = newQueryString
+                ? `${pathname}?${newQueryString}`
                 : pathname;
               window.history.replaceState({}, '', newUrl);
               return;
             }
-            
+
           } else if (!checkResponse.success) {
             // If API call failed, show error and clear any previous affiliate code
             setErrorMessage(checkResponse.message || 'Invalid affiliate code');
             setShowErrorModal(true);
             toast.error(checkResponse.message || 'Invalid affiliate code');
-            
+
             // Clear any previous affiliate code from state and cookie
             deleteCookie('affiliateCode');
             deleteCookie('affiliateCodeExpiry');
             setAffiliateCode(null);
             setIsAvailableAffiliateCode(false);
             setAffiliateCodeExpireTime(null);
-            
+
             // Clean URL
             urlParams.delete('affiliate');
             const newQueryString = urlParams.toString();
             const pathname = window.location.pathname;
-            const newUrl = newQueryString 
-              ? `${pathname}?${newQueryString}` 
+            const newUrl = newQueryString
+              ? `${pathname}?${newQueryString}`
               : pathname;
             window.history.replaceState({}, '', newUrl);
             return;
@@ -141,7 +141,7 @@ export default function AffiliateTracker() {
         const expiryMinutes = 15;
         const expiryDate = new Date();
         expiryDate.setMinutes(expiryDate.getMinutes() + expiryMinutes);
-        
+
         setCookie('affiliateCode', affiliateCode, {
           expires: expiryDate,
           sameSite: 'lax',
@@ -159,7 +159,7 @@ export default function AffiliateTracker() {
         setAffiliateCode(affiliateCode);
         setIsAvailableAffiliateCode(true);
         setAffiliateCodeExpireTime(expiryDate);
-        
+
         // Fetch affiliate settings to check if modal should be shown
         try {
           const response = await settingsAPI.getAffiliateSettings();
@@ -176,15 +176,15 @@ export default function AffiliateTracker() {
           // If API fails, default to showing modal
           setShowModal(true);
         }
-        
+
         // Clean URL - remove affiliate parameter
         urlParams.delete('affiliate');
         const newQueryString = urlParams.toString();
         const pathname = window.location.pathname;
-        const newUrl = newQueryString 
-          ? `${pathname}?${newQueryString}` 
+        const newUrl = newQueryString
+          ? `${pathname}?${newQueryString}`
           : pathname;
-        
+
         // Replace URL without page reload
         window.history.replaceState({}, '', newUrl);
       } catch (error) {
@@ -192,13 +192,13 @@ export default function AffiliateTracker() {
         setErrorMessage('Failed to validate affiliate code');
         setShowErrorModal(true);
         toast.error('Failed to validate affiliate code');
-        
+
         // Clean URL
         urlParams.delete('affiliate');
         const newQueryString = urlParams.toString();
         const pathname = window.location.pathname;
-        const newUrl = newQueryString 
-          ? `${pathname}?${newQueryString}` 
+        const newUrl = newQueryString
+          ? `${pathname}?${newQueryString}`
           : pathname;
         window.history.replaceState({}, '', newUrl);
       }
@@ -220,11 +220,11 @@ export default function AffiliateTracker() {
   return (
     <>
       {showModal && (
-        <div 
+        <div
           onClick={() => setShowModal(false)}
           className="fixed inset-0 z-99 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm cursor-pointer"
         >
-          <div 
+          <div
             onClick={(e) => e.stopPropagation()}
             className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative animate-in fade-in zoom-in duration-300"
           >
@@ -251,12 +251,12 @@ export default function AffiliateTracker() {
 
               {/* Message */}
               <p className="text-gray-600 mb-4">
-                This link is valid for <span className="font-semibold text-pink-600">15 minutes</span>.
+                This link is valid for <span className="font-semibold text-blue-600">15 minutes</span>.
               </p>
 
               {/* CTA */}
-              <div className="flex items-center justify-center gap-2 bg-pink-50 rounded-lg p-3 mb-4">
-                <Gift className="h-5 w-5 text-pink-600" />
+              <div className="flex items-center justify-center gap-2 bg-blue-50 rounded-lg p-3 mb-4">
+                <Gift className="h-5 w-5 text-blue-600" />
                 <p className="text-sm text-gray-700">
                   <span className="font-semibold">Purchase and enjoy</span> discount or rewards!
                 </p>
@@ -265,7 +265,7 @@ export default function AffiliateTracker() {
               {/* Close Button */}
               <button
                 onClick={() => setShowModal(false)}
-                className="w-full px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors font-medium cursor-pointer"
+                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium cursor-pointer"
               >
                 Got it!
               </button>
@@ -275,11 +275,11 @@ export default function AffiliateTracker() {
       )}
 
       {showErrorModal && (
-        <div 
+        <div
           onClick={() => setShowErrorModal(false)}
           className="fixed inset-0 z-99 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm cursor-pointer"
         >
-          <div 
+          <div
             onClick={(e) => e.stopPropagation()}
             className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative animate-in fade-in zoom-in duration-300"
           >

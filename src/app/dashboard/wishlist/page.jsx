@@ -79,8 +79,8 @@ export default function WishlistPage() {
             setProducts([])
         } else {
             // Filter out products that are no longer in wishlist
-            setProducts(prevProducts => 
-                prevProducts.filter(product => 
+            setProducts(prevProducts =>
+                prevProducts.filter(product =>
                     wishlist.some(item => item.productId === product._id)
                 )
             )
@@ -126,7 +126,7 @@ export default function WishlistPage() {
             {/* Header */}
             <div className="bg-white rounded-lg shadow-sm p-6">
                 <div className="flex items-center justify-between">
-        <div>
+                    <div>
                         <h1 className="text-2xl font-bold text-gray-900 mb-2">My Wishlist</h1>
                         <p className="text-gray-600">
                             {wishlistCount} {wishlistCount === 1 ? 'item' : 'items'} in your wishlist
@@ -157,7 +157,7 @@ export default function WishlistPage() {
                         <p className="text-gray-500 mb-6">Add some products to your wishlist to see them here.</p>
                         <Link
                             href="/shop"
-                            className="inline-flex items-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
+                            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                         >
                             Start Shopping
                         </Link>
@@ -202,14 +202,14 @@ export default function WishlistPage() {
                                     {/* Product Info */}
                                     <div className="p-4">
                                         <Link href={`/product/${product.slug}`}>
-                                            <h3 className="font-medium text-gray-900 mb-2 line-clamp-2 hover:text-pink-600 transition-colors">
+                                            <h3 className="font-medium text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
                                                 {product.title}
                                             </h3>
                                         </Link>
 
                                         {/* Price */}
                                         <div className="mb-4">
-                                            <span className="text-lg font-semibold text-pink-600">
+                                            <span className="text-lg font-semibold text-blue-600">
                                                 ৳{product.basePrice?.toLocaleString()}
                                             </span>
                                             {product.variants?.[0]?.originalPrice && (
@@ -222,7 +222,7 @@ export default function WishlistPage() {
                                         {/* Move to Cart Button */}
                                         <button
                                             onClick={() => handleMoveToCart(product)}
-                                            className="w-full flex items-center justify-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
+                                            className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                                         >
                                             <ShoppingCart className="h-4 w-4 mr-2" />
                                             Move to Cart

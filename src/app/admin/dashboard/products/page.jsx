@@ -552,7 +552,7 @@ export default function AdminProductsPage() {
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <button
                                                     onClick={() => handleForceOutOfStockToggle(product._id, product.isForceOutOfStock)}
-                                                    className={`relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 ${product.isForceOutOfStock ? 'bg-pink-600' : 'bg-gray-200'}`}
+                                                    className={`relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 ${product.isForceOutOfStock ? 'bg-blue-600' : 'bg-gray-200'}`}
                                                     title={product.isForceOutOfStock ? "Remove Force Out of Stock" : "Force Out of Stock"}
                                                 >
                                                     <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${product.isForceOutOfStock ? 'translate-x-5' : 'translate-x-0'}`} />
@@ -568,7 +568,7 @@ export default function AdminProductsPage() {
                                                             setProductToShare(product)
                                                             setShowShareModal(true)
                                                         }}
-                                                        className="text-pink-600 hover:text-pink-900 p-1 cursor-pointer"
+                                                        className="text-blue-600 hover:text-blue-900 p-1 cursor-pointer"
                                                         title="Share"
                                                     >
                                                         <Share2 className="h-4 w-4" />
@@ -708,8 +708,8 @@ export default function AdminProductsPage() {
                                                 key={page}
                                                 onClick={() => handlePageChange(page)}
                                                 className={`px-3 py-2 text-sm font-medium rounded-lg ${currentPage === page
-                                                        ? 'bg-blue-600 text-white'
-                                                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                                    ? 'bg-blue-600 text-white'
+                                                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                                                     }`}
                                             >
                                                 {page}
@@ -792,9 +792,9 @@ export default function AdminProductsPage() {
             {hoveredImage && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none bg-black/10 backdrop-blur-[2px] transition-all duration-300">
                     <div className="bg-white p-3 rounded-2xl shadow-2xl animate-fade-in">
-                        <img 
-                            src={hoveredImage} 
-                            alt="Product Preview" 
+                        <img
+                            src={hoveredImage}
+                            alt="Product Preview"
                             className="max-w-[80vw] max-h-[80vh] w-auto h-auto object-contain rounded-lg"
                         />
                     </div>

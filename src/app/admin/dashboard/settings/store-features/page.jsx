@@ -10,7 +10,7 @@ export default function StoreFeaturesPage() {
     const { token } = useAppContext();
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(true);
-    
+
     const [formData, setFormData] = useState({
         storeFeatures: {
             backgroundColor: '#FF1493',
@@ -91,11 +91,11 @@ export default function StoreFeaturesPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         try {
             setLoading(true);
             const res = await settingsAPI.updateSiteSettings({ storeFeatures: formData.storeFeatures }, token);
-            
+
             if (res.success) {
                 toast.success('Store features updated successfully');
             } else {
@@ -112,7 +112,7 @@ export default function StoreFeaturesPage() {
     if (fetching) {
         return (
             <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             </div>
         );
     }
@@ -151,12 +151,12 @@ export default function StoreFeaturesPage() {
                                             ...prev,
                                             storeFeatures: { ...prev.storeFeatures, backgroundColor: e.target.value }
                                         }))}
-                                        placeholder="#FF1493 or bg-pink-500"
-                                        className="px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500 flex-1 w-full text-sm"
+                                        placeholder="#FF1493 or bg-blue-500"
+                                        className="px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-blue-500 flex-1 w-full text-sm"
                                     />
                                 </div>
                             </div>
-                            
+
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Text Color
@@ -179,7 +179,7 @@ export default function StoreFeaturesPage() {
                                             storeFeatures: { ...prev.storeFeatures, textColor: e.target.value }
                                         }))}
                                         placeholder="#FFFFFF or text-white"
-                                        className="px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500 flex-1 w-full text-sm"
+                                        className="px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-blue-500 flex-1 w-full text-sm"
                                     />
                                 </div>
                             </div>
@@ -206,7 +206,7 @@ export default function StoreFeaturesPage() {
                                             storeFeatures: { ...prev.storeFeatures, iconColor: e.target.value }
                                         }))}
                                         placeholder="#FFFFFF or text-white"
-                                        className="px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500 flex-1 w-full text-sm"
+                                        className="px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-blue-500 flex-1 w-full text-sm"
                                     />
                                 </div>
                             </div>
@@ -221,14 +221,14 @@ export default function StoreFeaturesPage() {
                                 <button
                                     type="button"
                                     onClick={addFeature}
-                                    className="flex items-center px-3 py-1.5 text-sm bg-pink-50 text-pink-600 rounded hover:bg-pink-100 transition-colors"
+                                    className="flex items-center px-3 py-1.5 text-sm bg-blue-50 text-blue-600 rounded hover:bg-blue-100 transition-colors"
                                 >
                                     <Plus className="w-4 h-4 mr-1" />
                                     Add Feature
                                 </button>
                             )}
                         </div>
-                        
+
                         <div className="space-y-4">
                             {formData.storeFeatures.features.map((feature, index) => (
                                 <div key={index} className="bg-gray-50 p-4 rounded-lg border border-gray-100 relative">
@@ -242,7 +242,7 @@ export default function StoreFeaturesPage() {
                                                 placeholder="e.g. Truck, Trophy"
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
                                             />
-                                            <a href="https://lucide.dev/icons" target="_blank" rel="noreferrer" className="text-[10px] text-pink-500 hover:underline">Find icons here</a>
+                                            <a href="https://lucide.dev/icons" target="_blank" rel="noreferrer" className="text-[10px] text-blue-500 hover:underline">Find icons here</a>
                                         </div>
                                         <div>
                                             <label className="block text-xs font-medium text-gray-700 mb-1">Title</label>
@@ -265,7 +265,7 @@ export default function StoreFeaturesPage() {
                                             />
                                         </div>
                                     </div>
-                                    
+
                                     {formData.storeFeatures.features.length > 1 && (
                                         <button
                                             type="button"
@@ -287,7 +287,7 @@ export default function StoreFeaturesPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="flex items-center px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50 transition-colors"
+                        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50 transition-colors"
                     >
                         {loading ? (
                             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>

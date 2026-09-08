@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { 
-    Star, 
-    Plus, 
-    History, 
-    Coins, 
+import {
+    Star,
+    Plus,
+    History,
+    Coins,
     AlertCircle,
     CheckCircle,
     X,
@@ -22,7 +22,7 @@ export default function LoyaltyPointsSection({ userId, customerName }) {
     const [showHistoryModal, setShowHistoryModal] = useState(false)
     const [history, setHistory] = useState([])
     const [historyLoading, setHistoryLoading] = useState(false)
-    
+
     // Form states
     const [addForm, setAddForm] = useState({
         coins: '',
@@ -45,9 +45,9 @@ export default function LoyaltyPointsSection({ userId, customerName }) {
                     'Authorization': `Bearer ${token}`
                 }
             })
-            
+
             const data = await response.json()
-            
+
             if (data.success) {
                 setLoyaltyData(data.data)
             } else {
@@ -70,9 +70,9 @@ export default function LoyaltyPointsSection({ userId, customerName }) {
                     'Authorization': `Bearer ${token}`
                 }
             })
-            
+
             const data = await response.json()
-            
+
             if (data.success) {
                 setHistory(data.data.history)
             } else {
@@ -88,9 +88,9 @@ export default function LoyaltyPointsSection({ userId, customerName }) {
 
     const handleAddCoins = async (e) => {
         e.preventDefault()
-        
+
         const coins = parseInt(addForm.coins)
-        
+
         if (!addForm.coins || isNaN(coins) || coins <= 0) {
             toast.error('Please enter a valid positive number of coins')
             return
@@ -111,9 +111,9 @@ export default function LoyaltyPointsSection({ userId, customerName }) {
                     notes: addForm.notes
                 })
             })
-            
+
             const data = await response.json()
-            
+
             if (data.success) {
                 toast.success(`${addForm.coins} coins added successfully!`)
                 setAddForm({ coins: '', notes: '' })
@@ -213,20 +213,20 @@ export default function LoyaltyPointsSection({ userId, customerName }) {
 
             {/* Current Status */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl p-6 border border-pink-200 shadow-sm">
+                <div className="bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl p-6 border border-blue-200 shadow-sm">
                     <div className="flex items-center space-x-4">
-                        <div className="p-3 bg-pink-500 rounded-xl shadow-sm">
+                        <div className="p-3 bg-blue-500 rounded-xl shadow-sm">
                             <Coins className="h-6 w-6 text-white" />
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-pink-700 mb-1">Total Coins</p>
-                            <p className="text-2xl font-bold text-pink-900">
+                            <p className="text-sm font-medium text-blue-700 mb-1">Total Coins</p>
+                            <p className="text-2xl font-bold text-blue-900">
                                 {loyaltyData?.loyalty?.coins || 0}
                             </p>
                         </div>
                     </div>
                 </div>
-                
+
                 <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200 shadow-sm">
                     <div className="flex items-center space-x-4">
                         <div className="p-3 bg-purple-500 rounded-xl shadow-sm">
@@ -265,7 +265,7 @@ export default function LoyaltyPointsSection({ userId, customerName }) {
                     <Plus className="h-5 w-5" />
                     <span>Add Coins</span>
                 </button>
-                
+
                 <button
                     onClick={handleShowHistory}
                     className="flex items-center justify-center space-x-3 px-5 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-300 font-semibold cursor-pointer shadow-lg hover:shadow-xl "
@@ -278,9 +278,9 @@ export default function LoyaltyPointsSection({ userId, customerName }) {
             {/* Add Coins Modal */}
             {showAddModal && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-                    <div className="bg-white rounded-2xl p-8 w-full max-w-md mx-4 shadow-2xl border border-pink-100">
+                    <div className="bg-white rounded-2xl p-8 w-full max-w-md mx-4 shadow-2xl border border-blue-100">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-bold text-pink-800">Add Coins</h3>
+                            <h3 className="text-xl font-bold text-blue-800">Add Coins</h3>
                             <button
                                 onClick={() => setShowAddModal(false)}
                                 className="text-gray-400 hover:text-gray-600 cursor-pointer"
@@ -288,7 +288,7 @@ export default function LoyaltyPointsSection({ userId, customerName }) {
                                 <X className="h-6 w-6" />
                             </button>
                         </div>
-                        
+
                         <form onSubmit={handleAddCoins} className="space-y-4">
                             <div>
                                 <label className="block text-base font-medium text-gray-700 mb-2">
@@ -315,9 +315,8 @@ export default function LoyaltyPointsSection({ userId, customerName }) {
                                         }
                                         // If not digits, don't update the value (prevent invalid input)
                                     }}
-                                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
-                                        inputError ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                                    }`}
+                                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${inputError ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                                        }`}
                                     placeholder="Enter number of coins"
                                     required
                                 />
@@ -325,7 +324,7 @@ export default function LoyaltyPointsSection({ userId, customerName }) {
                                     <p className="text-red-500 text-sm mt-1">{inputError}</p>
                                 )}
                             </div>
-                            
+
                             <div>
                                 <label className="block text-base font-medium text-gray-700 mb-2">
                                     Notes (Optional)
@@ -338,7 +337,7 @@ export default function LoyaltyPointsSection({ userId, customerName }) {
                                     rows={3}
                                 />
                             </div>
-                            
+
                             <div className="flex space-x-3">
                                 <button
                                     type="button"
@@ -364,9 +363,9 @@ export default function LoyaltyPointsSection({ userId, customerName }) {
             {/* History Modal */}
             {showHistoryModal && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-                    <div className="bg-white rounded-2xl p-8 w-full max-w-4xl mx-4 max-h-[80vh] overflow-hidden flex flex-col shadow-2xl border border-pink-100">
+                    <div className="bg-white rounded-2xl p-8 w-full max-w-4xl mx-4 max-h-[80vh] overflow-hidden flex flex-col shadow-2xl border border-blue-100">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-bold text-pink-800">Transaction History</h3>
+                            <h3 className="text-xl font-bold text-blue-800">Transaction History</h3>
                             <button
                                 onClick={() => setShowHistoryModal(false)}
                                 className="text-gray-400 hover:text-gray-600 cursor-pointer"
@@ -374,7 +373,7 @@ export default function LoyaltyPointsSection({ userId, customerName }) {
                                 <X className="h-6 w-6" />
                             </button>
                         </div>
-                        
+
                         <div className="flex-1 overflow-y-auto">
                             {historyLoading ? (
                                 <div className="flex items-center justify-center h-32">

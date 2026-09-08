@@ -115,7 +115,7 @@ export default function SearchBar({ isMobile = false, onSearchSubmit, className 
   return (
     <div className={`relative ${className}`} ref={searchRef}>
       <form onSubmit={handleSearch}>
-        <div className="flex items-center bg-gray-100 rounded-full border border-pink-500 px-4 py-2">
+        <div className="flex items-center bg-gray-100 rounded-full border border-blue-500 px-4 py-2">
           <input
             type="text"
             placeholder="Search here"
@@ -132,7 +132,7 @@ export default function SearchBar({ isMobile = false, onSearchSubmit, className 
           />
           <button
             type="submit"
-            className="bg-pink-500 text-white rounded-full p-2 ml-2 hover:bg-pink-600 transition-colors cursor-pointer"
+            className="bg-blue-500 text-white rounded-full p-2 ml-2 hover:bg-blue-600 transition-colors cursor-pointer"
             aria-label="Search products"
             title="Search products"
           >
@@ -149,7 +149,7 @@ export default function SearchBar({ isMobile = false, onSearchSubmit, className 
         >
           {isLoading ? (
             <div className="p-4 text-center text-gray-500">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-pink-500 mx-auto"></div>
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mx-auto"></div>
               <p className="mt-2">Searching...</p>
             </div>
           ) : suggestions.length > 0 ? (
@@ -177,7 +177,7 @@ export default function SearchBar({ isMobile = false, onSearchSubmit, className 
                     <p className="text-xs text-gray-500 truncate">
                       {product.category?.name || 'Category'}
                     </p>
-                    <p className="text-sm font-semibold text-pink-600">
+                    <p className="text-sm font-semibold text-blue-600">
                       ৳{product.variants?.[0]?.currentPrice || product.basePrice || product.price || 0}
                     </p>
                   </div>
@@ -188,7 +188,7 @@ export default function SearchBar({ isMobile = false, onSearchSubmit, className 
               <div className="p-3 bg-gray-50 border-t border-gray-200">
                 <Link
                   href={`/search?query=${encodeURIComponent(searchQuery.trim())}`}
-                  className="text-sm text-pink-600 hover:text-pink-700 font-medium block text-center"
+                  className="text-sm text-blue-600 hover:text-blue-700 font-medium block text-center"
                   onClick={() => setShowSuggestions(false)}
                 >
                   View all results for "{searchQuery}"
@@ -210,7 +210,7 @@ export default function SearchBar({ isMobile = false, onSearchSubmit, className 
                 </p>
                 <Link
                   href={`/search?query=${encodeURIComponent(searchQuery.trim())}`}
-                  className="text-xs text-pink-600 hover:text-pink-700 font-medium"
+                  className="text-xs text-blue-600 hover:text-blue-700 font-medium"
                   onClick={() => setShowSuggestions(false)}
                 >
                   View search page

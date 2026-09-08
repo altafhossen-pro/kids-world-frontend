@@ -57,11 +57,11 @@ export default function ProductNotFound() {
                 {/* Main Error Section */}
                 <div className="text-center mb-12">
                     <div className="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-pink-100 to-purple-100 rounded-full flex items-center justify-center">
-                        <Search className="w-16 h-16 text-pink-400" />
+                        <Search className="w-16 h-16 text-blue-400" />
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 mb-4">Product Not Found</h1>
                     <p className="text-gray-600 mb-8 leading-relaxed max-w-2xl mx-auto">
-                        Sorry, the product you're looking for doesn't exist or may have been removed. 
+                        Sorry, the product you're looking for doesn't exist or may have been removed.
                         Try searching for something else or browse our categories.
                     </p>
                 </div>
@@ -80,7 +80,7 @@ export default function ProductNotFound() {
                             <button
                                 type="submit"
                                 disabled={searching || !searchQuery.trim()}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-pink-500 text-white p-2 rounded-full hover:bg-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             >
                                 {searching ? (
                                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
@@ -110,7 +110,7 @@ export default function ProductNotFound() {
                                             />
                                         </div>
                                         <h4 className="font-medium text-gray-900 mb-1 line-clamp-2">{product.title}</h4>
-                                        <p className="text-pink-600 font-semibold">৳{product.variants?.[0]?.currentPrice || product.basePrice || 0}</p>
+                                        <p className="text-blue-600 font-semibold">৳{product.variants?.[0]?.currentPrice || product.basePrice || 0}</p>
                                     </Link>
                                 ))}
                             </div>
@@ -123,7 +123,7 @@ export default function ProductNotFound() {
                     <h3 className="text-xl font-semibold text-gray-900 text-center mb-6">Browse Categories</h3>
                     {categoriesLoading ? (
                         <div className="flex justify-center">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
                         </div>
                     ) : (
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
@@ -131,12 +131,12 @@ export default function ProductNotFound() {
                                 <Link
                                     key={category._id}
                                     href={`/shop?category=${category.slug}`}
-                                    className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-all hover:border-pink-300 group text-center"
+                                    className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-all hover:border-blue-300 group text-center"
                                 >
-                                    <div className="w-12 h-12 mx-auto mb-3 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-pink-50 transition-colors">
-                                        <Grid3X3 className="w-6 h-6 text-gray-600 group-hover:text-pink-500" />
+                                    <div className="w-12 h-12 mx-auto mb-3 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-blue-50 transition-colors">
+                                        <Grid3X3 className="w-6 h-6 text-gray-600 group-hover:text-blue-500" />
                                     </div>
-                                    <h4 className="text-sm font-medium text-gray-900 group-hover:text-pink-600 transition-colors">
+                                    <h4 className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
                                         {category.name}
                                     </h4>
                                 </Link>
@@ -149,12 +149,12 @@ export default function ProductNotFound() {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
                     <button
                         onClick={() => router.push('/shop')}
-                        className="flex-1 bg-pink-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-pink-600 transition-colors duration-200 flex items-center justify-center gap-2"
+                        className="flex-1 bg-blue-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center gap-2"
                     >
                         <ShoppingBag className="w-5 h-5" />
                         Browse All Products
                     </button>
-                    
+
                     <button
                         onClick={() => router.push('/')}
                         className="flex-1 bg-white text-gray-700 py-3 px-6 rounded-lg font-semibold border border-gray-300 hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center gap-2"
@@ -163,11 +163,11 @@ export default function ProductNotFound() {
                         Go Home
                     </button>
                 </div>
-                
+
                 {/* Help Section */}
                 <div className="mt-8 pt-6 border-t border-gray-200 text-center">
                     <p className="text-sm text-gray-500">
-                        Need help? <Link href="/contact-us" className="text-pink-500 hover:text-pink-600 font-medium">Contact us</Link>
+                        Need help? <Link href="/contact-us" className="text-blue-500 hover:text-blue-600 font-medium">Contact us</Link>
                     </p>
                 </div>
             </div>

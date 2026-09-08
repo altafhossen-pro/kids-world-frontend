@@ -60,9 +60,9 @@ export default function OrderInvoicePage() {
     // Transform order data for display
     const getStatusInfo = (status) => {
         const statusMap = {
-            'pending': { label: 'Pending', color: 'text-pink-600', bg: 'bg-pink-100', icon: Clock },
+            'pending': { label: 'Pending', color: 'text-blue-600', bg: 'bg-blue-100', icon: Clock },
             'confirmed': { label: 'Confirmed', color: 'text-blue-600', bg: 'bg-blue-100', icon: Clock },
-            'processing': { label: 'Processing', color: 'text-pink-600', bg: 'bg-pink-100', icon: Clock },
+            'processing': { label: 'Processing', color: 'text-blue-600', bg: 'bg-blue-100', icon: Clock },
             'shipped': { label: 'Shipped', color: 'text-blue-600', bg: 'bg-blue-100', icon: Truck },
             'delivered': { label: 'Delivered', color: 'text-green-600', bg: 'bg-green-100', icon: CheckCircle },
             'cancelled': { label: 'Cancelled', color: 'text-red-600', bg: 'bg-red-100', icon: AlertCircle },
@@ -281,10 +281,10 @@ export default function OrderInvoicePage() {
                     .print-area .text-white {
                         color: #000000 !important;
                     }
-                    .print-area .text-pink-100 {
+                    .print-area .text-blue-100 {
                         color: #000000 !important;
                     }
-                    .print-area .text-pink-200 {
+                    .print-area .text-blue-200 {
                         color: #000000 !important;
                     }
                 }
@@ -301,15 +301,15 @@ export default function OrderInvoicePage() {
                                 <div className="flex justify-between items-start">
                                     <div>
                                         <h1 className="text-2xl font-bold">INVOICE</h1>
-                                        <p className="text-pink-100 mt-1 text-sm">Kidsworldbd.com</p>
-                                        <p className="text-pink-100 text-sm">Premium Gold Jewelry & Accessories</p>
+                                        <p className="text-blue-100 mt-1 text-sm">Kidsworldbd.com</p>
+                                        <p className="text-blue-100 text-sm">Premium Gold Jewelry & Accessories</p>
                                     </div>
                                     <div className="text-right">
                                         <div className="text-xl font-bold">#{order.orderId}</div>
-                                        <div className="text-pink-100 mt-1 text-sm">
+                                        <div className="text-blue-100 mt-1 text-sm">
                                             {formatDate(order.createdAt)}
                                         </div>
-                                        <div className="text-pink-100 text-sm">
+                                        <div className="text-blue-100 text-sm">
                                             {formatTime(order.createdAt)}
                                         </div>
                                     </div>
@@ -328,7 +328,7 @@ export default function OrderInvoicePage() {
                                     </div>
                                     {order.status === 'delivered' && (
                                         <div className="flex items-center space-x-3 no-print">
-                                            <button className="inline-flex items-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors">
+                                            <button className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                                                 <Download className="h-4 w-4 mr-2" />
                                                 Download PDF
                                             </button>
@@ -453,18 +453,18 @@ export default function OrderInvoicePage() {
                                                 {order.loyaltyDiscount > 0 && (
                                                     <div className="flex justify-between text-sm">
                                                         <span className="text-gray-600">Loyalty Points Discount</span>
-                                                        <span className="text-pink-600">-৳{order.loyaltyDiscount.toLocaleString()}</span>
+                                                        <span className="text-blue-600">-৳{order.loyaltyDiscount.toLocaleString()}</span>
                                                     </div>
                                                 )}
                                                 <div className="border-t border-gray-300 pt-2">
                                                     <div className="flex justify-between text-base font-bold">
                                                         <span className="text-gray-900">Total</span>
-                                                        <span className="text-pink-600">৳{order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0) + order.shippingCost - (order.discount || 0) - (order.loyaltyDiscount || 0) - (order.couponDiscount || 0)}</span>
+                                                        <span className="text-blue-600">৳{order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0) + order.shippingCost - (order.discount || 0) - (order.loyaltyDiscount || 0) - (order.couponDiscount || 0)}</span>
                                                     </div>
                                                 </div>
                                                 {order.loyaltyPointsUsed > 0 && (
-                                                    <div className="mt-2 p-2 bg-pink-50 rounded border border-pink-200">
-                                                        <div className="text-xs text-pink-800 text-center">
+                                                    <div className="mt-2 p-2 bg-blue-50 rounded border border-blue-200">
+                                                        <div className="text-xs text-blue-800 text-center">
                                                             <div className="font-semibold">🪙 Paid with {order.loyaltyPointsUsed} coins</div>
                                                             <div>No additional payment required</div>
                                                         </div>
@@ -491,7 +491,7 @@ export default function OrderInvoicePage() {
                                                 <div className="flex items-center mb-1">
                                                     <Coins className="h-3 w-3 mr-2" />
                                                     <span className="font-medium">Paid with Loyalty Points:</span>
-                                                    <span className="ml-2 text-pink-600 font-semibold">
+                                                    <span className="ml-2 text-blue-600 font-semibold">
                                                         {order.loyaltyPointsUsed} coins (৳{order.loyaltyDiscount?.toLocaleString()})
                                                     </span>
                                                 </div>
@@ -512,7 +512,7 @@ export default function OrderInvoicePage() {
                                                 {order.tracking.map((track, index) => (
                                                     <div key={index} className="flex items-start">
                                                         <div className="flex-shrink-0">
-                                                            <div className="w-2 h-2 bg-pink-600 rounded-full mt-1"></div>
+                                                            <div className="w-2 h-2 bg-blue-600 rounded-full mt-1"></div>
                                                         </div>
                                                         <div className="ml-2">
                                                             <div className="text-xs font-medium text-gray-900 capitalize">

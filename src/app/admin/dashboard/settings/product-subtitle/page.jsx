@@ -10,7 +10,7 @@ export default function ProductSubtitlePage() {
     const { token } = useAppContext();
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(true);
-    
+
     const [formData, setFormData] = useState({
         globalProductSubtitle: {
             text: '',
@@ -44,12 +44,12 @@ export default function ProductSubtitlePage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         try {
             setLoading(true);
-            
+
             const res = await settingsAPI.updateGlobalProductSubtitle(formData.globalProductSubtitle, token);
-            
+
             if (res.success) {
                 toast.success('Product subtitle updated successfully');
             } else {
@@ -66,7 +66,7 @@ export default function ProductSubtitlePage() {
     if (fetching) {
         return (
             <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             </div>
         );
     }
@@ -89,25 +89,23 @@ export default function ProductSubtitlePage() {
                                 </div>
                                 <button
                                     type="button"
-                                    onClick={() => setFormData(prev => ({ 
-                                        ...prev, 
+                                    onClick={() => setFormData(prev => ({
+                                        ...prev,
                                         globalProductSubtitle: {
                                             ...prev.globalProductSubtitle,
                                             isEnabled: !prev.globalProductSubtitle.isEnabled
                                         }
                                     }))}
-                                    className={`${
-                                        formData.globalProductSubtitle?.isEnabled ? 'bg-pink-600' : 'bg-gray-200'
-                                    } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2`}
+                                    className={`${formData.globalProductSubtitle?.isEnabled ? 'bg-blue-600' : 'bg-gray-200'
+                                        } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2`}
                                 >
                                     <span
-                                        className={`${
-                                            formData.globalProductSubtitle?.isEnabled ? 'translate-x-5' : 'translate-x-0'
-                                        } pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out`}
+                                        className={`${formData.globalProductSubtitle?.isEnabled ? 'translate-x-5' : 'translate-x-0'
+                                            } pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out`}
                                     />
                                 </button>
                             </div>
-                            
+
                             {formData.globalProductSubtitle?.isEnabled && (
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -116,15 +114,15 @@ export default function ProductSubtitlePage() {
                                     <input
                                         type="text"
                                         value={formData.globalProductSubtitle?.text || ''}
-                                        onChange={(e) => setFormData(prev => ({ 
-                                            ...prev, 
+                                        onChange={(e) => setFormData(prev => ({
+                                            ...prev,
                                             globalProductSubtitle: {
                                                 ...prev.globalProductSubtitle,
                                                 text: e.target.value
                                             }
                                         }))}
                                         placeholder="e.g. Free Shipping on orders over ৳1500!"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-blue-500 transition-colors"
                                     />
                                 </div>
                             )}
@@ -136,7 +134,7 @@ export default function ProductSubtitlePage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="flex items-center px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50 transition-colors"
+                        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50 transition-colors"
                     >
                         {loading ? (
                             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>

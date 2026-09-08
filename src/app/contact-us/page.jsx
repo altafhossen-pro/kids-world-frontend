@@ -46,7 +46,7 @@ export default function ContactUsPage() {
             name: 'Instagram',
             url: 'https://instagram.com/kidsworldbd',
             icon: Instagram,
-            color: 'bg-pink-600',
+            color: 'bg-blue-600',
             followers: '18.7K',
             description: 'See our latest products'
         },

@@ -1,33 +1,72 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import ProductCard from '@/components/NewHomepage/Products/ProductCard';
 import { Filter, Search, ChevronDown, Check } from 'lucide-react';
 
-const FAKE_CATEGORIES = ['All', 'Ride On Cars', 'Scooters', 'Bicycles', 'Toys & Games', 'Learning', 'Baby', 'Outdoor'];
-const FAKE_BRANDS = ['Kids World', 'Mercedes', 'Audi', 'Lamborghini', 'Generic'];
+import { productAPI, categoryAPI } from '@/services/api';
 
-const FAKE_PRODUCTS = [
-  { id: 1, name: 'Kids Electric Ride On Car 12V', category: 'Ride On Cars', price: 8990, originalPrice: 11000, discount: 18, rating: 4.9, image: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=400&q=80' },
-  { id: 2, name: '3-Wheel LED Scooter Pink', category: 'Scooters', price: 2100, originalPrice: 2500, discount: 16, rating: 4.9, image: 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?auto=format&fit=crop&w=400&q=80' },
-  { id: 3, name: 'Kids Bicycle 16 Inch Blue', category: 'Bicycles', price: 4800, originalPrice: 5500, discount: 13, rating: 4.8, image: 'https://images.unsplash.com/photo-1558981852-426c6c22a060?auto=format&fit=crop&w=400&q=80' },
-  { id: 4, name: 'Remote Control Sports Car 1:16', category: 'Toys & Games', price: 1250, originalPrice: 1500, discount: 17, rating: 4.8, image: 'https://images.unsplash.com/photo-1594787318286-3d835c1d207f?auto=format&fit=crop&w=400&q=80' },
-  { id: 5, name: 'Educational Building Blocks 100pcs', category: 'Learning', price: 850, originalPrice: null, discount: 0, rating: 4.9, image: 'https://images.unsplash.com/photo-1587654780228-6a454f9a0e69?auto=format&fit=crop&w=400&q=80' },
-  { id: 6, name: 'Plush Teddy Bear Ultra Soft 30cm', category: 'Baby', price: 650, originalPrice: 800, discount: 19, rating: 4.7, image: 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?auto=format&fit=crop&w=400&q=80' },
-  { id: 7, name: 'Mercedes Benz G63 Kids Electric Car', category: 'Ride On Cars', price: 12500, originalPrice: 15000, discount: 17, rating: 4.8, image: 'https://images.unsplash.com/photo-1558981852-426c6c22a060?auto=format&fit=crop&w=400&q=80' },
-  { id: 8, name: 'Kids Smart Watch with Camera', category: 'Toys & Games', price: 1490, originalPrice: 1800, discount: 17, rating: 4.6, image: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=400&q=80' },
-  { id: 9, name: 'Balance Bike 12 Inch No Pedal', category: 'Bicycles', price: 2800, originalPrice: 3500, discount: 20, rating: 4.9, image: 'https://images.unsplash.com/photo-1594787318286-3d835c1d207f?auto=format&fit=crop&w=400&q=80' },
-  { id: 10, name: 'Kids Stunt Scooter Pro Black', category: 'Scooters', price: 3200, originalPrice: 3800, discount: 16, rating: 4.8, image: 'https://images.unsplash.com/photo-1587654780228-6a454f9a0e69?auto=format&fit=crop&w=400&q=80' },
-  { id: 11, name: 'Magnetic Drawing Board Toddlers', category: 'Learning', price: 450, originalPrice: 600, discount: 25, rating: 4.9, image: 'https://images.unsplash.com/photo-1558981852-426c6c22a060?auto=format&fit=crop&w=400&q=80' },
-  { id: 12, name: 'Kids Tractor with Trailer', category: 'Ride On Cars', price: 5500, originalPrice: 6500, discount: 15, rating: 4.7, image: 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?auto=format&fit=crop&w=400&q=80' },
-];
+const BRANDS = ['Kids World', 'Mercedes', 'Audi', 'Lamborghini', 'Generic'];
 
-export default function NewShop() {
-  const [selectedCat, setSelectedCat] = useState('All');
+function ShopContent() {
+  const searchParams = useSearchParams();
+  const categoryParam = searchParams.get('category');
+  
+  const [selectedCat, setSelectedCat] = useState(categoryParam || 'All');
   const [search, setSearch] = useState('');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
+  useEffect(() => {
+    if (categoryParam) {
+      setSelectedCat(categoryParam);
+    }
+  }, [categoryParam]);
+
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState(['All']);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [prodRes, catRes] = await Promise.all([
+          productAPI.getProducts({ limit: 100 }),
+          categoryAPI.getCategories()
+        ]);
+        
+        if (prodRes.success && prodRes.data) {
+          const formattedProducts = prodRes.data.map(p => {
+            const minPrice = p.calculatedPriceRange?.min || p.basePrice || 0;
+            return {
+              id: p._id,
+              name: p.title,
+              slug: p.slug,
+              category: typeof p.category === 'object' ? p.category?.name : (p.category || 'Uncategorized'),
+              price: minPrice,
+              originalPrice: null, // could add if discount logic exists
+              discount: 0,
+              rating: p.averageRating || 5.0,
+              image: p.featuredImage || p.gallery?.[0]?.url || 'https://via.placeholder.com/400'
+            };
+          });
+          setProducts(formattedProducts);
+        }
+
+        if (catRes.success && catRes.data) {
+          setCategories(['All', ...catRes.data.map(c => c.name)]);
+        }
+      } catch (err) {
+        console.error('Failed to fetch data', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   // Filter products based on selected category and search query
-  const filteredProducts = FAKE_PRODUCTS.filter(p => {
+  const filteredProducts = products.filter(p => {
     const matchesCat = selectedCat === 'All' || p.category === selectedCat;
     const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
     return matchesCat && matchesSearch;
@@ -83,7 +122,7 @@ export default function NewShop() {
               <div className="mb-6">
                 <p className="text-sm font-bold text-gray-800 mb-3">Categories</p>
                 <ul className="space-y-2">
-                  {FAKE_CATEGORIES.map(cat => (
+                  {categories.map(cat => (
                     <li key={cat}>
                       <button
                         onClick={() => setSelectedCat(cat)}
@@ -111,7 +150,7 @@ export default function NewShop() {
               <div>
                 <p className="text-sm font-bold text-gray-800 mb-3">Brands</p>
                 <ul className="space-y-2.5">
-                  {FAKE_BRANDS.map(brand => (
+                  {BRANDS.map(brand => (
                     <li key={brand} className="flex items-center gap-2.5 cursor-pointer">
                       <input type="checkbox" id={brand} className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
                       <label htmlFor={brand} className="text-sm text-gray-600 font-medium cursor-pointer flex-1">{brand}</label>
@@ -142,7 +181,11 @@ export default function NewShop() {
             </div>
 
             {/* Grid */}
-            {filteredProducts.length > 0 ? (
+            {loading ? (
+              <div className="flex justify-center items-center py-20">
+                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              </div>
+            ) : filteredProducts.length > 0 ? (
               <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
                 {filteredProducts.map(product => (
                   <ProductCard key={product.id} product={product} />
@@ -179,5 +222,13 @@ export default function NewShop() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function NewShop() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+      <ShopContent />
+    </Suspense>
   );
 }

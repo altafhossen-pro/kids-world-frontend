@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { 
-    User, 
-    Mail, 
-    Phone, 
-    MapPin, 
+import {
+    User,
+    Mail,
+    Phone,
+    MapPin,
     Calendar,
     Edit3,
     Save,
@@ -24,7 +24,7 @@ import { getCookie } from 'cookies-next'
 
 export default function ProfilePage() {
     const { user, token, updateUser } = useAppContext()
-    
+
     const [isEditing, setIsEditing] = useState(false)
     const [isChangingPassword, setIsChangingPassword] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -34,14 +34,14 @@ export default function ProfilePage() {
     const [isUploadingPicture, setIsUploadingPicture] = useState(false)
     const [selectedFile, setSelectedFile] = useState(null)
     const [previewUrl, setPreviewUrl] = useState(null)
-    
+
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         phone: '',
         address: ''
     })
-    
+
     const [passwordData, setPasswordData] = useState({
         currentPassword: '',
         newPassword: '',
@@ -72,23 +72,23 @@ export default function ProfilePage() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
-        
+
         // For phone field, only allow numbers
         if (name === 'phone') {
             // Remove any non-numeric characters
             const numericValue = value.replace(/\D/g, '')
             // Limit to 11 digits
             const limitedValue = numericValue.slice(0, 11)
-            
+
             setFormData(prev => ({
                 ...prev,
                 [name]: limitedValue
             }))
-            
+
             // Real-time validation for phone
             if (limitedValue.length > 0) {
                 let phoneError = ''
-                
+
                 // Check if starts with "01"
                 if (limitedValue.length >= 1 && limitedValue[0] !== '0') {
                     phoneError = 'Phone number must start with 0'
@@ -103,7 +103,7 @@ export default function ProfilePage() {
                     // Valid so far, but not complete - clear error for now
                     phoneError = ''
                 }
-                
+
                 setFormErrors(prev => ({
                     ...prev,
                     phone: phoneError
@@ -120,7 +120,7 @@ export default function ProfilePage() {
                 ...prev,
                 [name]: value
             }))
-            
+
             // Clear error for other fields when user starts typing
             if (formErrors[name]) {
                 setFormErrors(prev => ({
@@ -137,12 +137,12 @@ export default function ProfilePage() {
             ...passwordData,
             [name]: value
         }
-        
+
         setPasswordData(newPasswordData)
-        
+
         // Real-time validation for current field
         validatePasswordField(name, value, newPasswordData)
-        
+
         // Cross-validation: if newPassword or confirmPassword changes, validate both
         if (name === 'newPassword' && newPasswordData.confirmPassword) {
             validatePasswordField('confirmPassword', newPasswordData.confirmPassword, newPasswordData)
@@ -153,7 +153,7 @@ export default function ProfilePage() {
 
     const validatePasswordField = (fieldName, value, passwordDataToUse = passwordData) => {
         let error = ''
-        
+
         switch (fieldName) {
             case 'currentPassword':
                 if (!value) {
@@ -162,7 +162,7 @@ export default function ProfilePage() {
                     error = 'Password must be at least 6 characters'
                 }
                 break
-                
+
             case 'newPassword':
                 if (!value) {
                     error = 'New password is required'
@@ -172,7 +172,7 @@ export default function ProfilePage() {
                     error = 'New password must be different from current password'
                 }
                 break
-                
+
             case 'confirmPassword':
                 if (!value) {
                     error = 'Please confirm your new password'
@@ -180,11 +180,11 @@ export default function ProfilePage() {
                     error = 'Passwords do not match'
                 }
                 break
-                
+
             default:
                 break
         }
-        
+
         setPasswordErrors(prev => ({
             ...prev,
             [fieldName]: error
@@ -197,16 +197,16 @@ export default function ProfilePage() {
             phone: '',
             address: ''
         }
-        
+
         // Validate name
         if (!formData.name || formData.name.trim() === '') {
             errors.name = 'Name is required'
         }
-        
+
         // Validate phone (if provided)
         if (formData.phone && formData.phone.trim() !== '') {
             const phoneNumber = formData.phone.trim()
-            
+
             // Must be exactly 11 digits
             if (phoneNumber.length !== 11) {
                 errors.phone = 'Phone number must be exactly 11 digits'
@@ -223,7 +223,7 @@ export default function ProfilePage() {
             // If phone field has only whitespace, treat as empty (no error)
             // Phone is optional, so we don't require it
         }
-        
+
         setFormErrors(errors)
         return !Object.values(errors).some(error => error !== '')
     }
@@ -242,7 +242,7 @@ export default function ProfilePage() {
                 ...formData,
                 token
             })
-            
+
             if (response.success) {
                 updateUser(response.data)
                 toast.success('Profile updated successfully!')
@@ -257,7 +257,7 @@ export default function ProfilePage() {
             // Extract error message from API response
             const errorMessage = error?.response?.data?.message || error?.message || 'Failed to update profile'
             toast.error(errorMessage)
-            
+
             // If it's a phone number error, set it in form errors
             if (errorMessage.toLowerCase().includes('phone')) {
                 setFormErrors(prev => ({
@@ -288,7 +288,7 @@ export default function ProfilePage() {
             toast.error('New passwords do not match')
             return
         }
-        
+
         if (passwordData.newPassword.length < 6) {
             toast.error('New password must be at least 6 characters')
             return
@@ -307,7 +307,7 @@ export default function ProfilePage() {
                 newPassword: passwordData.newPassword,
                 token
             })
-            
+
             if (response.success) {
                 toast.success('Password changed successfully!')
                 cancelPasswordChange()
@@ -359,13 +359,13 @@ export default function ProfilePage() {
                 toast.error('Please select an image file')
                 return
             }
-            
+
             // Validate file size (5MB max)
             if (file.size > 5 * 1024 * 1024) {
                 toast.error('File size must be less than 5MB')
                 return
             }
-            
+
             setSelectedFile(file)
             const url = URL.createObjectURL(file)
             setPreviewUrl(url)
@@ -385,7 +385,7 @@ export default function ProfilePage() {
             formData.append('image', selectedFile)
 
             const response = await userAPI.uploadProfilePicture(formData, token)
-            
+
             if (response.success) {
                 // Update user context with new avatar
                 updateUser({ ...user, avatar: response.data.avatar })
@@ -438,7 +438,7 @@ export default function ProfilePage() {
                     {!isEditing && (
                         <button
                             onClick={() => setIsEditing(true)}
-                            className="flex items-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors cursor-pointer"
+                            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
                         >
                             <Edit3 className="h-4 w-4 mr-2" />
                             Edit Profile
@@ -450,7 +450,7 @@ export default function ProfilePage() {
             {/* Profile Picture Section */}
             <div className="bg-white rounded-lg shadow-sm p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-6">Profile Picture</h2>
-                
+
                 <div className="flex items-center space-x-6">
                     {/* Current Profile Picture */}
                     <div className="flex-shrink-0">
@@ -484,7 +484,7 @@ export default function ProfilePage() {
                                     type="file"
                                     accept="image/*"
                                     onChange={handleFileSelect}
-                                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100 cursor-pointer"
+                                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
                                 />
                                 <p className="text-xs text-gray-500 mt-1">
                                     Maximum file size: 5MB. Supported formats: JPG, PNG, GIF
@@ -509,12 +509,12 @@ export default function ProfilePage() {
                                             </p>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="flex space-x-3">
                                         <button
                                             onClick={handleUploadPicture}
                                             disabled={isUploadingPicture}
-                                            className="flex items-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                                            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                                         >
                                             {isUploadingPicture ? (
                                                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
@@ -523,7 +523,7 @@ export default function ProfilePage() {
                                             )}
                                             {isUploadingPicture ? 'Uploading...' : 'Upload Picture'}
                                         </button>
-                                        
+
                                         <button
                                             onClick={cancelPictureUpload}
                                             disabled={isUploadingPicture}
@@ -541,7 +541,7 @@ export default function ProfilePage() {
                                 <div className="flex items-center space-x-3">
                                     <label
                                         htmlFor="profile-picture-input"
-                                        className="flex items-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors cursor-pointer"
+                                        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
                                     >
                                         <Camera className="w-4 h-4 mr-2" />
                                         {user.avatar ? 'Update Picture' : 'Choose Picture'}
@@ -556,7 +556,7 @@ export default function ProfilePage() {
             {/* Profile Information */}
             <div className="bg-white rounded-lg shadow-sm p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-6">Personal Information</h2>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Name */}
                     <div>
@@ -615,11 +615,10 @@ export default function ProfilePage() {
                         </label>
                         <div className="flex items-center space-x-3">
                             <Calendar className="h-5 w-5 text-gray-400" />
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                user.status === 'active' 
-                                    ? 'bg-green-100 text-green-800' 
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${user.status === 'active'
+                                    ? 'bg-green-100 text-green-800'
                                     : 'bg-red-100 text-red-800'
-                            }`}>
+                                }`}>
                                 {user.status?.charAt(0).toUpperCase() + user.status?.slice(1)}
                             </span>
                         </div>
@@ -650,7 +649,7 @@ export default function ProfilePage() {
                     <h2 className="text-lg font-semibold text-gray-900">Password & Security</h2>
                     <button
                         onClick={() => setIsChangingPassword(true)}
-                        className="flex items-center px-4 py-2 text-pink-600 bg-pink-50 border border-pink-200 rounded-lg hover:bg-pink-100 transition-colors cursor-pointer"
+                        className="flex items-center px-4 py-2 text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer"
                     >
                         <Lock className="h-4 w-4 mr-2" />
                         Change Password
@@ -666,8 +665,8 @@ export default function ProfilePage() {
                         {/* Modal Header */}
                         <div className="flex items-center justify-between p-6 border-b border-gray-200">
                             <div className="flex items-center space-x-3">
-                                <div className="p-2 bg-pink-100 rounded-full">
-                                    <Edit3 className="h-6 w-6 text-pink-600" />
+                                <div className="p-2 bg-blue-100 rounded-full">
+                                    <Edit3 className="h-6 w-6 text-blue-600" />
                                 </div>
                                 <h3 className="text-lg font-semibold text-gray-900">
                                     Edit Profile
@@ -694,11 +693,10 @@ export default function ProfilePage() {
                                         name="name"
                                         value={formData.name}
                                         onChange={handleInputChange}
-                                        className={`w-full px-3 py-2 border rounded-lg focus:ring-1 focus:outline-none ${
-                                            formErrors.name 
-                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
-                                                : 'border-gray-300 focus:ring-pink-500 focus:border-pink-500'
-                                        }`}
+                                        className={`w-full px-3 py-2 border rounded-lg focus:ring-1 focus:outline-none ${formErrors.name
+                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
+                                                : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                                            }`}
                                         placeholder="Enter your full name"
                                         required
                                     />
@@ -721,11 +719,10 @@ export default function ProfilePage() {
                                         value={formData.phone}
                                         onChange={handleInputChange}
                                         maxLength={11}
-                                        className={`w-full px-3 py-2 border rounded-lg focus:ring-1 focus:outline-none ${
-                                            formErrors.phone 
-                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
-                                                : 'border-gray-300 focus:ring-pink-500 focus:border-pink-500'
-                                        }`}
+                                        className={`w-full px-3 py-2 border rounded-lg focus:ring-1 focus:outline-none ${formErrors.phone
+                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
+                                                : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                                            }`}
                                         placeholder="01XXXXXXXXX (11 digits)"
                                     />
                                     {formErrors.phone && (
@@ -751,7 +748,7 @@ export default function ProfilePage() {
                                         value={formData.address}
                                         onChange={handleInputChange}
                                         rows={4}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-pink-500 focus:border-pink-500 focus:outline-none"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
                                         placeholder="Enter your address"
                                     />
                                 </div>
@@ -784,7 +781,7 @@ export default function ProfilePage() {
                                 <button
                                     onClick={handleSaveProfile}
                                     disabled={loading || Object.values(formErrors).some(error => error !== '')}
-                                    className="flex items-center px-6 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                                    className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                                 >
                                     {loading ? (
                                         <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
@@ -806,8 +803,8 @@ export default function ProfilePage() {
                         {/* Modal Header */}
                         <div className="flex items-center justify-between p-6 border-b border-gray-200">
                             <div className="flex items-center space-x-3">
-                                <div className="p-2 bg-pink-100 rounded-full">
-                                    <Lock className="h-6 w-6 text-pink-600" />
+                                <div className="p-2 bg-blue-100 rounded-full">
+                                    <Lock className="h-6 w-6 text-blue-600" />
                                 </div>
                                 <h3 className="text-lg font-semibold text-gray-900">
                                     Change Password
@@ -835,11 +832,10 @@ export default function ProfilePage() {
                                             name="currentPassword"
                                             value={passwordData.currentPassword}
                                             onChange={handlePasswordChange}
-                                            className={`w-full px-3 py-2 pr-10 border rounded-lg focus:ring-1 focus:ring-pink-500 focus:border-pink-500 focus:outline-none ${
-                                                passwordErrors.currentPassword 
-                                                    ? 'border-red-300 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
+                                            className={`w-full px-3 py-2 pr-10 border rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:outline-none ${passwordErrors.currentPassword
+                                                    ? 'border-red-300 focus:border-red-500 focus:ring-1 focus:ring-red-500'
                                                     : 'border-gray-300'
-                                            }`}
+                                                }`}
                                             placeholder="Enter current password"
                                             required
                                         />
@@ -870,11 +866,10 @@ export default function ProfilePage() {
                                             name="newPassword"
                                             value={passwordData.newPassword}
                                             onChange={handlePasswordChange}
-                                            className={`w-full px-3 py-2 pr-10 border rounded-lg focus:ring-1 focus:ring-pink-500 focus:border-pink-500 focus:outline-none ${
-                                                passwordErrors.newPassword 
-                                                    ? 'border-red-300 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
+                                            className={`w-full px-3 py-2 pr-10 border rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:outline-none ${passwordErrors.newPassword
+                                                    ? 'border-red-300 focus:border-red-500 focus:ring-1 focus:ring-red-500'
                                                     : 'border-gray-300'
-                                            }`}
+                                                }`}
                                             placeholder="Enter new password"
                                             required
                                         />
@@ -897,7 +892,7 @@ export default function ProfilePage() {
                                 </div>
 
                                 {/* Confirm New Password */}
-        <div>
+                                <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Confirm New Password *
                                     </label>
@@ -907,11 +902,10 @@ export default function ProfilePage() {
                                             name="confirmPassword"
                                             value={passwordData.confirmPassword}
                                             onChange={handlePasswordChange}
-                                            className={`w-full px-3 py-2 pr-10 border rounded-lg focus:ring-1 focus:ring-pink-500 focus:border-pink-500 focus:outline-none ${
-                                                passwordErrors.confirmPassword 
-                                                    ? 'border-red-300 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
+                                            className={`w-full px-3 py-2 pr-10 border rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:outline-none ${passwordErrors.confirmPassword
+                                                    ? 'border-red-300 focus:border-red-500 focus:ring-1 focus:ring-red-500'
                                                     : 'border-gray-300'
-                                            }`}
+                                                }`}
                                             placeholder="Confirm new password"
                                             required
                                         />
@@ -944,7 +938,7 @@ export default function ProfilePage() {
                                 <button
                                     onClick={handleChangePassword}
                                     disabled={loading || Object.values(passwordErrors).some(error => error !== '') || !passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword}
-                                    className="flex items-center px-6 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                                    className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                                 >
                                     {loading ? (
                                         <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />

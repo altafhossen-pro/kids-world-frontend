@@ -19,7 +19,7 @@ export default function TelegramSettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
-  
+
   const [settings, setSettings] = useState({
     botToken: '',
     chatId: '',
@@ -33,7 +33,7 @@ export default function TelegramSettingsPage() {
 
   useEffect(() => {
     if (contextLoading) return;
-    
+
     // Admin needs write permission to settings to access this page
     const canAccess = hasPermission('settings', 'write');
     setHasAccess(canAccess);
@@ -50,7 +50,7 @@ export default function TelegramSettingsPage() {
     try {
       setIsLoading(true);
       const response = await settingsAPI.getTelegramSettings(authToken);
-      
+
       if (response.success && response.data) {
         setSettings({
           botToken: response.data.botToken || '',
@@ -73,10 +73,10 @@ export default function TelegramSettingsPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       setIsSaving(true);
-      
+
       const payload = {
         botToken: settings.botToken.trim(),
         chatId: settings.chatId.trim(),
@@ -89,7 +89,7 @@ export default function TelegramSettingsPage() {
       };
 
       const response = await settingsAPI.updateTelegramSettings(payload, token);
-      
+
       if (response.success) {
         toast.success('Telegram settings updated successfully');
       } else {
@@ -111,14 +111,14 @@ export default function TelegramSettingsPage() {
 
     try {
       setIsTesting(true);
-      
+
       const payload = {
         botToken: settings.botToken.trim(),
         chatId: settings.chatId.trim()
       };
 
       const response = await settingsAPI.testTelegramConfig(payload, token);
-      
+
       if (response.success) {
         toast.success(response.message || 'Test message sent successfully! Please check your Telegram chat.');
       } else {
@@ -170,7 +170,7 @@ export default function TelegramSettingsPage() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
+
             {/* Bot Token */}
             <div className="md:col-span-2">
               <label className="flex items-center space-x-2 text-sm font-medium text-gray-700 mb-2">
@@ -208,11 +208,11 @@ export default function TelegramSettingsPage() {
                 The ID of the chat or channel where you want to receive notifications.
               </p>
             </div>
-            
+
             {/* Steadfast Callback Toggles */}
             <div className="md:col-span-2 pt-4 border-t border-gray-100">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Steadfast Webhook Alerts</h3>
-              
+
               <div className="space-y-4">
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <div className="relative">
@@ -222,7 +222,7 @@ export default function TelegramSettingsPage() {
                       checked={settings.enableSuccessMsgOnSteadfastCallback}
                       onChange={(e) => setSettings({ ...settings, enableSuccessMsgOnSteadfastCallback: e.target.checked })}
                     />
-                    <div className={`block w-10 h-6 rounded-full transition-colors ${settings.enableSuccessMsgOnSteadfastCallback ? 'bg-pink-500' : 'bg-gray-300'}`}></div>
+                    <div className={`block w-10 h-6 rounded-full transition-colors ${settings.enableSuccessMsgOnSteadfastCallback ? 'bg-blue-500' : 'bg-gray-300'}`}></div>
                     <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${settings.enableSuccessMsgOnSteadfastCallback ? 'transform translate-x-4' : ''}`}></div>
                   </div>
                   <div className="text-sm font-medium text-gray-700">Enable success message on Steadfast callback</div>
@@ -236,7 +236,7 @@ export default function TelegramSettingsPage() {
                       checked={settings.enableDebugLogOnSteadfastCallback}
                       onChange={(e) => setSettings({ ...settings, enableDebugLogOnSteadfastCallback: e.target.checked })}
                     />
-                    <div className={`block w-10 h-6 rounded-full transition-colors ${settings.enableDebugLogOnSteadfastCallback ? 'bg-pink-500' : 'bg-gray-300'}`}></div>
+                    <div className={`block w-10 h-6 rounded-full transition-colors ${settings.enableDebugLogOnSteadfastCallback ? 'bg-blue-500' : 'bg-gray-300'}`}></div>
                     <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${settings.enableDebugLogOnSteadfastCallback ? 'transform translate-x-4' : ''}`}></div>
                   </div>
                   <div className="text-sm font-medium text-gray-700">Enable debug log on Steadfast callback</div>
@@ -250,7 +250,7 @@ export default function TelegramSettingsPage() {
             {/* Store Activity Toggles */}
             <div className="md:col-span-2 pt-4 border-t border-gray-100">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Store Activity Alerts</h3>
-              
+
               <div className="space-y-4">
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <div className="relative">
@@ -260,7 +260,7 @@ export default function TelegramSettingsPage() {
                       checked={settings.notifyNewOrderExistingUser}
                       onChange={(e) => setSettings({ ...settings, notifyNewOrderExistingUser: e.target.checked })}
                     />
-                    <div className={`block w-10 h-6 rounded-full transition-colors ${settings.notifyNewOrderExistingUser ? 'bg-pink-500' : 'bg-gray-300'}`}></div>
+                    <div className={`block w-10 h-6 rounded-full transition-colors ${settings.notifyNewOrderExistingUser ? 'bg-blue-500' : 'bg-gray-300'}`}></div>
                     <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${settings.notifyNewOrderExistingUser ? 'transform translate-x-4' : ''}`}></div>
                   </div>
                   <div className="text-sm font-medium text-gray-700">New Order Notification (Existing User)</div>
@@ -274,7 +274,7 @@ export default function TelegramSettingsPage() {
                       checked={settings.notifyNewOrderGuestUser}
                       onChange={(e) => setSettings({ ...settings, notifyNewOrderGuestUser: e.target.checked })}
                     />
-                    <div className={`block w-10 h-6 rounded-full transition-colors ${settings.notifyNewOrderGuestUser ? 'bg-pink-500' : 'bg-gray-300'}`}></div>
+                    <div className={`block w-10 h-6 rounded-full transition-colors ${settings.notifyNewOrderGuestUser ? 'bg-blue-500' : 'bg-gray-300'}`}></div>
                     <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${settings.notifyNewOrderGuestUser ? 'transform translate-x-4' : ''}`}></div>
                   </div>
                   <div className="text-sm font-medium text-gray-700">New Order Notification (Guest User)</div>
@@ -288,7 +288,7 @@ export default function TelegramSettingsPage() {
                       checked={settings.notifyNewUserSignup}
                       onChange={(e) => setSettings({ ...settings, notifyNewUserSignup: e.target.checked })}
                     />
-                    <div className={`block w-10 h-6 rounded-full transition-colors ${settings.notifyNewUserSignup ? 'bg-pink-500' : 'bg-gray-300'}`}></div>
+                    <div className={`block w-10 h-6 rounded-full transition-colors ${settings.notifyNewUserSignup ? 'bg-blue-500' : 'bg-gray-300'}`}></div>
                     <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${settings.notifyNewUserSignup ? 'transform translate-x-4' : ''}`}></div>
                   </div>
                   <div className="text-sm font-medium text-gray-700">New User Signup</div>
@@ -302,7 +302,7 @@ export default function TelegramSettingsPage() {
                       checked={settings.notifyPasswordChange}
                       onChange={(e) => setSettings({ ...settings, notifyPasswordChange: e.target.checked })}
                     />
-                    <div className={`block w-10 h-6 rounded-full transition-colors ${settings.notifyPasswordChange ? 'bg-pink-500' : 'bg-gray-300'}`}></div>
+                    <div className={`block w-10 h-6 rounded-full transition-colors ${settings.notifyPasswordChange ? 'bg-blue-500' : 'bg-gray-300'}`}></div>
                     <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${settings.notifyPasswordChange ? 'transform translate-x-4' : ''}`}></div>
                   </div>
                   <div className="text-sm font-medium text-gray-700">User Password Change / Reset</div>
@@ -326,11 +326,11 @@ export default function TelegramSettingsPage() {
               )}
               <span>{isTesting ? 'Testing...' : 'Test Configuration'}</span>
             </button>
-            
+
             <button
               type="submit"
               disabled={isSaving}
-              className="flex items-center space-x-2 px-6 py-2.5 bg-pink-600 hover:bg-pink-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
+              className="flex items-center space-x-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
             >
               {isSaving ? (
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

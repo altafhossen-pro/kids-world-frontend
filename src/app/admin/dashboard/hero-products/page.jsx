@@ -31,14 +31,14 @@ export default function HeroProductsManagement() {
         size: 'large', // large, small
         badge: {
             text: '',
-            color: 'bg-pink-500'
+            color: 'bg-blue-500'
         },
         order: 0
     });
 
     // Badge color options
     const badgeColors = [
-        { value: 'bg-pink-500', label: 'Pink' },
+        { value: 'bg-blue-500', label: 'Pink' },
         { value: 'bg-red-500', label: 'Red' },
         { value: 'bg-blue-500', label: 'Blue' },
         { value: 'bg-green-500', label: 'Green' },
@@ -64,11 +64,11 @@ export default function HeroProductsManagement() {
             setLoading(true);
             const token = getCookie('token');
             const response = await heroProductAPI.getAllHeroProducts(token);
-            
+
             if (response.success) {
                 setHeroProducts(response.data || []);
             } else {
-                toast.error(response.message || 'Failed to fetch hero products');n
+                toast.error(response.message || 'Failed to fetch hero products'); n
             }
         } catch (error) {
             console.error('Error fetching hero products:', error);
@@ -81,11 +81,11 @@ export default function HeroProductsManagement() {
     const fetchAllProducts = async (searchQuery = '') => {
         try {
             setSearching(true);
-            const filters = { 
+            const filters = {
                 limit: 20
             };
             const response = await productAPI.searchProducts(searchQuery, filters);
-            
+
             if (response.success) {
                 // API returns data as array directly, not in products property
                 setAllProducts(response.data || []);
@@ -106,18 +106,18 @@ export default function HeroProductsManagement() {
             toast.error('Maximum 3 hero products allowed (1 large + 2 small)');
             return;
         }
-        
+
         // Smart size selection - choose available size
         const existingLarge = heroProducts.filter(p => p.size === 'large').length;
         const existingSmall = heroProducts.filter(p => p.size === 'small').length;
-        
+
         let defaultSize = 'small'; // Default to small
         if (existingLarge === 0) {
             defaultSize = 'large'; // If no large, default to large
         } else if (existingSmall < 2) {
             defaultSize = 'small'; // If large exists but small < 2, default to small
         }
-        
+
         setEditingProduct(null);
         setFormData({
             productId: '',
@@ -125,7 +125,7 @@ export default function HeroProductsManagement() {
             size: defaultSize,
             badge: {
                 text: '',
-                color: 'bg-pink-500'
+                color: 'bg-blue-500'
             },
             order: heroProducts.length
         });
@@ -138,19 +138,19 @@ export default function HeroProductsManagement() {
 
     const handleEdit = (product) => {
         setEditingProduct(product);
-        
+
         // Set selected product for display
         const selectedProductData = product.productId;
         setSelectedProduct(selectedProductData);
-        
+
         setFormData({
             productId: product.productId || '',
             customImage: product.customImage || '',
             size: product.size || 'large',
-            badge: product.badge || { text: '', color: 'bg-pink-500' },
+            badge: product.badge || { text: '', color: 'bg-blue-500' },
             order: product.order || 0
         });
-        
+
         // Set search term to show product name
         setSearchTerm(selectedProductData?.title || selectedProductData?.name || '');
         setAllProducts([]);
@@ -170,7 +170,7 @@ export default function HeroProductsManagement() {
             setDeleting(true);
             const token = getCookie('token');
             const response = await heroProductAPI.deleteHeroProduct(productToDelete._id, token);
-            
+
             if (response.success) {
                 toast.success('Product removed from hero section');
                 fetchHeroProducts();
@@ -194,32 +194,32 @@ export default function HeroProductsManagement() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         // Validate form
         if (!validateForm()) {
             return;
         }
-        
+
         // Check if adding new product and maximum reached
         if (!editingProduct && heroProducts.length >= 3) {
             toast.error('Maximum 3 hero products allowed (1 large + 2 small)');
             return;
         }
-        
+
         // Check size-specific limits
         const existingLarge = heroProducts.filter(p => p.size === 'large' && p._id !== editingProduct?._id);
         const existingSmall = heroProducts.filter(p => p.size === 'small' && p._id !== editingProduct?._id);
-        
+
         if (formData.size === 'large' && existingLarge.length >= 1) {
             toast.error('Only 1 large product allowed');
             return;
         }
-        
+
         if (formData.size === 'small' && existingSmall.length >= 2) {
             toast.error('Only 2 small products allowed');
             return;
         }
-        
+
         try {
             const token = getCookie('token');
             const productData = {
@@ -269,7 +269,7 @@ export default function HeroProductsManagement() {
                 [name]: value
             }));
         }
-        
+
         // Clear error when user starts typing
         if (errors[name]) {
             setErrors(prev => ({
@@ -281,35 +281,35 @@ export default function HeroProductsManagement() {
 
     const validateForm = () => {
         const newErrors = {};
-        
+
         if (!formData.size || formData.size.trim() === '') {
             newErrors.size = 'Size is required';
         }
-        
+
         if (!selectedProduct) {
             newErrors.product = 'Please select a product';
         }
-        
+
         if (!formData.badge.text || formData.badge.text.trim() === '') {
             newErrors.badgeText = 'Badge text is required';
         }
-        
+
         if (!formData.badge.color || formData.badge.color.trim() === '') {
             newErrors.badgeColor = 'Badge color is required';
         }
-        
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
     const isFormValid = () => {
-        return selectedProduct && 
-               formData.size && 
-               formData.size.trim() !== '' && 
-               formData.badge.text && 
-               formData.badge.text.trim() !== '' && 
-               formData.badge.color && 
-               formData.badge.color.trim() !== '';
+        return selectedProduct &&
+            formData.size &&
+            formData.size.trim() !== '' &&
+            formData.badge.text &&
+            formData.badge.text.trim() !== '' &&
+            formData.badge.color &&
+            formData.badge.color.trim() !== '';
     };
 
     // Handle search with debouncing
@@ -383,7 +383,7 @@ export default function HeroProductsManagement() {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
             </div>
         );
     }
@@ -399,11 +399,10 @@ export default function HeroProductsManagement() {
                 <button
                     onClick={handleAddNew}
                     disabled={heroProducts.length >= 3}
-                    className={`px-4 py-2 rounded-lg transition-colors duration-200 flex items-center gap-2 ${
-                        heroProducts.length >= 3 
-                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                            : 'bg-pink-500 text-white hover:bg-pink-600'
-                    }`}
+                    className={`px-4 py-2 rounded-lg transition-colors duration-200 flex items-center gap-2 ${heroProducts.length >= 3
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-blue-500 text-white hover:bg-blue-600'
+                        }`}
                 >
                     <Plus className="w-4 h-4" />
                     {heroProducts.length >= 3 ? 'Max Products (3)' : 'Add Product'}
@@ -414,8 +413,8 @@ export default function HeroProductsManagement() {
             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                 {heroProducts.length === 0 ? (
                     <div className="text-center py-16">
-                        <div className="w-20 h-20 mx-auto mb-6 bg-pink-100 rounded-full flex items-center justify-center">
-                            <svg className="w-10 h-10 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div className="w-20 h-20 mx-auto mb-6 bg-blue-100 rounded-full flex items-center justify-center">
+                            <svg className="w-10 h-10 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                             </svg>
                         </div>
@@ -426,7 +425,7 @@ export default function HeroProductsManagement() {
                         <div className="space-y-3">
                             <button
                                 onClick={handleAddNew}
-                                className="bg-pink-500 text-white px-6 py-3 rounded-lg hover:bg-pink-600 transition-colors duration-200 font-medium flex items-center gap-2 mx-auto"
+                                className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors duration-200 font-medium flex items-center gap-2 mx-auto"
                             >
                                 <Plus className="w-5 h-5" />
                                 Add First Product
@@ -452,13 +451,13 @@ export default function HeroProductsManagement() {
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {heroProducts.map((heroProduct) => {
                                     // Check if productId is populated or just an ID
-                                    const product = typeof heroProduct.productId === 'object' && heroProduct.productId !== null 
-                                        ? heroProduct.productId 
+                                    const product = typeof heroProduct.productId === 'object' && heroProduct.productId !== null
+                                        ? heroProduct.productId
                                         : null;
-                                    const productId = typeof heroProduct.productId === 'string' 
-                                        ? heroProduct.productId 
+                                    const productId = typeof heroProduct.productId === 'string'
+                                        ? heroProduct.productId
                                         : heroProduct.productId?._id;
-                                    
+
                                     return (
                                         <tr key={heroProduct._id} className="hover:bg-gray-50">
                                             <td className="px-6 py-4 whitespace-nowrap">
@@ -484,11 +483,10 @@ export default function HeroProductsManagement() {
                                                 )}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                                    heroProduct.size === 'large' 
-                                                        ? 'bg-blue-100 text-blue-800' 
-                                                        : 'bg-gray-100 text-gray-800'
-                                                }`}>
+                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${heroProduct.size === 'large'
+                                                    ? 'bg-blue-100 text-blue-800'
+                                                    : 'bg-gray-100 text-gray-800'
+                                                    }`}>
                                                     {heroProduct.size === 'large' ? 'Large' : 'Small'}
                                                 </span>
                                             </td>
@@ -555,7 +553,7 @@ export default function HeroProductsManagement() {
                                     <div className="relative">
                                         {searching ? (
                                             <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-pink-500"></div>
+                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
                                             </div>
                                         ) : (
                                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -565,11 +563,11 @@ export default function HeroProductsManagement() {
                                             value={searchTerm}
                                             onChange={handleSearchChange}
                                             onFocus={() => setShowProductDropdown(true)}
-                                            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
+                                            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500"
                                             placeholder="Type product name to search..."
                                             required
                                         />
-                                        
+
                                         {/* Product Dropdown */}
                                         {showProductDropdown && allProducts.length > 0 && (
                                             <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
@@ -598,7 +596,7 @@ export default function HeroProductsManagement() {
                                                             </p>
                                                         </div>
                                                         {selectedProduct?._id === product._id && (
-                                                            <Check className="w-4 h-4 text-pink-500" />
+                                                            <Check className="w-4 h-4 text-blue-500" />
                                                         )}
                                                     </div>
                                                 ))}
@@ -624,17 +622,16 @@ export default function HeroProductsManagement() {
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Custom Image (Optional)
                                     </label>
-                                    
+
                                     {/* Upload Mode Toggle */}
                                     <div className="flex space-x-2 mb-3">
                                         <button
                                             type="button"
                                             onClick={() => setImageUploadMode('url')}
-                                            className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                                                imageUploadMode === 'url'
-                                                    ? 'bg-pink-100 text-pink-700 border border-pink-300'
-                                                    : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200'
-                                            }`}
+                                            className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${imageUploadMode === 'url'
+                                                ? 'bg-blue-100 text-blue-700 border border-blue-300'
+                                                : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200'
+                                                }`}
                                         >
                                             <Link className="w-4 h-4 mr-2" />
                                             Manual URL
@@ -642,11 +639,10 @@ export default function HeroProductsManagement() {
                                         <button
                                             type="button"
                                             onClick={() => setImageUploadMode('upload')}
-                                            className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                                                imageUploadMode === 'upload'
-                                                    ? 'bg-pink-100 text-pink-700 border border-pink-300'
-                                                    : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200'
-                                            }`}
+                                            className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${imageUploadMode === 'upload'
+                                                ? 'bg-blue-100 text-blue-700 border border-blue-300'
+                                                : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200'
+                                                }`}
                                         >
                                             <Upload className="w-4 h-4 mr-2" />
                                             File Upload
@@ -661,7 +657,7 @@ export default function HeroProductsManagement() {
                                                 name="customImage"
                                                 value={formData.customImage}
                                                 onChange={handleInputChange}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500"
                                                 placeholder="https://example.com/custom-image.jpg"
                                             />
                                         </div>
@@ -682,7 +678,7 @@ export default function HeroProductsManagement() {
                                     )}
 
                                     <p className="text-xs text-gray-500 mt-1">
-                                        Leave empty to use product's default image. <span className="text-pink-600 font-medium">Recommended: 16:9 aspect ratio (e.g., 1920x1080px)</span>
+                                        Leave empty to use product's default image. <span className="text-blue-600 font-medium">Recommended: 16:9 aspect ratio (e.g., 1920x1080px)</span>
                                     </p>
                                 </div>
 
@@ -695,17 +691,16 @@ export default function HeroProductsManagement() {
                                         value={formData.size}
                                         onChange={handleInputChange}
                                         required
-                                        className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 ${
-                                            errors.size ? 'border-red-500' : 'border-gray-300'
-                                        }`}
+                                        className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500 ${errors.size ? 'border-red-500' : 'border-gray-300'
+                                            }`}
                                     >
                                         {sizeOptions.map((option) => {
                                             const existingCount = heroProducts.filter(p => p.size === option.value && p._id !== editingProduct?._id).length;
                                             const isDisabled = (option.value === 'large' && existingCount >= 1) || (option.value === 'small' && existingCount >= 2);
-                                            
+
                                             return (
-                                                <option 
-                                                    key={option.value} 
+                                                <option
+                                                    key={option.value}
                                                     value={option.value}
                                                     disabled={isDisabled}
                                                 >
@@ -734,7 +729,7 @@ export default function HeroProductsManagement() {
                                         value={formData.order}
                                         onChange={handleInputChange}
                                         min="0"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500"
                                     />
                                 </div>
 
@@ -748,9 +743,8 @@ export default function HeroProductsManagement() {
                                         value={formData.badge.text}
                                         onChange={handleInputChange}
                                         required
-                                        className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 ${
-                                            errors.badgeText ? 'border-red-500' : 'border-gray-300'
-                                        }`}
+                                        className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500 ${errors.badgeText ? 'border-red-500' : 'border-gray-300'
+                                            }`}
                                         placeholder="e.g., Hot Product, 30% OFF"
                                     />
                                     {errors.badgeText && (
@@ -769,9 +763,8 @@ export default function HeroProductsManagement() {
                                         value={formData.badge.color}
                                         onChange={handleInputChange}
                                         required
-                                        className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 ${
-                                            errors.badgeColor ? 'border-red-500' : 'border-gray-300'
-                                        }`}
+                                        className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500 ${errors.badgeColor ? 'border-red-500' : 'border-gray-300'
+                                            }`}
                                     >
                                         {badgeColors.map((option) => (
                                             <option key={option.value} value={option.value}>
@@ -798,11 +791,10 @@ export default function HeroProductsManagement() {
                                 <button
                                     type="submit"
                                     disabled={!isFormValid()}
-                                    className={`px-4 py-2 text-sm font-medium border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transition-all duration-200 ${
-                                        isFormValid() 
-                                            ? 'text-white bg-pink-500 hover:bg-pink-600 cursor-pointer' 
-                                            : 'text-gray-400 bg-gray-200 cursor-not-allowed'
-                                    }`}
+                                    className={`px-4 py-2 text-sm font-medium border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transition-all duration-200 ${isFormValid()
+                                        ? 'text-white bg-blue-500 hover:bg-blue-600 cursor-pointer'
+                                        : 'text-gray-400 bg-gray-200 cursor-not-allowed'
+                                        }`}
                                 >
                                     {editingProduct ? 'Update Product' : 'Add Product'}
                                 </button>

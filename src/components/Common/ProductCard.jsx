@@ -119,7 +119,7 @@ function ProductCard({ product, onWishlistToggle, onAddToCart, showWishlistOnHov
     // Check if product is out of stock
     const isOutOfStock = () => {
         if (product.isForceOutOfStock) return true;
-        
+
         // Use stock data if available
         if (stockData !== null) {
             return !stockData.isAvailable;
@@ -192,7 +192,7 @@ function ProductCard({ product, onWishlistToggle, onAddToCart, showWishlistOnHov
                         onWishlistToggle(product.id);
                     }}
                     className={`absolute top-3 right-3 p-2 rounded-full transition-all duration-300 cursor-pointer ${product.isWishlisted
-                        ? 'bg-pink-500 text-white'
+                        ? 'bg-blue-500 text-white'
                         : 'bg-white/80 text-gray-600 hover:bg-gray-200 cursor-pointer hover:text-black'
                         }`}
                     aria-label={product.isWishlisted ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
@@ -234,7 +234,7 @@ function ProductCard({ product, onWishlistToggle, onAddToCart, showWishlistOnHov
 
                 {/* Price */}
                 <div className="flex items-center gap-2">
-                    <span className="font-semibold text-sm sm:text-lg text-pink-500">{product?.price ?? 0} BDT</span>
+                    <span className="font-semibold text-sm sm:text-lg text-blue-500">{product?.price ?? 0} BDT</span>
                     {product?.originalPrice && (
                         <span className="text-gray-500 line-through text-xs sm:text-sm">{product?.originalPrice ? product?.originalPrice : 0} BDT</span>
                     )}

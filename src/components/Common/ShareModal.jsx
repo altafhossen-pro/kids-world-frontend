@@ -61,13 +61,13 @@ export default function ShareModal({ isOpen, onClose, url, title = 'Share Link' 
                                 type="text"
                                 value={fullUrl}
                                 readOnly
-                                className="flex-1 px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                                className="flex-1 px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-blue-500"
                             />
                             <button
                                 onClick={handleCopy}
                                 className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white transition-colors cursor-pointer ${copied
-                                        ? 'bg-green-600 hover:bg-green-700'
-                                        : 'bg-pink-600 hover:bg-pink-700'
+                                    ? 'bg-green-600 hover:bg-green-700'
+                                    : 'bg-blue-600 hover:bg-blue-700'
                                     }`}
                             >
                                 {copied ? (
@@ -95,7 +95,7 @@ export default function ShareModal({ isOpen, onClose, url, title = 'Share Link' 
                 <div className="bg-gray-50 px-6 py-4 flex justify-end border-t border-gray-200">
                     <button
                         onClick={onClose}
-                        className="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-sm font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transition-colors cursor-pointer"
+                        className="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transition-colors cursor-pointer"
                     >
                         Close
                     </button>

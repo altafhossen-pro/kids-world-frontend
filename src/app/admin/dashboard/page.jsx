@@ -57,7 +57,7 @@ const lowStockItems = [
 const quickActions = [
     { label: 'Add New Product', icon: Package, color: 'bg-blue-100 text-blue-600', href: '/admin/dashboard/products' },
     { label: 'Create Order', icon: ShoppingCart, color: 'bg-green-100 text-green-600', href: '/admin/dashboard/orders' },
-    { label: 'Add Coupon', icon: Tag, color: 'bg-pink-100 text-pink-600', href: '/admin/dashboard/coupons' },
+    { label: 'Add Coupon', icon: Tag, color: 'bg-blue-100 text-blue-600', href: '/admin/dashboard/coupons' },
     { label: 'Add Banner', icon: Image, color: 'bg-orange-100 text-orange-600', href: '/admin/dashboard/banners' },
     { label: 'View Reports', icon: BarChart2, color: 'bg-purple-100 text-purple-600', href: '/admin/dashboard/reports' },
     { label: 'Manage Users', icon: Users, color: 'bg-indigo-100 text-indigo-600', href: '/admin/dashboard/users' },
@@ -320,7 +320,7 @@ export default function NewAdminDashboard() {
                                     <p className="text-sm font-bold text-gray-800 truncate">{item.name}</p>
                                     <p className="text-xs text-red-500 font-bold mt-0.5">Stock: {item.stock}</p>
                                 </div>
-                                <button className="bg-pink-500 hover:bg-pink-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1 transition-colors">
+                                <button className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1 transition-colors">
                                     <RotateCcw className="w-3 h-3" /> Restock
                                 </button>
                             </div>

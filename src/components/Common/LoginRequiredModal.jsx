@@ -65,7 +65,7 @@ export default function LoginRequiredModal({ isOpen, onClose }) {
             <div className="flex gap-3">
               <button
                 onClick={handleLoginRedirect}
-                className="flex-1 bg-pink-500 hover:bg-pink-600 text-white px-4 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
                 Go to Login
                 <ArrowRight className="w-4 h-4" />

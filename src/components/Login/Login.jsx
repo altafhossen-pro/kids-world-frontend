@@ -24,7 +24,7 @@ function LoginPage() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const [loading, setLoading] = useState(false)
-    
+
     // Get redirect URL from query params
     const redirectUrl = searchParams.get('redirect')
     const [showPassword, setShowPassword] = useState(false)
@@ -43,20 +43,20 @@ function LoginPage() {
 
     const handleLoginChange = (e) => {
         const { name, value } = e.target
-        
+
         // Special handling for phone number
         if (name === 'phone') {
             // Only allow numbers
             const numericValue = value.replace(/\D/g, '')
-            
+
             // Limit to 11 digits
             const limitedValue = numericValue.slice(0, 11)
-            
+
             setLoginForm(prev => ({
                 ...prev,
                 [name]: limitedValue
             }))
-            
+
             // Validate phone number
             validatePhone(limitedValue)
         } else {
@@ -106,7 +106,7 @@ function LoginPage() {
             if (data.success) {
                 login(data.data.user, data.data.token)
                 toast.success('Login successful!')
-                
+
                 if (data.data.user?.role === 'admin') {
                     router.push('/admin/dashboard')
                 } else {
@@ -131,7 +131,7 @@ function LoginPage() {
         }
         const minutes = Math.floor(seconds / 60)
         const remainingSeconds = seconds % 60
-        
+
         if (remainingSeconds === 0) {
             return `${minutes} minute${minutes !== 1 ? 's' : ''}`
         }
@@ -165,7 +165,7 @@ function LoginPage() {
         setLoading(true)
         try {
             const data = await otpAPI.sendOTP(loginForm.phone, 'login')
-            
+
             if (data.success) {
                 setOtpSent(true)
                 toast.success('OTP sent to your phone number')
@@ -176,16 +176,16 @@ function LoginPage() {
             }
         } catch (error) {
             console.error('Send OTP error:', error)
-            
+
             // Extract error message from error response
             let errorMessage = 'Failed to send OTP. Please try again.'
-            
+
             if (error.response && error.response.data) {
                 errorMessage = error.response.data.message || errorMessage
             } else if (error.message) {
                 errorMessage = error.message
             }
-            
+
             // Format the error message if it contains time remaining
             const formattedMessage = formatRateLimitMessage(errorMessage)
             toast.error(formattedMessage)
@@ -204,11 +204,11 @@ function LoginPage() {
         setLoading(true)
         try {
             const data = await otpAPI.verifyOTP(loginForm.phone, loginForm.otp)
-            
+
             if (data.success) {
                 setOtpVerified(true)
                 toast.success('OTP verified successfully!')
-                
+
                 // Login user with returned data
                 if (data.data && data.data.user && data.data.token) {
                     login(data.data.user, data.data.token)
@@ -227,10 +227,10 @@ function LoginPage() {
             }
         } catch (error) {
             console.error('Verify OTP error:', error)
-            
+
             // Extract error message from error response
             let errorMessage = 'OTP verification failed. Please try again.'
-            
+
             if (error.response && error.response.data) {
                 // API returned error response
                 errorMessage = error.response.data.message || errorMessage
@@ -238,9 +238,9 @@ function LoginPage() {
                 // Network or other error
                 errorMessage = error.message
             }
-            
+
             toast.error(errorMessage)
-            
+
             // Clear OTP input on error so user can retry
             setLoginForm(prev => ({ ...prev, otp: '' }))
         } finally {
@@ -269,33 +269,30 @@ function LoginPage() {
                     <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
                         <button
                             onClick={() => setActiveTab('email')}
-                            className={`flex-1 flex items-center justify-center py-2 px-4 rounded-lg text-sm font-medium transition-all ${
-                                activeTab === 'email'
-                                    ? 'bg-white text-pink-600 shadow-sm'
-                                    : 'text-gray-600 hover:text-gray-900'
-                            }`}
+                            className={`flex-1 flex items-center justify-center py-2 px-4 rounded-lg text-sm font-medium transition-all ${activeTab === 'email'
+                                ? 'bg-white text-blue-600 shadow-sm'
+                                : 'text-gray-600 hover:text-gray-900'
+                                }`}
                         >
                             <Mail className="w-4 h-4 mr-2" />
                             Email
                         </button>
                         <button
                             onClick={() => setActiveTab('phone')}
-                            className={`flex-1 flex items-center justify-center py-2 px-4 rounded-lg text-sm font-medium transition-all ${
-                                activeTab === 'phone'
-                                    ? 'bg-white text-pink-600 shadow-sm'
-                                    : 'text-gray-600 hover:text-gray-900'
-                            }`}
+                            className={`flex-1 flex items-center justify-center py-2 px-4 rounded-lg text-sm font-medium transition-all ${activeTab === 'phone'
+                                ? 'bg-white text-blue-600 shadow-sm'
+                                : 'text-gray-600 hover:text-gray-900'
+                                }`}
                         >
                             <Phone className="w-4 h-4 mr-2" />
                             Phone
                         </button>
                         <button
                             onClick={() => setActiveTab('social')}
-                            className={`flex-1 flex items-center justify-center py-2 px-4 rounded-lg text-sm font-medium transition-all ${
-                                activeTab === 'social'
-                                    ? 'bg-white text-pink-600 shadow-sm'
-                                    : 'text-gray-600 hover:text-gray-900'
-                            }`}
+                            className={`flex-1 flex items-center justify-center py-2 px-4 rounded-lg text-sm font-medium transition-all ${activeTab === 'social'
+                                ? 'bg-white text-blue-600 shadow-sm'
+                                : 'text-gray-600 hover:text-gray-900'
+                                }`}
                         >
                             <User className="w-4 h-4 mr-2" />
                             Social
@@ -323,7 +320,7 @@ function LoginPage() {
                                         required
                                         value={loginForm.email}
                                         onChange={handleLoginChange}
-                                        className="block w-full pl-12 pr-4 py-3 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-200 bg-gray-50 focus:bg-white"
+                                        className="block w-full pl-12 pr-4 py-3 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
                                         placeholder="Enter your email address"
                                     />
                                 </div>
@@ -345,7 +342,7 @@ function LoginPage() {
                                         required
                                         value={loginForm.password}
                                         onChange={handleLoginChange}
-                                        className="block w-full pl-12 pr-12 py-3 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-200 bg-gray-50 focus:bg-white"
+                                        className="block w-full pl-12 pr-12 py-3 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
                                         placeholder="Enter your password"
                                     />
                                     <button
@@ -368,7 +365,7 @@ function LoginPage() {
                                         id="remember-me"
                                         name="remember-me"
                                         type="checkbox"
-                                        className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
+                                        className="h-4 w-4 text-blue-600 focus:ring-pink-500 border-gray-300 rounded"
                                     />
                                     <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
                                         Remember me
@@ -376,7 +373,7 @@ function LoginPage() {
                                 </div>
 
                                 <div className="text-sm">
-                                    <Link href="/forgot-password" className="font-medium text-pink-600 hover:text-pink-500">
+                                    <Link href="/forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
                                         Forgot password?
                                     </Link>
                                 </div>
@@ -411,38 +408,37 @@ function LoginPage() {
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                             <Phone className="h-5 w-5 text-gray-400" />
                                         </div>
-                                    <input
-                                        id="phone"
-                                        name="phone"
-                                        type="tel"
-                                        autoComplete="tel"
-                                        required
-                                        value={loginForm.phone}
-                                        onChange={handleLoginChange}
-                                        maxLength={11}
-                                        className={`block w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-200 bg-gray-50 focus:bg-white ${
-                                            phoneError 
-                                                ? 'border-red-500 focus:border-red-500' 
-                                                : 'border-gray-400 focus:border-pink-500'
-                                        }`}
-                                        placeholder="01XXXXXXXXX (11 digits)"
-                                    />
-                                </div>
-                                {phoneError && (
-                                    <p className="text-xs text-red-500 mt-1">
-                                        {phoneError}
-                                    </p>
-                                )}
-                                {!phoneError && loginForm.phone && (
-                                    <p className="text-xs text-gray-500 mt-2">
-                                        We'll send you a verification code via SMS
-                                    </p>
-                                )}
-                                {!phoneError && !loginForm.phone && (
-                                    <p className="text-xs text-gray-500 mt-2">
-                                        Enter your 11-digit phone number starting with 01
-                                    </p>
-                                )}
+                                        <input
+                                            id="phone"
+                                            name="phone"
+                                            type="tel"
+                                            autoComplete="tel"
+                                            required
+                                            value={loginForm.phone}
+                                            onChange={handleLoginChange}
+                                            maxLength={11}
+                                            className={`block w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-200 bg-gray-50 focus:bg-white ${phoneError
+                                                ? 'border-red-500 focus:border-red-500'
+                                                : 'border-gray-400 focus:border-blue-500'
+                                                }`}
+                                            placeholder="01XXXXXXXXX (11 digits)"
+                                        />
+                                    </div>
+                                    {phoneError && (
+                                        <p className="text-xs text-red-500 mt-1">
+                                            {phoneError}
+                                        </p>
+                                    )}
+                                    {!phoneError && loginForm.phone && (
+                                        <p className="text-xs text-gray-500 mt-2">
+                                            We'll send you a verification code via SMS
+                                        </p>
+                                    )}
+                                    {!phoneError && !loginForm.phone && (
+                                        <p className="text-xs text-gray-500 mt-2">
+                                            Enter your 11-digit phone number starting with 01
+                                        </p>
+                                    )}
                                 </div>
                             ) : (
                                 <div>
@@ -461,7 +457,7 @@ function LoginPage() {
                                             required
                                             value={loginForm.otp}
                                             onChange={handleLoginChange}
-                                            className="block w-full pl-12 pr-4 py-3 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-200 bg-gray-50 focus:bg-white text-center text-lg tracking-widest"
+                                            className="block w-full pl-12 pr-4 py-3 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white text-center text-lg tracking-widest"
                                             placeholder="000000"
                                         />
                                     </div>
@@ -504,13 +500,13 @@ function LoginPage() {
                                             </>
                                         )}
                                     </button>
-                                    
+
                                     <div className="flex gap-2">
                                         <button
                                             type="button"
                                             onClick={handleSendOTP}
                                             disabled={loading}
-                                            className="flex-1 text-sm text-pink-600 hover:text-pink-700 font-medium disabled:opacity-50"
+                                            className="flex-1 text-sm text-blue-600 hover:text-blue-700 font-medium disabled:opacity-50"
                                         >
                                             Resend OTP
                                         </button>
@@ -522,7 +518,7 @@ function LoginPage() {
                                                 setPhoneError('')
                                                 setLoginForm(prev => ({ ...prev, otp: '', phone: '' }))
                                             }}
-                                            className="flex-1 text-sm text-pink-600 hover:text-pink-700 font-medium"
+                                            className="flex-1 text-sm text-blue-600 hover:text-blue-700 font-medium"
                                         >
                                             Change phone number
                                         </button>
@@ -549,7 +545,7 @@ function LoginPage() {
                             className="text-sm text-gray-600 hover:text-gray-900 flex items-center justify-center mx-auto group"
                         >
                             <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-                            Don't have an account? <span className="text-pink-600 hover:text-pink-700 font-medium ms-2">Sign up</span>
+                            Don't have an account? <span className="text-blue-600 hover:text-blue-700 font-medium ms-2">Sign up</span>
                         </Link>
                     </div>
 
@@ -568,7 +564,7 @@ function LoginPage() {
 // Wrapper component with Suspense boundary
 export default function LoginPageWithSuspense() {
     return (
-        <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div></div>}>
+        <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div></div>}>
             <LoginPage />
         </Suspense>
     );

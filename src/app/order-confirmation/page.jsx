@@ -24,7 +24,7 @@ function OrderConfirmation() {
 
     // total from query params is already the final paid amount
     const finalTotal = parseFloat(total) || 0;
-    
+
     // Calculate original total before discounts to show crossed-out price
     const calculateOriginalTotal = () => {
         let originalTotal = finalTotal;
@@ -102,7 +102,7 @@ function OrderConfirmation() {
                     {isGuestOrder && (
                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
                             <div className="flex items-start gap-2">
-                                
+
                                 <div>
                                     <h3 className="font-semibold text-blue-800 mb-1 text-sm">Guest Order Notice</h3>
                                     <p className="text-xs text-blue-700 mb-2">
@@ -135,7 +135,7 @@ function OrderConfirmation() {
                             </div>
                         </div>
                     )}
-                    
+
                     {/* Order Information Grid */}
                     <div className="grid grid-cols-2 gap-2 mb-4">
                         {/* Order ID */}
@@ -210,7 +210,7 @@ function OrderConfirmation() {
                                 {loyaltyDiscount && (
                                     <div className="flex justify-between items-center text-sm">
                                         <span className="text-gray-600">Loyalty Points Discount</span>
-                                        <span className="font-semibold text-pink-600">
+                                        <span className="font-semibold text-blue-600">
                                             -৳{parseFloat(loyaltyDiscount).toFixed(2)}
                                         </span>
                                     </div>
@@ -274,7 +274,6 @@ function OrderConfirmation() {
                 </div>
             </div>
 
-            <Footer />
         </div>
     );
 }
@@ -282,7 +281,7 @@ function OrderConfirmation() {
 // Wrapper component with Suspense boundary
 export default function OrderConfirmationWithSuspense() {
     return (
-        <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div></div>}>
+        <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div></div>}>
             <OrderConfirmation />
         </Suspense>
     );

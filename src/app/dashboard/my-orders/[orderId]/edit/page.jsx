@@ -12,13 +12,13 @@ export default function EditOrder() {
     const params = useParams()
     const router = useRouter()
     const { token, isAuthenticated, deliveryChargeSettings } = useAppContext()
-    
+
     const [order, setOrder] = useState(null)
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
-    
+
     const [items, setItems] = useState([])
-    
+
     // Address State
     const [formData, setFormData] = useState({
         division: '',
@@ -32,12 +32,12 @@ export default function EditOrder() {
         deliveryType: 'outsideDhaka',
         deliveryAddress: '',
     })
-    
+
     const [divisions, setDivisions] = useState([])
     const [districts, setDistricts] = useState([])
     const [upazilas, setUpazilas] = useState([])
     const [dhakaAreas, setDhakaAreas] = useState([])
-    
+
     // Search State
     const [searchQuery, setSearchQuery] = useState('')
     const [searchResults, setSearchResults] = useState([])
@@ -81,7 +81,7 @@ export default function EditOrder() {
                     return
                 }
                 setOrder(fetchedOrder)
-                
+
                 const formattedItems = (fetchedOrder.items || []).map(item => {
                     let maxStock = 1000;
                     if (item.product && typeof item.product === 'object') {
@@ -101,7 +101,7 @@ export default function EditOrder() {
                     }
                 });
                 setItems(formattedItems)
-                
+
                 if (fetchedOrder.shippingAddress) {
                     const addr = fetchedOrder.shippingAddress
                     setFormData({
@@ -140,25 +140,25 @@ export default function EditOrder() {
         try {
             const response = await addressAPI.getDivisions()
             if (response.success) setDivisions(response.data)
-        } catch (error) {}
+        } catch (error) { }
     }
     const fetchDistricts = async (divisionId) => {
         try {
             const response = await addressAPI.getDistrictsByDivision(divisionId)
             if (response.success) setDistricts(response.data)
-        } catch (error) {}
+        } catch (error) { }
     }
     const fetchUpazilas = async (districtId) => {
         try {
             const response = await addressAPI.getUpazilasByDistrict(districtId)
             if (response.success) setUpazilas(response.data)
-        } catch (error) {}
+        } catch (error) { }
     }
     const fetchDhakaAreas = async () => {
         try {
             const response = await addressAPI.getAllDhakaCityAreas()
             if (response.success) setDhakaAreas(response.data)
-        } catch (error) {}
+        } catch (error) { }
     }
 
     useEffect(() => {
@@ -223,9 +223,9 @@ export default function EditOrder() {
     const handleQuantityChange = (index, delta) => {
         const newItems = [...items]
         const newQuantity = newItems[index].quantity + delta
-        
+
         if (newQuantity < 1) return
-        
+
         if (newItems[index].maxStock !== undefined && newQuantity > newItems[index].maxStock) {
             if (newItems[index].maxStock === 0) {
                 toast.error('Product is currently out of stock')
@@ -257,7 +257,7 @@ export default function EditOrder() {
                         setSearchResults(response.data?.products || response.data || [])
                         setShowSuggestions(true)
                     }
-                } catch (error) {}
+                } catch (error) { }
                 setSearching(false)
             } else {
                 setSearchResults([])
@@ -302,16 +302,16 @@ export default function EditOrder() {
     const handleAddProduct = (product) => {
         if (product.variants && product.variants.length > 0) {
             setSelectedProductForVariant(product);
-            
+
             // Auto-select first available variant
             const firstVariant = product.variants[0];
             setSelectedVariantSku(firstVariant.sku || firstVariant._id);
-            
+
             setSearchQuery('');
             setShowSuggestions(false);
             return
         }
-        
+
         addVariantToOrder(product, null, null, null);
     }
 
@@ -329,7 +329,7 @@ export default function EditOrder() {
             toast.error('Selected variant is out of stock');
             return;
         }
-        
+
         const sizeAttr = variant.attributes?.find(a => a.name === 'Size');
         const colorAttr = variant.attributes?.find(a => a.name === 'Color');
         addVariantToOrder(selectedProductForVariant, variant, sizeAttr?.value || null, colorAttr?.value || null);
@@ -338,7 +338,7 @@ export default function EditOrder() {
 
     const addVariantToOrder = (product, variant, size, color) => {
         const stockLimit = product.isForceOutOfStock ? 0 : (variant ? variant.stockQuantity : product.totalStock);
-        
+
         if (stockLimit < 1) {
             toast.error('Product is currently out of stock');
             return;
@@ -346,7 +346,7 @@ export default function EditOrder() {
 
         const existingItemIndex = items.findIndex(item => item.product === product._id && item.variantSku === (variant?.sku || null));
 
-        
+
         if (existingItemIndex >= 0) {
             handleQuantityChange(existingItemIndex, 1)
         } else {
@@ -370,7 +370,7 @@ export default function EditOrder() {
 
     // Calculations
     const subtotal = items.reduce((sum, item) => sum + (item.subtotal || 0), 0)
-    
+
     let shippingCost = 0
     if (deliveryChargeSettings && formData.deliveryType) {
         if (subtotal >= deliveryChargeSettings.shippingFreeRequiredAmount) {
@@ -438,7 +438,7 @@ export default function EditOrder() {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
-                <RefreshCw className="h-8 w-8 text-pink-500 animate-spin" />
+                <RefreshCw className="h-8 w-8 text-blue-500 animate-spin" />
             </div>
         )
     }
@@ -459,7 +459,7 @@ export default function EditOrder() {
                     {/* Items Section */}
                     <div className="bg-white rounded-lg shadow-sm p-6">
                         <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Items</h2>
-                        
+
                         <div className="mb-6 relative" ref={searchRef}>
                             <div className="relative">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -468,7 +468,7 @@ export default function EditOrder() {
                                     placeholder="Search products to add..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
+                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-blue-500"
                                 />
                             </div>
                             {showSuggestions && (
@@ -482,7 +482,7 @@ export default function EditOrder() {
                                                     <img src={product.featuredImage || product.image || '/images/placeholder.png'} alt={product.title} className="w-10 h-10 object-cover rounded mr-3" />
                                                     <div>
                                                         <div className="text-sm font-medium">{product.title}</div>
-                                                        <div className="text-sm text-pink-600">৳{product.variants?.[0]?.currentPrice || product.basePrice}</div>
+                                                        <div className="text-sm text-blue-600">৳{product.variants?.[0]?.currentPrice || product.basePrice}</div>
                                                     </div>
                                                 </div>
                                                 <Plus className="h-4 w-4 text-gray-400" />
@@ -508,7 +508,7 @@ export default function EditOrder() {
                                                     {item.variant.color && `Color: ${item.variant.color}`}
                                                 </div>
                                             )}
-                                            <div className="text-pink-600 font-medium">৳{item.price}</div>
+                                            <div className="text-blue-600 font-medium">৳{item.price}</div>
                                         </div>
                                     </div>
                                     <div className="flex items-center space-x-4">
@@ -533,14 +533,14 @@ export default function EditOrder() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Division *</label>
-                                <select name="divisionId" value={formData.divisionId} onChange={handleInputChange} className="w-full px-3 py-2 border rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500">
+                                <select name="divisionId" value={formData.divisionId} onChange={handleInputChange} className="w-full px-3 py-2 border rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-pink-500">
                                     <option value="">Select Division</option>
                                     {divisions.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                                 </select>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">District *</label>
-                                <select name="districtId" value={formData.districtId} onChange={handleInputChange} disabled={!formData.divisionId} className="w-full px-3 py-2 border rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500">
+                                <select name="districtId" value={formData.districtId} onChange={handleInputChange} disabled={!formData.divisionId} className="w-full px-3 py-2 border rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-pink-500">
                                     <option value="">Select District</option>
                                     {districts.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                                 </select>
@@ -548,7 +548,7 @@ export default function EditOrder() {
                             {formData.districtId === '65' ? (
                                 <div className="sm:col-span-2">
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Area *</label>
-                                    <select name="areaId" value={formData.areaId} onChange={handleInputChange} className="w-full px-3 py-2 border rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500">
+                                    <select name="areaId" value={formData.areaId} onChange={handleInputChange} className="w-full px-3 py-2 border rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-pink-500">
                                         <option value="">Select Area</option>
                                         {dhakaAreas.map(a => <option key={a._id} value={a._id}>{a.name}</option>)}
                                     </select>
@@ -556,7 +556,7 @@ export default function EditOrder() {
                             ) : (
                                 <div className="sm:col-span-2">
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Upazila *</label>
-                                    <select name="upazilaId" value={formData.upazilaId} onChange={handleInputChange} disabled={!formData.districtId} className="w-full px-3 py-2 border rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500">
+                                    <select name="upazilaId" value={formData.upazilaId} onChange={handleInputChange} disabled={!formData.districtId} className="w-full px-3 py-2 border rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-pink-500">
                                         <option value="">Select Upazila</option>
                                         {upazilas.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
                                     </select>
@@ -564,7 +564,7 @@ export default function EditOrder() {
                             )}
                             <div className="sm:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Street Address *</label>
-                                <textarea name="deliveryAddress" value={formData.deliveryAddress} onChange={handleInputChange} rows={3} className="w-full px-3 py-2 border rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500" placeholder="House/Road No, specific details"></textarea>
+                                <textarea name="deliveryAddress" value={formData.deliveryAddress} onChange={handleInputChange} rows={3} className="w-full px-3 py-2 border rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-pink-500" placeholder="House/Road No, specific details"></textarea>
                             </div>
                         </div>
                     </div>
@@ -592,7 +592,7 @@ export default function EditOrder() {
 
                         <div className="flex justify-end gap-4">
                             <Link href={`/dashboard/my-orders/${params.orderId}`} className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium cursor-pointer">Cancel</Link>
-                            <button onClick={onSaveClick} disabled={saving || items.length === 0} className="flex items-center px-6 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 disabled:bg-pink-400 font-medium cursor-pointer">
+                            <button onClick={onSaveClick} disabled={saving || items.length === 0} className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 font-medium cursor-pointer">
                                 {saving ? <RefreshCw className="w-5 h-5 mr-2 animate-spin" /> : <Save className="w-5 h-5 mr-2" />}
                                 Save Changes
                             </button>
@@ -606,7 +606,7 @@ export default function EditOrder() {
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-lg p-6 max-w-md w-full">
                         <h3 className="text-lg font-semibold mb-4">Select Options for {selectedProductForVariant.title}</h3>
-                        
+
                         {(() => {
                             const selectedVariantObj = getSelectedVariant();
                             const currentSize = selectedVariantObj?.attributes?.find(a => a.name === 'Size')?.value;
@@ -630,11 +630,10 @@ export default function EditOrder() {
                                                                 });
                                                                 if (firstVariantOfSize) setSelectedVariantSku(firstVariantOfSize.sku || firstVariantOfSize._id);
                                                             }}
-                                                            className={`rounded-md border-2 transition-all duration-200 flex items-center justify-center font-medium cursor-pointer ${
-                                                                isSizeSelected
-                                                                    ? 'bg-pink-500 text-white border-pink-500 shadow-sm'
-                                                                    : 'border-gray-300 text-gray-700 hover:border-pink-400 hover:bg-pink-50'
-                                                            } ${isSingleChar ? 'w-10 h-10 text-base md:text-lg' : 'px-3 py-2 text-sm'}`}
+                                                            className={`rounded-md border-2 transition-all duration-200 flex items-center justify-center font-medium cursor-pointer ${isSizeSelected
+                                                                ? 'bg-blue-500 text-white border-blue-500 shadow-sm'
+                                                                : 'border-gray-300 text-gray-700 hover:border-blue-400 hover:bg-blue-50'
+                                                                } ${isSingleChar ? 'w-10 h-10 text-base md:text-lg' : 'px-3 py-2 text-sm'}`}
                                                         >
                                                             {size}
                                                         </button>
@@ -670,11 +669,10 @@ export default function EditOrder() {
                                                             <button
                                                                 key={variant.sku || variant._id}
                                                                 onClick={() => setSelectedVariantSku(variant.sku || variant._id)}
-                                                                className={`w-12 h-12 rounded-md border-2 transition-all duration-200 flex items-center justify-center cursor-pointer overflow-hidden ${
-                                                                    isSelected
-                                                                        ? 'border-pink-500 ring-2 ring-pink-200 shadow-sm'
-                                                                        : 'border-gray-300 hover:border-pink-400 hover:shadow-sm'
-                                                                }`}
+                                                                className={`w-12 h-12 rounded-md border-2 transition-all duration-200 flex items-center justify-center cursor-pointer overflow-hidden ${isSelected
+                                                                    ? 'border-blue-500 ring-2 ring-pink-200 shadow-sm'
+                                                                    : 'border-gray-300 hover:border-blue-400 hover:shadow-sm'
+                                                                    }`}
                                                                 title={variantTitle}
                                                             >
                                                                 {variantImage ? (
@@ -706,18 +704,17 @@ export default function EditOrder() {
                             <button onClick={() => setSelectedProductForVariant(null)} className="px-4 py-2 text-gray-600 border rounded-lg hover:bg-gray-50 cursor-pointer">Cancel</button>
                             {(() => {
                                 const selectedVariantObj = getSelectedVariant();
-                                const isOutOfStock = selectedProductForVariant?.isForceOutOfStock || 
-                                                     (selectedVariantObj && selectedVariantObj.stockQuantity <= 0);
-                                
+                                const isOutOfStock = selectedProductForVariant?.isForceOutOfStock ||
+                                    (selectedVariantObj && selectedVariantObj.stockQuantity <= 0);
+
                                 return (
-                                    <button 
+                                    <button
                                         onClick={confirmVariantAddition}
                                         disabled={isOutOfStock}
-                                        className={`px-4 py-2 text-white rounded-lg ${
-                                            isOutOfStock 
-                                                ? 'bg-gray-400 cursor-not-allowed' 
-                                                : 'bg-pink-600 hover:bg-pink-700 cursor-pointer'
-                                        }`}
+                                        className={`px-4 py-2 text-white rounded-lg ${isOutOfStock
+                                            ? 'bg-gray-400 cursor-not-allowed'
+                                            : 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
+                                            }`}
                                     >
                                         {isOutOfStock ? 'Out of Stock' : 'Add Product'}
                                     </button>
@@ -752,7 +749,7 @@ export default function EditOrder() {
                                 </button>
                                 <button
                                     onClick={handleSaveChanges}
-                                    className="flex-1 px-4 py-2 text-white bg-pink-600 hover:bg-pink-700 rounded-lg font-medium transition-colors cursor-pointer"
+                                    className="flex-1 px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors cursor-pointer"
                                 >
                                     Confirm
                                 </button>

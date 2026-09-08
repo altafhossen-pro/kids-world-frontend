@@ -113,9 +113,9 @@ export default function OrderDetails() {
     // Transform order data for display
     const getStatusInfo = (status) => {
         const statusMap = {
-            'pending': { label: 'Pending', color: 'text-pink-600', bg: 'bg-pink-100', icon: Clock },
+            'pending': { label: 'Pending', color: 'text-blue-600', bg: 'bg-blue-100', icon: Clock },
             'confirmed': { label: 'Confirmed', color: 'text-blue-600', bg: 'bg-blue-100', icon: Clock },
-            'processing': { label: 'Processing', color: 'text-pink-600', bg: 'bg-pink-100', icon: Clock },
+            'processing': { label: 'Processing', color: 'text-blue-600', bg: 'bg-blue-100', icon: Clock },
             'shipped': { label: 'Shipped', color: 'text-blue-600', bg: 'bg-blue-100', icon: Truck },
             'delivered': { label: 'Delivered', color: 'text-green-600', bg: 'bg-green-100', icon: CheckCircle },
             'cancelled': { label: 'Cancelled', color: 'text-red-600', bg: 'bg-red-100', icon: AlertCircle },
@@ -169,7 +169,7 @@ export default function OrderDetails() {
                             {order.status === 'pending' && (
                                 <Link
                                     href={`/dashboard/my-orders/${params.orderId}/edit`}
-                                    className="inline-flex items-center px-4 py-2 bg-white text-pink-600 border border-pink-600 rounded-lg hover:bg-pink-50 transition-colors cursor-pointer"
+                                    className="inline-flex items-center px-4 py-2 bg-white text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors cursor-pointer"
                                 >
                                     <RefreshCw className="h-4 w-4 mr-2" />
                                     Edit Order
@@ -270,7 +270,7 @@ export default function OrderDetails() {
                                 <span className="text-gray-600">Subtotal</span>
                                 <span className="text-gray-900 font-medium">৳{subtotal.toLocaleString()}</span>
                             </div>
-                            
+
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-600">Shipping Cost</span>
                                 <span className="text-gray-900 font-medium">৳{(order.shippingCost || 0).toLocaleString()}</span>
@@ -300,24 +300,24 @@ export default function OrderDetails() {
                             {order.loyaltyDiscount > 0 && (
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Loyalty Points Discount</span>
-                                    <span className="text-pink-600 font-medium">-৳{order.loyaltyDiscount.toLocaleString()}</span>
+                                    <span className="text-blue-600 font-medium">-৳{order.loyaltyDiscount.toLocaleString()}</span>
                                 </div>
                             )}
 
                             <div className="border-t border-gray-200 pt-3 mt-3">
                                 <div className="flex justify-between">
                                     <span className="text-base font-semibold text-gray-900">Total</span>
-                                    <span className="text-lg font-bold text-pink-600">৳{total.toLocaleString()}</span>
+                                    <span className="text-lg font-bold text-blue-600">৳{total.toLocaleString()}</span>
                                 </div>
                             </div>
 
                             {order.loyaltyPointsUsed > 0 && (
-                                <div className="mt-4 p-3 bg-pink-50 rounded-lg border border-pink-200">
-                                    <div className="flex items-center text-sm text-pink-800">
+                                <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                    <div className="flex items-center text-sm text-blue-800">
                                         <Coins className="h-4 w-4 mr-2" />
                                         <div>
                                             <div className="font-semibold">Paid with {order.loyaltyPointsUsed} loyalty points</div>
-                                            <div className="text-xs text-pink-600 mt-1">No additional payment required</div>
+                                            <div className="text-xs text-blue-600 mt-1">No additional payment required</div>
                                         </div>
                                     </div>
                                 </div>
@@ -355,7 +355,7 @@ export default function OrderDetails() {
                                         <Coins className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
                                         <div>
                                             <p className="text-sm text-gray-500">Loyalty Points Used</p>
-                                            <p className="text-sm font-medium text-pink-600">
+                                            <p className="text-sm font-medium text-blue-600">
                                                 {order.loyaltyPointsUsed} points (৳{order.loyaltyDiscount?.toLocaleString()})
                                             </p>
                                         </div>

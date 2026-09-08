@@ -28,12 +28,12 @@ export default function Offers() {
         try {
             setLoading(true);
             setError(null);
-            
+
             // Fetch publicly visible coupons (no authentication required)
-            const response = await couponAPI.getPublicCoupons({ 
-                limit: 20 
+            const response = await couponAPI.getPublicCoupons({
+                limit: 20
             });
-            
+
             if (response.success) {
                 // The API already filters for valid coupons, so we can use them directly
                 setCoupons(response.data || []);
@@ -61,7 +61,7 @@ export default function Offers() {
     const getCouponStatus = (coupon) => {
         const now = new Date();
         const endDate = new Date(coupon.endDate);
-        
+
         if (!coupon.isActive) return 'Inactive';
         if (endDate <= now) return 'Expired';
         if (coupon.maxUsage && coupon.usedCount >= coupon.maxUsage) return 'Used Up';
@@ -101,7 +101,7 @@ export default function Offers() {
             <div className="max-w-7xl mx-auto px-4 py-6">
                 {/* Header Section */}
                 <div className="text-center mb-12">
-                    
+
                     <h1 className="text-4xl font-bold text-gray-900 mb-4">Special Offers & Coupons</h1>
                     <p className="text-gray-600 text-lg">Discover amazing discounts and voucher codes</p>
                 </div>
@@ -109,7 +109,7 @@ export default function Offers() {
                 {/* Loading State */}
                 {loading && (
                     <div className="flex items-center justify-center py-12">
-                        <Loader2 className="w-8 h-8 animate-spin text-pink-500 mr-3" />
+                        <Loader2 className="w-8 h-8 animate-spin text-blue-500 mr-3" />
                         <span className="text-gray-600">Loading amazing offers...</span>
                     </div>
                 )}
@@ -120,9 +120,9 @@ export default function Offers() {
                         <AlertCircle className="w-8 h-8 text-red-500 mr-3" />
                         <div className="text-center">
                             <p className="text-red-600 mb-4">{error}</p>
-                            <button 
+                            <button
                                 onClick={fetchPublicCoupons}
-                                className="px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
+                                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                             >
                                 Try Again
                             </button>
@@ -147,89 +147,88 @@ export default function Offers() {
                             const status = getCouponStatus(coupon);
                             const isExpired = status !== 'Active';
 
-                        return (
-                            <div key={coupon._id} className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 ">
-                                {/* Header with discount badge */}
-                                <div className="bg-gradient-to-r from-pink-500 to-purple-500 p-4 text-white text-center">
-                                    <div className="text-2xl font-bold">{formatDiscount(coupon)}</div>
-                                    <div className="text-sm opacity-90">{coupon.description || 'Special Offer'}</div>
-                                </div>
+                            return (
+                                <div key={coupon._id} className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 ">
+                                    {/* Header with discount badge */}
+                                    <div className="bg-gradient-to-r from-pink-500 to-purple-500 p-4 text-white text-center">
+                                        <div className="text-2xl font-bold">{formatDiscount(coupon)}</div>
+                                        <div className="text-sm opacity-90">{coupon.description || 'Special Offer'}</div>
+                                    </div>
 
-                                <div className="p-6">
-                                    {/* Countdown Timer */}
-                                    <div className="mb-6">
-                                        <div className="text-center mb-3">
-                                            <span className="text-sm font-medium text-gray-600">Offer expires in:</span>
-                                        </div>
-                                        <div className="grid grid-cols-4 gap-2">
-                                            {[
-                                                { label: 'Days', value: timeLeft.days },
-                                                { label: 'Hours', value: timeLeft.hours },
-                                                { label: 'Mins', value: timeLeft.minutes },
-                                                { label: 'Secs', value: timeLeft.seconds }
-                                            ].map((item, index) => (
-                                                <div key={index} className={`rounded-lg p-3 text-center shadow-sm border ${isExpired
+                                    <div className="p-6">
+                                        {/* Countdown Timer */}
+                                        <div className="mb-6">
+                                            <div className="text-center mb-3">
+                                                <span className="text-sm font-medium text-gray-600">Offer expires in:</span>
+                                            </div>
+                                            <div className="grid grid-cols-4 gap-2">
+                                                {[
+                                                    { label: 'Days', value: timeLeft.days },
+                                                    { label: 'Hours', value: timeLeft.hours },
+                                                    { label: 'Mins', value: timeLeft.minutes },
+                                                    { label: 'Secs', value: timeLeft.seconds }
+                                                ].map((item, index) => (
+                                                    <div key={index} className={`rounded-lg p-3 text-center shadow-sm border ${isExpired
                                                         ? 'bg-red-50 border-red-200'
-                                                        : 'bg-gradient-to-br from-pink-50 to-purple-50 border-pink-200'
-                                                    }`}>
-                                                    <div className="text-lg font-bold text-gray-900">
-                                                        {formatNumber(item.value)}
+                                                        : 'bg-gradient-to-br from-pink-50 to-purple-50 border-blue-200'
+                                                        }`}>
+                                                        <div className="text-lg font-bold text-gray-900">
+                                                            {formatNumber(item.value)}
+                                                        </div>
+                                                        <div className="text-xs text-gray-500">{item.label}</div>
                                                     </div>
-                                                    <div className="text-xs text-gray-500">{item.label}</div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Coupon Code Section */}
+                                        <div className="mb-4">
+                                            <div className="bg-gradient-to-r from-pink-50 to-purple-50 border-2 border-dashed border-blue-300 rounded-xl p-4 shadow-sm">
+                                                <div className="text-center mb-2">
+                                                    <span className="text-sm text-gray-600">Coupon Code</span>
                                                 </div>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    {/* Coupon Code Section */}
-                                    <div className="mb-4">
-                                        <div className="bg-gradient-to-r from-pink-50 to-purple-50 border-2 border-dashed border-pink-300 rounded-xl p-4 shadow-sm">
-                                            <div className="text-center mb-2">
-                                                <span className="text-sm text-gray-600">Coupon Code</span>
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-xl font-bold text-blue-600 tracking-wider">{coupon.code}</span>
+                                                    <button
+                                                        onClick={() => copyToClipboard(coupon.code, coupon._id)}
+                                                        className="text-blue-600 hover:text-blue-700 transition-colors p-2 rounded-full hover:bg-blue-100 cursor-pointer"
+                                                    >
+                                                        {copiedCode === coupon._id ? (
+                                                            <CheckCircle className="w-5 h-5" />
+                                                        ) : (
+                                                            <Copy className="w-5 h-5" />
+                                                        )}
+                                                    </button>
+                                                </div>
                                             </div>
+                                        </div>
+
+                                        {/* Status and Conditions */}
+                                        <div className="space-y-3">
                                             <div className="flex items-center justify-between">
-                                                <span className="text-xl font-bold text-pink-600 tracking-wider">{coupon.code}</span>
-                                                <button
-                                                    onClick={() => copyToClipboard(coupon.code, coupon._id)}
-                                                    className="text-pink-600 hover:text-pink-700 transition-colors p-2 rounded-full hover:bg-pink-100 cursor-pointer"
-                                                >
-                                                    {copiedCode === coupon._id ? (
-                                                        <CheckCircle className="w-5 h-5" />
-                                                    ) : (
-                                                        <Copy className="w-5 h-5" />
-                                                    )}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Status and Conditions */}
-                                    <div className="space-y-3">
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-sm text-gray-600">Status:</span>
-                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                                                status === 'Active' 
-                                                    ? 'bg-green-100 text-green-800' 
+                                                <span className="text-sm text-gray-600">Status:</span>
+                                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${status === 'Active'
+                                                    ? 'bg-green-100 text-green-800'
                                                     : 'bg-red-100 text-red-800'
-                                            }`}>
-                                                {status}
-                                            </span>
-                                        </div>
-                                        
-                                        <div className="text-sm text-gray-500 text-center">
-                                            * Minimum order: <span className="font-bold text-gray-700">৳{coupon.minOrderAmount || 0}</span>
-                                        </div>
-                                        
-                                        {coupon.maxUsage && (
-                                            <div className="text-sm text-gray-500 text-center">
-                                                * Limited to {coupon.maxUsage} uses
+                                                    }`}>
+                                                    {status}
+                                                </span>
                                             </div>
-                                        )}
+
+                                            <div className="text-sm text-gray-500 text-center">
+                                                * Minimum order: <span className="font-bold text-gray-700">৳{coupon.minOrderAmount || 0}</span>
+                                            </div>
+
+                                            {coupon.maxUsage && (
+                                                <div className="text-sm text-gray-500 text-center">
+                                                    * Limited to {coupon.maxUsage} uses
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
                     </div>
                 )}
 
@@ -258,7 +257,7 @@ export default function Offers() {
                                 description: "Paste the code at checkout and enjoy your discount"
                             }
                         ].map((item, index) => (
-                            <div key={index} className="text-center p-6 rounded-xl bg-gradient-to-br from-pink-50 to-purple-50 border border-pink-100 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                            <div key={index} className="text-center p-6 rounded-xl bg-gradient-to-br from-pink-50 to-purple-50 border border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                                 <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-lg shadow-lg">
                                     {item.step}
                                 </div>

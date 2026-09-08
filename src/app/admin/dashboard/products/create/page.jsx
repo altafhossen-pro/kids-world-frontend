@@ -39,10 +39,18 @@ export default function CreateProductPage() {
         brand: '',
         tags: [],
         status: 'draft',
+        totalStock: 0,
+        totalSold: 0,
+        salesAnalytics: {
+            isActive: false,
+            startDate: '',
+            dailyAverage: 0
+        },
         isActive: true,
         isFeatured: false,
         isBestselling: false,
         isNewArrival: false,
+        isTrending: false,
         // Jewelry specific properties
         isBracelet: false,
         isRing: false,

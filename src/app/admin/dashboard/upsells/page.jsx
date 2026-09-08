@@ -47,7 +47,7 @@ export default function UpsellsPage() {
 
             const token = getAdminToken();
             const response = await productAPI.getProducts(params.toString(), token);
-            
+
             if (response.success) {
                 // Get upsell count for each product using Promise.allSettled for better error handling
                 // This handles 404 (no upsells found) gracefully without treating them as errors
@@ -55,7 +55,7 @@ export default function UpsellsPage() {
                     response.data.map(async (product) => {
                         try {
                             const upsellResponse = await upsellAPI.getUpsellsByMainProduct(product._id, token);
-                            
+
                             // Handle both success and 404 responses
                             if (upsellResponse.success && upsellResponse.data) {
                                 return {
@@ -72,15 +72,15 @@ export default function UpsellsPage() {
                         } catch (error) {
                             // Network errors or other issues - default to 0
                             // 404 errors from API are caught here too
-                            const is404 = error?.status === 404 || 
-                                         error?.response?.status === 404 ||
-                                         error?.message?.toLowerCase().includes('no upsells found');
-                            
+                            const is404 = error?.status === 404 ||
+                                error?.response?.status === 404 ||
+                                error?.message?.toLowerCase().includes('no upsells found');
+
                             if (!is404) {
                                 // Only log non-404 errors
                                 console.warn(`Error fetching upsell for product ${product._id}:`, error.message);
                             }
-                            
+
                             return {
                                 ...product,
                                 upsellCount: 0
@@ -88,7 +88,7 @@ export default function UpsellsPage() {
                         }
                     })
                 );
-                
+
                 // Extract values from Promise.allSettled results
                 const finalProducts = productsWithUpsellCount.map((result) => {
                     if (result.status === 'fulfilled') {
@@ -102,7 +102,7 @@ export default function UpsellsPage() {
                         };
                     }
                 });
-                
+
                 setProducts(finalProducts);
                 setPagination(response.pagination);
             } else {
@@ -189,7 +189,7 @@ export default function UpsellsPage() {
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 {loading ? (
                     <div className="p-8 text-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 mx-auto"></div>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
                         <p className="mt-2 text-gray-500">Loading products...</p>
                     </div>
                 ) : products.length === 0 ? (
@@ -251,17 +251,16 @@ export default function UpsellsPage() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                                product.isActive
-                                                    ? 'bg-green-100 text-green-800'
-                                                    : 'bg-red-100 text-red-800'
-                                            }`}>
+                                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${product.isActive
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-red-100 text-red-800'
+                                                }`}>
                                                 {product.isActive ? 'Active' : 'Inactive'}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             ৳{product.priceRange?.min || 0}
-                                            {product.priceRange?.max && product.priceRange.max !== product.priceRange.min && 
+                                            {product.priceRange?.max && product.priceRange.max !== product.priceRange.min &&
                                                 ` - ৳${product.priceRange.max}`
                                             }
                                         </td>
@@ -269,7 +268,7 @@ export default function UpsellsPage() {
                                             <div className="flex items-center justify-end space-x-2">
                                                 <button
                                                     onClick={() => handleViewUpsellDetails(product)}
-                                                    className="text-pink-600 hover:text-pink-900 p-1"
+                                                    className="text-blue-600 hover:text-blue-900 p-1"
                                                     title="View Upsell Details"
                                                 >
                                                     <ExternalLink className="w-4 h-4" />

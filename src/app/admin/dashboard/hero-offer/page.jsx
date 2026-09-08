@@ -58,7 +58,7 @@ export default function HeroOffersManagement() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!hasUpdatePermission) {
             toast.error("You don't have permission to update settings");
             return;
@@ -120,7 +120,7 @@ export default function HeroOffersManagement() {
     if (checkingPermission || contextLoading || loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
             </div>
         );
     }
@@ -148,7 +148,7 @@ export default function HeroOffersManagement() {
             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
                     <div className="space-y-6 max-w-3xl">
-                        
+
                         <div>
                             <div className="flex items-center mb-6">
                                 <input
@@ -156,7 +156,7 @@ export default function HeroOffersManagement() {
                                     name="isActive"
                                     checked={formData.isActive}
                                     onChange={handleInputChange}
-                                    className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded cursor-pointer"
+                                    className="h-4 w-4 text-blue-600 focus:ring-pink-500 border-gray-300 rounded cursor-pointer"
                                 />
                                 <label className="ml-2 text-sm font-medium text-gray-700">
                                     Active (visible on website)
@@ -171,7 +171,7 @@ export default function HeroOffersManagement() {
                                     name="gridColumns"
                                     value={formData.gridColumns}
                                     onChange={handleInputChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 cursor-pointer max-w-xs"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500 cursor-pointer max-w-xs"
                                 >
                                     <option value={1}>1 Column Grid</option>
                                     <option value={2}>2 Column Grid</option>
@@ -194,9 +194,9 @@ export default function HeroOffersManagement() {
                                     >
                                         <Trash2 className="w-5 h-5" />
                                     </button>
-                                    
+
                                     <h4 className="font-medium text-gray-700 mb-4">Offer Banner {index + 1}</h4>
-                                    
+
                                     <div className="space-y-4">
                                         <ImageUpload
                                             onImageUpload={(url) => handleOfferChange(index, 'image', url)}
@@ -204,7 +204,7 @@ export default function HeroOffersManagement() {
                                             currentImage={offer.image}
                                             label="Offer Image"
                                         />
-                                        
+
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                                 Image URL (Or paste directly)
@@ -213,7 +213,7 @@ export default function HeroOffersManagement() {
                                                 type="text"
                                                 value={offer.image}
                                                 onChange={(e) => handleOfferChange(index, 'image', e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500"
                                                 placeholder="https://example.com/image.jpg"
                                             />
                                         </div>
@@ -226,7 +226,7 @@ export default function HeroOffersManagement() {
                                                 type="text"
                                                 value={offer.link}
                                                 onChange={(e) => handleOfferChange(index, 'link', e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500"
                                                 placeholder="e.g., /shop or https://example.com"
                                             />
                                         </div>
@@ -238,7 +238,7 @@ export default function HeroOffersManagement() {
                                 <button
                                     type="button"
                                     onClick={handleAddOffer}
-                                    className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-pink-500 hover:text-pink-500 transition-colors flex items-center justify-center cursor-pointer font-medium"
+                                    className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-500 hover:text-blue-500 transition-colors flex items-center justify-center cursor-pointer font-medium"
                                 >
                                     <Plus className="w-5 h-5 mr-2" />
                                     Add Offer
@@ -254,7 +254,7 @@ export default function HeroOffersManagement() {
                                     <li><strong>4 Grid Items:</strong> 300 x 400 pixels (Portrait)</li>
                                 </ul>
                                 <p className="text-xs mt-3 opacity-80 border-t border-blue-200 pt-2">
-                                * The number of items you add here automatically changes the layout columns on desktop! It is best to use images of the <strong>same dimensions</strong> for all items to ensure a clean layout.
+                                    * The number of items you add here automatically changes the layout columns on desktop! It is best to use images of the <strong>same dimensions</strong> for all items to ensure a clean layout.
                                 </p>
                             </div>
                         </div>
@@ -266,7 +266,7 @@ export default function HeroOffersManagement() {
                             <button
                                 type="submit"
                                 disabled={saving}
-                                className="px-6 py-2 text-sm font-medium text-white bg-pink-500 border border-transparent rounded-md hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50 flex items-center cursor-pointer"
+                                className="px-6 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50 flex items-center cursor-pointer"
                             >
                                 {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                                 <Save className="w-4 h-4 mr-2" />

@@ -63,7 +63,7 @@ const NewArrivals = () => {
   return (
     <section className="container mx-auto px-4 sm:px-6 lg:px-8 mt-20">
       <div className="flex flex-col items-center mb-10 text-center">
-        <span className="text-pink-500 font-bold uppercase tracking-wider text-sm mb-2">Just Landed</span>
+        <span className="text-blue-500 font-bold uppercase tracking-wider text-sm mb-2">Just Landed</span>
         <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-4">New Arrivals</h2>
         <div className="w-16 h-1 bg-blue-500 rounded-full"></div>
       </div>

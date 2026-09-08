@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { 
-    Star, 
-    MessageSquare, 
-    Calendar, 
-    Package, 
+import {
+    Star,
+    MessageSquare,
+    Calendar,
+    Package,
     CheckCircle,
     RefreshCw,
     Plus,
@@ -31,7 +31,7 @@ export default function MyReviews() {
         try {
             setLoading(true)
             const response = await reviewAPI.getUserReviewableProducts(token)
-            
+
             if (response.success) {
                 setReviewableProducts(response.data)
             } else {
@@ -51,7 +51,7 @@ export default function MyReviews() {
         try {
             setLoading(true)
             const response = await reviewAPI.getUserReviews(token)
-            
+
             if (response.success) {
                 setMyReviews(response.data)
             } else {
@@ -90,7 +90,7 @@ export default function MyReviews() {
 
         try {
             const response = await reviewAPI.deleteReview(reviewId, token)
-            
+
             if (response.success) {
                 toast.success('Review deleted successfully')
                 // Update both tabs in realtime
@@ -119,11 +119,10 @@ export default function MyReviews() {
                 {[1, 2, 3, 4, 5].map((star) => (
                     <Star
                         key={star}
-                        className={`h-4 w-4 ${
-                            star <= rating
+                        className={`h-4 w-4 ${star <= rating
                                 ? 'text-yellow-400 fill-current'
                                 : 'text-gray-300'
-                        }`}
+                            }`}
                     />
                 ))}
             </div>
@@ -155,21 +154,19 @@ export default function MyReviews() {
                     <nav className="-mb-px flex space-x-8 px-6">
                         <button
                             onClick={() => setActiveTab('reviewable')}
-                            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                                activeTab === 'reviewable'
-                                    ? 'border-pink-500 text-pink-600'
+                            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'reviewable'
+                                    ? 'border-blue-500 text-blue-600'
                                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                            }`}
+                                }`}
                         >
                             Products to Review ({reviewableProducts.length})
                         </button>
                         <button
                             onClick={() => setActiveTab('my-reviews')}
-                            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                                activeTab === 'my-reviews'
-                                    ? 'border-pink-500 text-pink-600'
+                            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'my-reviews'
+                                    ? 'border-blue-500 text-blue-600'
                                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                            }`}
+                                }`}
                         >
                             My Reviews ({myReviews.length})
                         </button>
@@ -216,7 +213,7 @@ export default function MyReviews() {
                                                             <div className="mt-3">
                                                                 <button
                                                                     onClick={() => handleWriteReview(item)}
-                                                                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+                                                                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                                                                 >
                                                                     <Plus className="h-4 w-4 mr-2" />
                                                                     Write Review
@@ -261,7 +258,7 @@ export default function MyReviews() {
                                                                         Verified Purchase
                                                                     </span>
                                                                 </div>
-                                                                
+
                                                                 <div className="flex items-center space-x-4 mb-3">
                                                                     {renderStars(review.rating)}
                                                                     <span className="text-sm text-gray-500">
@@ -326,7 +323,7 @@ export default function MyReviews() {
                         </>
                     )}
                 </div>
-        </div>
+            </div>
 
             {/* Review Modal */}
             {isModalOpen && selectedProduct && (

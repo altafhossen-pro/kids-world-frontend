@@ -190,8 +190,8 @@ export default function FAQ() {
             <div className="max-w-4xl mx-auto px-4 py-12">
                 {/* Header Section */}
                 <div className="text-center mb-12">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-pink-100 rounded-full mb-6">
-                        <HelpCircle className="w-8 h-8 text-pink-500" />
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-6">
+                        <HelpCircle className="w-8 h-8 text-blue-500" />
                     </div>
                     <h1 className="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h1>
                     <p className="text-gray-600 text-lg">Find answers to common questions about our products and services</p>
@@ -202,10 +202,10 @@ export default function FAQ() {
                     {faqCategories.map((category) => (
                         <div key={category.id} className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
                             {/* Category Header */}
-                            <div className="bg-pink-50 px-6 py-4 border-b border-gray-100">
+                            <div className="bg-blue-50 px-6 py-4 border-b border-gray-100">
                                 <div className="flex items-center space-x-3">
-                                    <div className="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center">
-                                        <category.icon className="w-4 h-4 text-pink-500" />
+                                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <category.icon className="w-4 h-4 text-blue-500" />
                                     </div>
                                     <h2 className="text-xl font-semibold text-gray-900">{category.title}</h2>
                                 </div>
@@ -220,7 +220,7 @@ export default function FAQ() {
                                             className="w-full py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200 cursor-pointer px-6"
                                         >
                                             <span className="font-medium text-gray-900 pr-4">
-                                                <span className="text-pink-500 font-semibold">Q: </span>
+                                                <span className="text-blue-500 font-semibold">Q: </span>
                                                 {item.question}
                                             </span>
                                             <ChevronDown
@@ -232,7 +232,7 @@ export default function FAQ() {
                                         {openItems.has(item.id) && (
                                             <div className="pb-4  ps-12 pe-6">
                                                 <p className="text-gray-600 leading-relaxed">
-                                                    <span className="text-pink-500 font-semibold">A: </span>
+                                                    <span className="text-blue-500 font-semibold">A: </span>
                                                     {item.answer}
                                                 </p>
                                             </div>
@@ -253,11 +253,11 @@ export default function FAQ() {
                         </p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                             <div className="flex items-center justify-center space-x-2 text-gray-600">
-                                <Mail className="w-4 h-4 text-pink-500" />
+                                <Mail className="w-4 h-4 text-blue-500" />
                                 <span>info@kidsworldbd.com</span>
                             </div>
                             <div className="flex items-center justify-center space-x-2 text-gray-600">
-                                <Phone className="w-4 h-4 text-pink-500" />
+                                <Phone className="w-4 h-4 text-blue-500" />
                                 <span>+8801519181818</span>
                             </div>
                         </div>

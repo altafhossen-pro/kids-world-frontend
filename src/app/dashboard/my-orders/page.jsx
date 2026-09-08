@@ -80,9 +80,9 @@ export default function MyOrders() {
 
         // Calculate items subtotal
         const itemsSubtotal = order.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0
-        
+
         // Calculate final total: subtotal + shipping - all discounts
-        const finalTotal = itemsSubtotal 
+        const finalTotal = itemsSubtotal
             + (order.shippingCost || 0)
             - (order.discount || 0)
             - (order.couponDiscount || 0)
@@ -268,8 +268,8 @@ export default function MyOrders() {
                             <button
                                 onClick={() => setShowFilters(!showFilters)}
                                 className={`inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md ${showFilters
-                                        ? 'bg-blue-50 text-blue-700 border-blue-300'
-                                        : 'text-gray-700 bg-white hover:bg-gray-50'
+                                    ? 'bg-blue-50 text-blue-700 border-blue-300'
+                                    : 'text-gray-700 bg-white hover:bg-gray-50'
                                     }`}
                             >
                                 <Filter className="h-4 w-4 mr-2" />
@@ -485,17 +485,17 @@ export default function MyOrders() {
                                                     <div className="flex justify-center space-x-2">
                                                         <Link
                                                             href={`/dashboard/my-orders/${order.orderId}`}
-                                                            className="bg-pink-500 hover:bg-pink-600 text-white px-2 py-2 rounded-md flex items-center justify-center gap-1"
+                                                            className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-2 rounded-md flex items-center justify-center gap-1"
                                                             title="View Order"
                                                         >
-                                                            <Eye className="h-4 w-4" /> 
+                                                            <Eye className="h-4 w-4" />
                                                         </Link>
                                                         <Link
                                                             href={`/dashboard/my-orders/${order.orderId}/reorder`}
                                                             className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-2 rounded-md flex items-center justify-center gap-1"
                                                             title="Reorder"
                                                         >
-                                                            <ShoppingCart className="h-4 w-4" /> 
+                                                            <ShoppingCart className="h-4 w-4" />
                                                         </Link>
                                                     </div>
                                                 </td>

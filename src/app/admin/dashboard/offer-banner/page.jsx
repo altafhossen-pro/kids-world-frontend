@@ -71,7 +71,7 @@ export default function OfferBannerPage() {
 
     const handleEdit = (banner) => {
         setEditingBanner(banner);
-        
+
         setFormData({
             title: banner.title || '',
             subtitle: banner.subtitle || '',
@@ -83,7 +83,7 @@ export default function OfferBannerPage() {
             discountText: banner.discountText || '',
             isActive: banner.isActive || false
         });
-        
+
         // Set image preview if banner has an image
         if (banner.image) {
             setImagePreview(banner.image);
@@ -96,16 +96,16 @@ export default function OfferBannerPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         // Check if image is required but not uploaded
         if (!formData.image) {
             toast.error('Please upload an image for the banner');
             return;
         }
-        
+
         try {
             const token = getCookie('token');
-            
+
             // Clean data - include all fields that have values
             let submitData = {
                 title: formData.title,
@@ -196,7 +196,7 @@ export default function OfferBannerPage() {
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
-        
+
         // If banner type changes, reset related fields
         if (name === 'type') {
             setFormData(prev => ({
@@ -231,15 +231,15 @@ export default function OfferBannerPage() {
                 toast.error('Please select an image file');
                 return;
             }
-            
+
             // Validate file size (5MB limit)
             if (file.size > 5 * 1024 * 1024) {
                 toast.error('File size must be less than 5MB');
                 return;
             }
-            
+
             setSelectedFile(file);
-            
+
             // Create preview
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -261,7 +261,7 @@ export default function OfferBannerPage() {
             formData.append('image', selectedFile);
 
             const response = await uploadAPI.uploadSingle(formData);
-            
+
             if (response.success) {
                 setFormData(prev => ({
                     ...prev,
@@ -291,7 +291,7 @@ export default function OfferBannerPage() {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             </div>
         );
     }
@@ -302,7 +302,7 @@ export default function OfferBannerPage() {
                 <h1 className="text-2xl font-bold text-gray-900">Offer Banners</h1>
                 <button
                     onClick={handleAddNew}
-                    className="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition-colors flex items-center gap-2"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
                 >
                     <Plus className="w-5 h-5" />
                     Add New Banner
@@ -316,7 +316,7 @@ export default function OfferBannerPage() {
                     <p className="text-gray-500 mb-6">Create your first offer banner to get started</p>
                     <button
                         onClick={handleAddNew}
-                        className="bg-pink-500 text-white px-6 py-3 rounded-lg hover:bg-pink-600 transition-colors"
+                        className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
                     >
                         Create Banner
                     </button>
@@ -332,20 +332,18 @@ export default function OfferBannerPage() {
                                     className="w-full h-48 object-cover"
                                 />
                                 <div className="absolute top-2 right-2 flex gap-2">
-                                    <div className={`px-2 py-1 rounded text-xs font-semibold ${
-                                        banner.type === 'promo' 
-                                            ? 'bg-purple-100 text-purple-800' 
-                                            : 'bg-blue-100 text-blue-800'
-                                    }`}>
+                                    <div className={`px-2 py-1 rounded text-xs font-semibold ${banner.type === 'promo'
+                                        ? 'bg-purple-100 text-purple-800'
+                                        : 'bg-blue-100 text-blue-800'
+                                        }`}>
                                         {banner.type === 'promo' ? 'Promo Code' : 'Offer Text'}
                                     </div>
                                     <button
                                         onClick={() => toggleBannerStatus(banner)}
-                                        className={`p-2 rounded-full transition-colors ${
-                                            banner.isActive 
-                                                ? 'bg-green-500 text-white' 
-                                                : 'bg-gray-500 text-white'
-                                        }`}
+                                        className={`p-2 rounded-full transition-colors ${banner.isActive
+                                            ? 'bg-green-500 text-white'
+                                            : 'bg-gray-500 text-white'
+                                            }`}
                                         title={banner.isActive ? 'Active' : 'Inactive'}
                                     >
                                         {banner.isActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
@@ -357,19 +355,18 @@ export default function OfferBannerPage() {
                                     </div>
                                 )}
                             </div>
-                            
+
                             <div className="p-4">
                                 <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">{banner.title}</h3>
                                 <p className="text-gray-600 text-sm mb-3 line-clamp-2">{banner.subtitle}</p>
-                                
+
                                 <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
                                     <span className="flex items-center gap-1">
                                         <Calendar className="w-4 h-4" />
                                         {new Date(banner.createdAt).toLocaleDateString()}
                                     </span>
-                                    <span className={`px-2 py-1 rounded text-xs ${
-                                        banner.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                                    }`}>
+                                    <span className={`px-2 py-1 rounded text-xs ${banner.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                                        }`}>
                                         {banner.isActive ? 'Active' : 'Inactive'}
                                     </span>
                                 </div>
@@ -414,7 +411,7 @@ export default function OfferBannerPage() {
                                         <ImageIcon className="w-5 h-5" />
                                         Basic Information
                                     </h3>
-                                    
+
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
                                             Banner Type <span className="text-red-500">*</span>
@@ -430,7 +427,7 @@ export default function OfferBannerPage() {
                                             <option value="promo">Promo Code (no button)</option>
                                         </select>
                                     </div>
-                                    
+
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
                                             Title <span className="text-red-500">*</span>
@@ -465,7 +462,7 @@ export default function OfferBannerPage() {
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
                                             Banner Image <span className="text-red-500">*</span>
                                         </label>
-                                        
+
                                         {/* Image Preview */}
                                         {imagePreview && (
                                             <div className="mb-4">
@@ -485,7 +482,7 @@ export default function OfferBannerPage() {
                                                 </div>
                                             </div>
                                         )}
-                                        
+
                                         {/* File Upload */}
                                         <div className="space-y-3">
                                             <div className="flex items-center gap-3">
@@ -503,13 +500,13 @@ export default function OfferBannerPage() {
                                                     <Upload className="w-4 h-4" />
                                                     Choose Image
                                                 </label>
-                                                
+
                                                 {selectedFile && (
                                                     <button
                                                         type="button"
                                                         onClick={handleImageUpload}
                                                         disabled={uploading}
-                                                        className="flex items-center gap-2 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                                        className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                                     >
                                                         {uploading ? (
                                                             <>
@@ -525,13 +522,13 @@ export default function OfferBannerPage() {
                                                     </button>
                                                 )}
                                             </div>
-                                            
+
                                             {selectedFile && (
                                                 <p className="text-sm text-gray-600">
                                                     Selected: {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
                                                 </p>
                                             )}
-                                            
+
                                             {formData.image && !selectedFile && (
                                                 <p className="text-sm text-green-600">
                                                     ✓ Image uploaded successfully
@@ -621,7 +618,7 @@ export default function OfferBannerPage() {
                                                 name="isActive"
                                                 checked={formData.isActive}
                                                 onChange={handleInputChange}
-                                                className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+                                                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-pink-500"
                                             />
                                             <span className="ml-2 text-sm text-gray-700">Active Banner</span>
                                         </label>
@@ -639,7 +636,7 @@ export default function OfferBannerPage() {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
+                                    className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                                 >
                                     {editingBanner ? 'Update Banner' : 'Create Banner'}
                                 </button>

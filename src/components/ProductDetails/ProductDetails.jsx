@@ -584,7 +584,7 @@ export default function ProductDetails({ productSlug }) {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             </div>
         );
     }
@@ -599,9 +599,9 @@ export default function ProductDetails({ productSlug }) {
                 {/* Breadcrumb */}
                 <div className="mb-6">
                     <nav className="flex text-sm text-gray-500">
-                        <a href="#" className="hover:text-pink-500">Home</a>
+                        <a href="#" className="hover:text-blue-500">Home</a>
                         <span className="mx-2">/</span>
-                        <a href="#" className="hover:text-pink-500">Products</a>
+                        <a href="#" className="hover:text-blue-500">Products</a>
                         <span className="mx-2">/</span>
                         <span className="text-gray-900">{product.title}</span>
                     </nav>
@@ -687,8 +687,8 @@ export default function ProductDetails({ productSlug }) {
                                                         setSelectedImage(index);
                                                     }}
                                                     className={`aspect-square bg-white rounded-lg overflow-hidden border-2 transition-all cursor-pointer w-full ${isCurrentlyShown
-                                                        ? 'border-pink-500'
-                                                        : 'border-gray-200 hover:border-pink-300'
+                                                        ? 'border-blue-500'
+                                                        : 'border-gray-200 hover:border-blue-300'
                                                         }`}
                                                 >
                                                     <img
@@ -781,7 +781,7 @@ export default function ProductDetails({ productSlug }) {
                                 {/* Mobile Share Button */}
                                 <button
                                     onClick={() => setIsShareModalOpen(true)}
-                                    className="sm:hidden flex items-center justify-center w-8 h-8 rounded-full bg-pink-50 text-pink-600 border border-pink-100 shadow-sm shrink-0"
+                                    className="sm:hidden flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-blue-600 border border-blue-100 shadow-sm shrink-0"
                                     aria-label="Share product"
                                 >
                                     <Share2 className="w-4 h-4" />
@@ -790,7 +790,7 @@ export default function ProductDetails({ productSlug }) {
 
                             {/* Price */}
                             <div className="flex items-center gap-3 ">
-                                <span className="text-3xl font-bold text-pink-600">
+                                <span className="text-3xl font-bold text-blue-600">
                                     ৳{currentPrice}
                                 </span>
                                 {originalPrice && (
@@ -858,8 +858,8 @@ export default function ProductDetails({ productSlug }) {
                                                         onClick={() => handleSizeChange(size)}
                                                         className={`rounded-md border-2 transition-all duration-200 flex items-center justify-center font-medium cursor-pointer
         ${selectedSize === size
-                                                                ? 'bg-pink-500 text-white border-pink-500 shadow-sm'
-                                                                : 'border-gray-300 text-gray-700 hover:border-pink-400 hover:bg-pink-50'
+                                                                ? 'bg-blue-500 text-white border-blue-500 shadow-sm'
+                                                                : 'border-gray-300 text-gray-700 hover:border-blue-400 hover:bg-blue-50'
                                                             }
         ${isSingleChar ? 'w-10 h-10 text-base md:text-lg' : 'px-3 py-2 text-sm'}
       `}
@@ -905,8 +905,8 @@ export default function ProductDetails({ productSlug }) {
                                                             key={variant.sku || variant._id}
                                                             onClick={() => handleVariantImageChange(variant)}
                                                             className={`w-12 h-12 rounded-md border-2 transition-all duration-200 flex items-center justify-center cursor-pointer overflow-hidden ${isSelected
-                                                                ? 'border-pink-500 ring-2 ring-pink-200 shadow-sm'
-                                                                : 'border-gray-300 hover:border-pink-400 hover:shadow-sm'
+                                                                ? 'border-blue-500 ring-2 ring-pink-200 shadow-sm'
+                                                                : 'border-gray-300 hover:border-blue-400 hover:shadow-sm'
                                                                 }`}
                                                             title={variantTitle}
                                                         >
@@ -948,8 +948,8 @@ export default function ProductDetails({ productSlug }) {
                                                         key={color.value}
                                                         onClick={() => handleColorChange(color.value)}
                                                         className={`w-8 h-8 rounded-full border-2 transition-all duration-200 flex items-center justify-center cursor-pointer ${selectedColor === color.value
-                                                            ? 'border-pink-500 ring-2 ring-pink-200 shadow-sm'
-                                                            : 'border-gray-300 hover:border-pink-400 hover:shadow-sm'
+                                                            ? 'border-blue-500 ring-2 ring-pink-200 shadow-sm'
+                                                            : 'border-gray-300 hover:border-blue-400 hover:shadow-sm'
                                                             }`}
                                                         title={color.value}
                                                     >
@@ -980,8 +980,8 @@ export default function ProductDetails({ productSlug }) {
                             <button
                                 onClick={handleWishlistToggle}
                                 className={`p-3 rounded-lg border transition-colors ${isWishlisted
-                                    ? 'bg-pink-500 text-white border-pink-500'
-                                    : 'border-gray-300 text-gray-600 hover:border-pink-300 hover:text-pink-500'
+                                    ? 'bg-blue-500 text-white border-blue-500'
+                                    : 'border-gray-300 text-gray-600 hover:border-blue-300 hover:text-blue-500'
                                     }`}
                                 aria-label={isWishlisted ? `Remove ${product?.title} from wishlist` : `Add ${product?.title} to wishlist`}
                             >
@@ -1031,7 +1031,7 @@ export default function ProductDetails({ productSlug }) {
                             </div>
                             {product?.announcementText && (
                                 <div className='border-t border-[#E7E7E7] mt-4 pt-4'>
-                                    <p className="text-base font-semibold text-pink-600 bg-pink-50 p-3 rounded-lg border border-pink-100">
+                                    <p className="text-base font-semibold text-blue-600 bg-blue-50 p-3 rounded-lg border border-blue-100">
                                         {product.announcementText}
                                     </p>
                                 </div>
@@ -1042,7 +1042,7 @@ export default function ProductDetails({ productSlug }) {
                                 <span className="text-sm font-medium text-gray-500">Share this product:</span>
                                 <button
                                     onClick={() => setIsShareModalOpen(true)}
-                                    className="flex items-center justify-center w-10 h-10 rounded-full bg-pink-50 text-pink-600 border border-pink-100 hover:bg-pink-100 hover:scale-105 transition-all shadow-sm cursor-pointer"
+                                    className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-50 text-blue-600 border border-blue-100 hover:bg-blue-100 hover:scale-105 transition-all shadow-sm cursor-pointer"
                                     aria-label="Share product"
                                 >
                                     <Share2 className="w-4 h-4" />
@@ -1059,7 +1059,7 @@ export default function ProductDetails({ productSlug }) {
                                     {/* Inside Dhaka */}
                                     <div className="flex items-center gap-4">
                                         <div className="">
-                                            <Package className="w-5 h-5 text-pink-600" />
+                                            <Package className="w-5 h-5 text-blue-600" />
                                         </div>
                                         <div className="flex-1">
                                             <h4 className="text-sm font-medium text-gray-900">Inside Dhaka</h4>
@@ -1070,7 +1070,7 @@ export default function ProductDetails({ productSlug }) {
                                     {/* Outside Dhaka */}
                                     <div className="flex items-center gap-4">
                                         <div className="">
-                                            <Package className="w-5 h-5 text-pink-600" />
+                                            <Package className="w-5 h-5 text-blue-600" />
                                         </div>
                                         <div className="flex-1">
                                             <h4 className="text-sm font-medium text-gray-900">Outside Dhaka</h4>
@@ -1081,7 +1081,7 @@ export default function ProductDetails({ productSlug }) {
                                     {/* Express */}
                                     <div className="flex items-center gap-4">
                                         <div className="">
-                                            <Package className="w-5 h-5 text-pink-600" />
+                                            <Package className="w-5 h-5 text-blue-600" />
                                         </div>
                                         <div className="flex-1">
                                             <h4 className="text-sm font-medium text-gray-900">Express</h4>
@@ -1101,7 +1101,7 @@ export default function ProductDetails({ productSlug }) {
                         <div className="border border-gray-200 rounded-lg overflow-hidden">
                             <button
                                 onClick={() => setOpenAccordion(prev => ({ ...prev, description: !prev.description }))}
-                                className="w-full flex items-center justify-between px-6 py-4 bg-white hover:bg-pink-100 transition-colors cursor-pointer"
+                                className="w-full flex items-center justify-between px-6 py-4 bg-white hover:bg-blue-100 transition-colors cursor-pointer"
                             >
                                 <span className="text-lg font-semibold text-gray-900">Description</span>
                                 {openAccordion.description ? (
@@ -1151,7 +1151,7 @@ export default function ProductDetails({ productSlug }) {
                         <div className="border border-gray-200 rounded-lg overflow-hidden">
                             <button
                                 onClick={() => setOpenAccordion(prev => ({ ...prev, additional: !prev.additional }))}
-                                className="w-full flex items-center justify-between px-6 py-4 bg-white hover:bg-pink-100 transition-colors cursor-pointer"
+                                className="w-full flex items-center justify-between px-6 py-4 bg-white hover:bg-blue-100 transition-colors cursor-pointer"
                             >
                                 <span className="text-lg font-semibold text-gray-900">Additional Information</span>
                                 {openAccordion.additional ? (
@@ -1168,8 +1168,8 @@ export default function ProductDetails({ productSlug }) {
                                             {/* Brand Card */}
                                             <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-4 border border-gray-200">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center flex-shrink-0">
-                                                        <svg className="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                                                        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                                                         </svg>
                                                     </div>
@@ -1245,14 +1245,14 @@ export default function ProductDetails({ productSlug }) {
                                         {product.specifications && product.specifications.length > 0 && (
                                             <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                                                 <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                                                    <svg className="w-4 h-4 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                     </svg>
                                                     Specifications
                                                 </h4>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     {product.specifications.map((spec, index) => (
-                                                        <div key={index} className="bg-white rounded-lg p-3 border border-gray-200 hover:border-pink-300 transition-colors">
+                                                        <div key={index} className="bg-white rounded-lg p-3 border border-gray-200 hover:border-blue-300 transition-colors">
                                                             <div className="flex items-start justify-between gap-3">
                                                                 <span className="text-sm font-medium text-gray-600 flex-1">{spec.key}</span>
                                                                 <span className="text-sm font-semibold text-gray-900 text-right flex-1">{spec.value}</span>
@@ -1271,7 +1271,7 @@ export default function ProductDetails({ productSlug }) {
                         <div className="border border-gray-200 rounded-lg overflow-hidden">
                             <button
                                 onClick={() => setOpenAccordion(prev => ({ ...prev, delivery: !prev.delivery }))}
-                                className="w-full flex items-center justify-between px-6 py-4 bg-white hover:bg-pink-100 transition-colors cursor-pointer"
+                                className="w-full flex items-center justify-between px-6 py-4 bg-white hover:bg-blue-100 transition-colors cursor-pointer"
                             >
                                 <span className="text-lg font-semibold text-gray-900">Delivery & Return</span>
                                 {openAccordion.delivery ? (
@@ -1286,7 +1286,7 @@ export default function ProductDetails({ productSlug }) {
                                         {/* Delivery Information Card */}
                                         <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                                             <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                                                <svg className="w-4 h-4 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                                                 </svg>
                                                 Delivery Information
@@ -1332,9 +1332,9 @@ export default function ProductDetails({ productSlug }) {
                                                                         <span className="text-xs font-medium text-gray-500 mb-1">Outside Dhaka</span>
                                                                         <span className="text-base font-semibold text-gray-900">৳{deliveryChargeSettings.outsideDhaka}</span>
                                                                     </div>
-                                                                    <div className="flex flex-col items-center justify-center py-3 px-3 bg-pink-50 rounded-lg border border-pink-200">
-                                                                        <span className="text-xs font-medium text-pink-700 mb-1">Free Delivery</span>
-                                                                        <span className="text-sm font-semibold text-pink-900 text-center">Above ৳{deliveryChargeSettings.shippingFreeRequiredAmount}</span>
+                                                                    <div className="flex flex-col items-center justify-center py-3 px-3 bg-blue-50 rounded-lg border border-blue-200">
+                                                                        <span className="text-xs font-medium text-blue-700 mb-1">Free Delivery</span>
+                                                                        <span className="text-sm font-semibold text-blue-900 text-center">Above ৳{deliveryChargeSettings.shippingFreeRequiredAmount}</span>
                                                                     </div>
                                                                 </div>
                                                             ) : (
@@ -1403,7 +1403,7 @@ export default function ProductDetails({ productSlug }) {
                                         {(product.returnPolicy || product.additionalInfo) && (
                                             <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                                                 <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                                                    <svg className="w-4 h-4 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                                     </svg>
                                                     Return Policy
@@ -1429,7 +1429,7 @@ export default function ProductDetails({ productSlug }) {
                                         {product.warrantyInfo && (
                                             <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                                                 <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                                                    <svg className="w-4 h-4 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                                     </svg>
                                                     Warranty Information
