@@ -3,18 +3,18 @@ import { Send } from 'lucide-react';
 
 const Newsletter = () => {
   return (
-    <section className="container mx-auto px-4 sm:px-6 lg:px-8 mt-20 mb-20">
-      <div className="bg-[#1877F2] rounded-3xl p-10 md:p-16 flex flex-col md:flex-row items-center justify-between relative overflow-hidden shadow-xl shadow-blue-200">
+    <section className="container mx-auto px-4 sm:px-6 lg:px-8 mt-8 sm:mt-16 mb-8 sm:mb-20">
+      <div className="bg-[#1877F2] rounded-3xl p-6 sm:p-10 md:p-16 flex flex-col md:flex-row items-center justify-between relative overflow-hidden shadow-xl shadow-blue-200">
 
         {/* Background shapes */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full transform translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 left-0 w-40 h-40 bg-blue-500 opacity-20 rounded-full transform -translate-x-1/2 translate-y-1/2"></div>
 
         <div className="w-full md:w-1/2 relative z-10 mb-8 md:mb-0">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-2 sm:mb-4">
             Join Our Kids World Family!
           </h2>
-          <p className="text-blue-100 text-lg">
+          <p className="text-blue-100 text-sm sm:text-lg">
             Subscribe to our newsletter to get updates on our latest offers, new arrivals and get <span className="font-bold text-yellow-300">10% OFF</span> your first order!
           </p>
         </div>

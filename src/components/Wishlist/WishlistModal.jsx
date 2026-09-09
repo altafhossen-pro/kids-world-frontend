@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { moveWishlistItemToCart, removeProductFromWishlist } from '@/utils/wishlistUtils';
 import toast from 'react-hot-toast';
-    
+
 export default function WishlistModal({ isOpen, onClose }) {
     const { wishlist, wishlistCount, removeFromWishlist, moveToCart, setWishlist, setWishlistCount } = useAppContext();
     const router = useRouter();
@@ -19,7 +19,7 @@ export default function WishlistModal({ isOpen, onClose }) {
         if (isOpen) {
             // Save current scroll position
             scrollY = window.scrollY;
-            
+
             // Calculate scrollbar width to prevent layout shift
             const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
 
@@ -32,7 +32,7 @@ export default function WishlistModal({ isOpen, onClose }) {
         } else {
             // Restore body scroll and position
             const savedScrollY = parseInt(document.body.style.top || '0') * -1;
-            
+
             document.body.style.overflow = '';
             document.body.style.paddingRight = '';
             document.body.style.position = '';
@@ -48,7 +48,7 @@ export default function WishlistModal({ isOpen, onClose }) {
         // Cleanup function
         return () => {
             const savedScrollY = parseInt(document.body.style.top || '0') * -1;
-            
+
             document.body.style.overflow = '';
             document.body.style.paddingRight = '';
             document.body.style.position = '';
@@ -90,7 +90,7 @@ export default function WishlistModal({ isOpen, onClose }) {
                 {/* Header */}
                 <div className={`flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0 transition-all duration-300 ease-out ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}>
                     <div className="flex items-center gap-2">
-                        <Heart className="w-6 h-6 text-[#EF3D6A]" />
+                        <Heart className="w-6 h-6 text-[#2563EB]" />
                         <h2 className="text-lg font-semibold text-gray-800">Wishlist</h2>
                     </div>
                     <button
@@ -113,8 +113,8 @@ export default function WishlistModal({ isOpen, onClose }) {
                     ) : (
                         <div className="space-y-3">
                             {wishlist.map((item, index) => (
-                                <div 
-                                    key={item.id} 
+                                <div
+                                    key={item.id}
                                     className={`flex gap-3 p-2 bg-gray-50 rounded-lg transition-all duration-300 ease-out ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}
                                     style={{ transitionDelay: `${index * 50}ms` }}
                                 >
@@ -132,12 +132,12 @@ export default function WishlistModal({ isOpen, onClose }) {
                                     {/* Product Details */}
                                     <div className="flex-1 min-w-0">
                                         <Link href={`/product/${item.slug}`} className="block">
-                                            <h3 className="font-medium text-gray-800 text-sm mb-1 truncate hover:text-[#EF3D6A] transition-colors">
+                                            <h3 className="font-medium text-gray-800 text-sm mb-1 truncate hover:text-[#2563EB] transition-colors">
                                                 {item.name}
                                             </h3>
                                         </Link>
 
-                                        <p className="text-sm text-[#EF3D6A] font-semibold mb-2">
+                                        <p className="text-sm text-[#2563EB] font-semibold mb-2">
                                             {item.price} ৳
                                         </p>
 
@@ -145,7 +145,7 @@ export default function WishlistModal({ isOpen, onClose }) {
                                         <div className="flex items-center gap-2">
                                             <button
                                                 onClick={() => handleMoveToCart(item)}
-                                                className="flex items-center gap-1 bg-[#EF3D6A] text-white text-xs px-2 py-1 rounded hover:bg-[#D63447] transition-colors"
+                                                className="flex items-center gap-1 bg-[#2563EB] text-white text-xs px-2 py-1 rounded hover:bg-[#D63447] transition-colors"
                                             >
                                                 <ShoppingCart className="w-3 h-3" />
                                                 Move to Cart
@@ -157,7 +157,7 @@ export default function WishlistModal({ isOpen, onClose }) {
                                     <div className='flex items-center justify-center'>
                                         <button
                                             onClick={() => handleRemoveFromWishlist(item.productId)}
-                                            className="p-2 h-fit text-[#EF3D6A] hover:bg-[#EF3D6A] hover:text-white rounded-full transition-colors cursor-pointer"
+                                            className="p-2 h-fit text-[#2563EB] hover:bg-[#2563EB] hover:text-white rounded-full transition-colors cursor-pointer"
                                             aria-label={`Remove ${item.title} from wishlist`}
                                         >
                                             <Trash2 className="w-4 h-4" />
@@ -169,7 +169,7 @@ export default function WishlistModal({ isOpen, onClose }) {
                     )}
                 </div>
 
-                
+
             </div>
         </>
     );

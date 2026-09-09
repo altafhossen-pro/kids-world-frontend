@@ -27,10 +27,10 @@ const reviews = [
 
 const Testimonials = () => {
   return (
-    <section className="container mx-auto px-4 sm:px-6 lg:px-8 mt-20">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-4">Happy Parents, Happy Kids</h2>
-        <p className="text-gray-500 font-medium">See what our customers have to say about us</p>
+    <section className="container mx-auto px-4 sm:px-6 lg:px-8 mt-8 sm:mt-16">
+      <div className="text-center mb-6 sm:mb-12">
+        <h2 className="text-xl sm:text-3xl font-extrabold text-gray-900 tracking-tight mb-0 sm:mb-4">Happy Parents, Happy Kids</h2>
+        <p className="text-xs sm:text-base text-gray-500 font-medium">See what our customers have to say about us</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

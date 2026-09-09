@@ -94,10 +94,10 @@ export default async function RootLayout({ children }) {
           <Suspense fallback={null}>
             <AffiliateTracker />
           </Suspense>
-          <ConditionalHeader />
+          <ConditionalHeader logoUrl={logoUrl} />
           {children}
           <ConditionalFooter />
-          {/* <MobileBottomNavigation /> */}
+          <MobileBottomNavigation />
           <Toaster />
         </AppProvider>
 

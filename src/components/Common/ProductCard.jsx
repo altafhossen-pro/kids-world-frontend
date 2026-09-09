@@ -255,7 +255,7 @@ function ProductCard({ product, onWishlistToggle, onAddToCart, showWishlistOnHov
                             e.stopPropagation();
                             onAddToCart(product.id);
                         }}
-                        className="w-full py-2 sm:py-3 px-3 sm:px-4 cursor-pointer rounded-lg font-semibold text-xs sm:text-sm transition-all duration-300 border border-[#EF3D6A] text-[#EF3D6A] hover:bg-[#EF3D6A] hover:text-white"
+                        className="w-full py-2 sm:py-3 px-3 sm:px-4 cursor-pointer rounded-lg font-semibold text-xs sm:text-sm transition-all duration-300 border border-[#2563EB] text-[#2563EB] hover:bg-[#2563EB] hover:text-white"
                         aria-label={`Add ${product.name} to cart`}
                     >
                         Add to cart

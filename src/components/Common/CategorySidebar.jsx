@@ -109,7 +109,7 @@ export default function CategorySidebar({ isOpen, onClose }) {
         {/* Header */}
         <div className={`flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0 transition-all duration-300 ease-out ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}>
           <div className="flex items-center gap-2">
-            <Menu className="w-6 h-6 text-[#EF3D6A]" />
+            <Menu className="w-6 h-6 text-[#2563EB]" />
             <h2 className="text-lg font-semibold text-gray-800">Categories</h2>
           </div>
           <button
@@ -169,19 +169,14 @@ export default function CategorySidebar({ isOpen, onClose }) {
 
                     {/* Category Name */}
                     <div className="flex-1 min-w-0 text-left">
-                      <h3 className="font-medium text-gray-800 group-hover:text-[#EF3D6A] transition-colors truncate">
+                      <h3 className="font-medium text-gray-800 group-hover:text-[#2563EB] transition-colors truncate">
                         {category.name}
                       </h3>
-                      {category.productCount !== undefined && (
-                        <p className="text-xs text-gray-500 mt-1">
-                          {category.productCount} Products
-                        </p>
-                      )}
                     </div>
                   </div>
 
                   {/* Chevron Icon */}
-                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-[#EF3D6A] transition-colors flex-shrink-0" />
+                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-[#2563EB] transition-colors flex-shrink-0" />
                 </button>
               ))}
             </div>
@@ -193,7 +188,7 @@ export default function CategorySidebar({ isOpen, onClose }) {
           <div className={`border-t border-gray-200 p-4 flex-shrink-0 transition-all duration-300 ease-out ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
             <button
               onClick={handleViewAll}
-              className="w-full bg-[#EF3D6A] text-white py-3 px-4 rounded-lg font-semibold hover:bg-[#D63447] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02] hover:shadow-lg"
+              className="w-full bg-[#2563EB] text-white py-3 px-4 rounded-lg font-semibold hover:bg-[#D63447] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02] hover:shadow-lg"
             >
               <Menu className="w-5 h-5" />
               <span>View All Categories</span>

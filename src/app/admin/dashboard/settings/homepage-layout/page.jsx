@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { getCookie } from 'cookies-next'
 import { toast } from 'react-hot-toast'
+import SectionSettingsCard from './SectionSettingsCard'
+import { categoryAPI } from '@/services/api'
 
 export default function HomepageLayoutSettings() {
     const [loading, setLoading] = useState(true)
@@ -30,8 +32,10 @@ export default function HomepageLayoutSettings() {
             isVisible: true,
             sortOrder: 'latest',
             maxProducts: 50
-        }
+        },
+        dynamicCategories: []
     })
+    const [availableCategories, setAvailableCategories] = useState([])
 
     useEffect(() => {
         fetchSettings()
@@ -43,7 +47,7 @@ export default function HomepageLayoutSettings() {
             // Wait, getHomepageLayout was added to settingsAPI in the backend, but in api.js it's notificationAPI?
             // Actually, I added getHomepageLayout to `notificationAPI` by mistake. Let me fix it in api.js.
             // I'll import productAPI/notificationAPI whatever it is in a bit. Let's assume it's in notificationAPI for now, but I'll fix it to settingsAPI later.
-            
+
             // Wait, let's just use fetch manually to ensure no import issue for now, or use the one I added.
             const token = getCookie('token')
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/homepage-layout`, {
@@ -52,12 +56,44 @@ export default function HomepageLayoutSettings() {
                 }
             })
             const data = await res.json()
-            if (data.success) {
+            // Fetch Categories that should be shown as section
+            const catRes = await categoryAPI.getCategories()
+            if (catRes.success) {
+                const sectionCategories = catRes.data.filter(c => c.showHomepageAsSection)
+                setAvailableCategories(sectionCategories)
+
+                // Initialize dynamic categories in settings if they don't exist
+                if (data.success) {
+                    const existingDynamics = data.data.dynamicCategories || []
+                    const mergedDynamics = sectionCategories.map(cat => {
+                        const existing = existingDynamics.find(d => d.categoryId === cat._id)
+                        return existing || {
+                            categoryId: cat._id,
+                            isVisible: true,
+                            displayType: 'grid',
+                            sortOrder: 'latest',
+                            maxProducts: 10,
+                            hasPagination: false,
+                            productsPerPage: 10,
+                            maxPages: 3
+                        }
+                    })
+
+                    setSettings({
+                        trending: data.data.trending || { isVisible: true, sortOrder: 'latest', displayType: 'grid', maxProducts: 10, hasPagination: false, productsPerPage: 10, maxPages: 3 },
+                        bestSellers: data.data.bestSellers || { isVisible: true, sortOrder: 'latest', displayType: 'grid', maxProducts: 10, hasPagination: false, productsPerPage: 10, maxPages: 3 },
+                        newArrivals: data.data.newArrivals || { isVisible: true, sortOrder: 'latest', displayType: 'grid', maxProducts: 10, hasPagination: false, productsPerPage: 10, maxPages: 3 },
+                        justForYou: data.data.justForYou || { isVisible: true, sortOrder: 'latest', maxProducts: 50 },
+                        dynamicCategories: mergedDynamics
+                    })
+                }
+            } else if (data.success) {
                 setSettings({
-                    trending: data.data.trending || { isVisible: true, sortOrder: 'latest', displayType: 'grid', maxProducts: 10 },
-                    bestSellers: data.data.bestSellers || { isVisible: true, sortOrder: 'latest', displayType: 'grid', maxProducts: 10 },
-                    newArrivals: data.data.newArrivals || { isVisible: true, sortOrder: 'latest', displayType: 'grid', maxProducts: 10 },
-                    justForYou: data.data.justForYou || { isVisible: true, sortOrder: 'latest', maxProducts: 50 }
+                    trending: data.data.trending || { isVisible: true, sortOrder: 'latest', displayType: 'grid', maxProducts: 10, hasPagination: false, productsPerPage: 10, maxPages: 3 },
+                    bestSellers: data.data.bestSellers || { isVisible: true, sortOrder: 'latest', displayType: 'grid', maxProducts: 10, hasPagination: false, productsPerPage: 10, maxPages: 3 },
+                    newArrivals: data.data.newArrivals || { isVisible: true, sortOrder: 'latest', displayType: 'grid', maxProducts: 10, hasPagination: false, productsPerPage: 10, maxPages: 3 },
+                    justForYou: data.data.justForYou || { isVisible: true, sortOrder: 'latest', maxProducts: 50 },
+                    dynamicCategories: data.data.dynamicCategories || []
                 })
             }
         } catch (error) {
@@ -81,7 +117,7 @@ export default function HomepageLayoutSettings() {
                 body: JSON.stringify(settings)
             })
             const data = await res.json()
-            
+
             if (data.success) {
                 toast.success('Homepage layout updated successfully')
             } else {
@@ -123,285 +159,42 @@ export default function HomepageLayoutSettings() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Trending Section */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-                        <h2 className="text-lg font-medium text-gray-900">Trending Now Section</h2>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                className="sr-only peer"
-                                checked={settings.trending.isVisible}
-                                onChange={(e) => setSettings({
-                                    ...settings,
-                                    trending: { ...settings.trending, isVisible: e.target.checked }
-                                })}
-                            />
-                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                            <span className="ml-3 text-sm font-medium text-gray-700">
-                                {settings.trending.isVisible ? 'Visible' : 'Hidden'}
-                            </span>
-                        </label>
-                    </div>
-                    
-                    <div className={`p-6 space-y-6 ${!settings.trending.isVisible ? 'opacity-50 pointer-events-none' : ''}`}>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Display Style</label>
-                            <div className="grid grid-cols-2 gap-4">
-                                <label className={`border rounded-lg p-4 cursor-pointer flex flex-col items-center gap-2 transition-colors ${settings.trending.displayType === 'grid' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                                    <input 
-                                        type="radio" 
-                                        name="trending_display" 
-                                        value="grid" 
-                                        checked={settings.trending.displayType === 'grid'}
-                                        onChange={(e) => setSettings({...settings, trending: {...settings.trending, displayType: e.target.value}})}
-                                        className="sr-only" 
-                                    />
-                                    <div className="w-16 h-12 flex flex-wrap gap-1 justify-center items-center">
-                                        <div className="w-4 h-4 bg-blue-200 rounded"></div>
-                                        <div className="w-4 h-4 bg-blue-200 rounded"></div>
-                                        <div className="w-4 h-4 bg-blue-200 rounded"></div>
-                                        <div className="w-4 h-4 bg-blue-200 rounded"></div>
-                                    </div>
-                                    <span className="text-sm font-medium">Grid</span>
-                                </label>
-                                <label className={`border rounded-lg p-4 cursor-pointer flex flex-col items-center gap-2 transition-colors ${settings.trending.displayType === 'slider' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                                    <input 
-                                        type="radio" 
-                                        name="trending_display" 
-                                        value="slider" 
-                                        checked={settings.trending.displayType === 'slider'}
-                                        onChange={(e) => setSettings({...settings, trending: {...settings.trending, displayType: e.target.value}})}
-                                        className="sr-only" 
-                                    />
-                                    <div className="w-16 h-12 flex gap-1 justify-center items-center overflow-hidden">
-                                        <div className="w-8 h-4 bg-blue-200 rounded shrink-0"></div>
-                                        <div className="w-8 h-4 bg-blue-200 rounded shrink-0"></div>
-                                    </div>
-                                    <span className="text-sm font-medium">Slider (Carousel)</span>
-                                </label>
-                            </div>
-                        </div>
+                <SectionSettingsCard
+                    title="Trending Now Section"
+                    sectionKey="trending"
+                    settings={settings}
+                    setSettings={setSettings}
+                />
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Product Sort Order</label>
-                            <select
-                                value={settings.trending.sortOrder}
-                                onChange={(e) => setSettings({
-                                    ...settings,
-                                    trending: { ...settings.trending, sortOrder: e.target.value }
-                                })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            >
-                                <option value="latest">Latest First</option>
-                                <option value="random">Randomize</option>
-                            </select>
-                        </div>
+                <SectionSettingsCard
+                    title="Best Sellers Section"
+                    sectionKey="bestSellers"
+                    settings={settings}
+                    setSettings={setSettings}
+                />
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Max Products to Load</label>
-                            <input
-                                type="number"
-                                min="1"
-                                max="50"
-                                value={settings.trending.maxProducts}
-                                onChange={(e) => setSettings({
-                                    ...settings,
-                                    trending: { ...settings.trending, maxProducts: parseInt(e.target.value) || 10 }
-                                })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            />
-                        </div>
-                    </div>
-                </div>
+                <SectionSettingsCard
+                    title="New Arrivals Section"
+                    sectionKey="newArrivals"
+                    settings={settings}
+                    setSettings={setSettings}
+                />
 
-                {/* Best Sellers Section */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-                        <h2 className="text-lg font-medium text-gray-900">Best Sellers Section</h2>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                className="sr-only peer"
-                                checked={settings.bestSellers.isVisible}
-                                onChange={(e) => setSettings({
-                                    ...settings,
-                                    bestSellers: { ...settings.bestSellers, isVisible: e.target.checked }
-                                })}
-                            />
-                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                            <span className="ml-3 text-sm font-medium text-gray-700">
-                                {settings.bestSellers.isVisible ? 'Visible' : 'Hidden'}
-                            </span>
-                        </label>
-                    </div>
-                    
-                    <div className={`p-6 space-y-6 ${!settings.bestSellers.isVisible ? 'opacity-50 pointer-events-none' : ''}`}>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Display Style</label>
-                            <div className="grid grid-cols-2 gap-4">
-                                <label className={`border rounded-lg p-4 cursor-pointer flex flex-col items-center gap-2 transition-colors ${settings.bestSellers.displayType === 'grid' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                                    <input 
-                                        type="radio" 
-                                        name="bestseller_display" 
-                                        value="grid" 
-                                        checked={settings.bestSellers.displayType === 'grid'}
-                                        onChange={(e) => setSettings({...settings, bestSellers: {...settings.bestSellers, displayType: e.target.value}})}
-                                        className="sr-only" 
-                                    />
-                                    <div className="w-16 h-12 flex flex-wrap gap-1 justify-center items-center">
-                                        <div className="w-4 h-4 bg-blue-200 rounded"></div>
-                                        <div className="w-4 h-4 bg-blue-200 rounded"></div>
-                                        <div className="w-4 h-4 bg-blue-200 rounded"></div>
-                                        <div className="w-4 h-4 bg-blue-200 rounded"></div>
-                                    </div>
-                                    <span className="text-sm font-medium">Grid</span>
-                                </label>
-                                <label className={`border rounded-lg p-4 cursor-pointer flex flex-col items-center gap-2 transition-colors ${settings.bestSellers.displayType === 'slider' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                                    <input 
-                                        type="radio" 
-                                        name="bestseller_display" 
-                                        value="slider" 
-                                        checked={settings.bestSellers.displayType === 'slider'}
-                                        onChange={(e) => setSettings({...settings, bestSellers: {...settings.bestSellers, displayType: e.target.value}})}
-                                        className="sr-only" 
-                                    />
-                                    <div className="w-16 h-12 flex gap-1 justify-center items-center overflow-hidden">
-                                        <div className="w-8 h-4 bg-blue-200 rounded shrink-0"></div>
-                                        <div className="w-8 h-4 bg-blue-200 rounded shrink-0"></div>
-                                    </div>
-                                    <span className="text-sm font-medium">Slider (Carousel)</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Product Sort Order</label>
-                            <select
-                                value={settings.bestSellers.sortOrder}
-                                onChange={(e) => setSettings({
-                                    ...settings,
-                                    bestSellers: { ...settings.bestSellers, sortOrder: e.target.value }
-                                })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            >
-                                <option value="latest">Latest First</option>
-                                <option value="random">Randomize</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Max Products to Load</label>
-                            <input
-                                type="number"
-                                min="1"
-                                max="50"
-                                value={settings.bestSellers.maxProducts}
-                                onChange={(e) => setSettings({
-                                    ...settings,
-                                    bestSellers: { ...settings.bestSellers, maxProducts: parseInt(e.target.value) || 10 }
-                                })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                {/* New Arrivals Section */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden md:col-span-2 max-w-2xl mx-auto w-full">
-                    <div className="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-                        <h2 className="text-lg font-medium text-gray-900">New Arrivals Section</h2>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                className="sr-only peer"
-                                checked={settings.newArrivals.isVisible}
-                                onChange={(e) => setSettings({
-                                    ...settings,
-                                    newArrivals: { ...settings.newArrivals, isVisible: e.target.checked }
-                                })}
-                            />
-                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                            <span className="ml-3 text-sm font-medium text-gray-700">
-                                {settings.newArrivals.isVisible ? 'Visible' : 'Hidden'}
-                            </span>
-                        </label>
-                    </div>
-                    
-                    <div className={`p-6 space-y-6 ${!settings.newArrivals.isVisible ? 'opacity-50 pointer-events-none' : ''}`}>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Display Style</label>
-                            <div className="grid grid-cols-2 gap-4">
-                                <label className={`border rounded-lg p-4 cursor-pointer flex flex-col items-center gap-2 transition-colors ${settings.newArrivals.displayType === 'grid' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                                    <input 
-                                        type="radio" 
-                                        name="newarrival_display" 
-                                        value="grid" 
-                                        checked={settings.newArrivals.displayType === 'grid'}
-                                        onChange={(e) => setSettings({...settings, newArrivals: {...settings.newArrivals, displayType: e.target.value}})}
-                                        className="sr-only" 
-                                    />
-                                    <div className="w-16 h-12 flex flex-wrap gap-1 justify-center items-center">
-                                        <div className="w-4 h-4 bg-blue-200 rounded"></div>
-                                        <div className="w-4 h-4 bg-blue-200 rounded"></div>
-                                        <div className="w-4 h-4 bg-blue-200 rounded"></div>
-                                        <div className="w-4 h-4 bg-blue-200 rounded"></div>
-                                    </div>
-                                    <span className="text-sm font-medium">Grid</span>
-                                </label>
-                                <label className={`border rounded-lg p-4 cursor-pointer flex flex-col items-center gap-2 transition-colors ${settings.newArrivals.displayType === 'slider' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                                    <input 
-                                        type="radio" 
-                                        name="newarrival_display" 
-                                        value="slider" 
-                                        checked={settings.newArrivals.displayType === 'slider'}
-                                        onChange={(e) => setSettings({...settings, newArrivals: {...settings.newArrivals, displayType: e.target.value}})}
-                                        className="sr-only" 
-                                    />
-                                    <div className="w-16 h-12 flex gap-1 justify-center items-center overflow-hidden">
-                                        <div className="w-8 h-4 bg-blue-200 rounded shrink-0"></div>
-                                        <div className="w-8 h-4 bg-blue-200 rounded shrink-0"></div>
-                                    </div>
-                                    <span className="text-sm font-medium">Slider (Carousel)</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Product Sort Order</label>
-                            <select
-                                value={settings.newArrivals.sortOrder}
-                                onChange={(e) => setSettings({
-                                    ...settings,
-                                    newArrivals: { ...settings.newArrivals, sortOrder: e.target.value }
-                                })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            >
-                                <option value="latest">Latest First</option>
-                                <option value="random">Randomize</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Max Products to Load</label>
-                            <input
-                                type="number"
-                                min="1"
-                                max="50"
-                                value={settings.newArrivals.maxProducts}
-                                onChange={(e) => setSettings({
-                                    ...settings,
-                                    newArrivals: { ...settings.newArrivals, maxProducts: parseInt(e.target.value) || 10 }
-                                })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            />
-                        </div>
-                    </div>
-                </div>
+                {availableCategories.map(cat => (
+                    <SectionSettingsCard
+                        key={cat._id}
+                        title={`${cat.name} (Dynamic)`}
+                        sectionKey={cat._id}
+                        isDynamic={true}
+                        settings={settings}
+                        setSettings={setSettings}
+                    />
+                ))}
 
                 {/* Just For You Section */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden md:col-span-2 max-w-2xl mx-auto w-full">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <div className="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-                        <h2 className="text-lg font-medium text-gray-900">Just For You Section</h2>
+                        <h2 className="text-lg font-medium text-gray-900">Just For You (Infinite Scroll)</h2>
                         <label className="relative inline-flex items-center cursor-pointer">
                             <input
                                 type="checkbox"
@@ -418,7 +211,7 @@ export default function HomepageLayoutSettings() {
                             </span>
                         </label>
                     </div>
-                    
+
                     <div className={`p-6 space-y-6 ${!settings.justForYou.isVisible ? 'opacity-50 pointer-events-none' : ''}`}>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Product Sort Order</label>
@@ -436,7 +229,7 @@ export default function HomepageLayoutSettings() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Max Total Products to Load (Infinite Scroll)</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Max Total Products to Load</label>
                             <input
                                 type="number"
                                 min="10"
@@ -451,6 +244,7 @@ export default function HomepageLayoutSettings() {
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     )

@@ -407,8 +407,8 @@ function Header({ isTrackingShow = true, logoUrl }) {
                             href={item.href}
                             onClick={() => setIsMobileMenuOpen(false)}
                             className={`mobile-menu-item px-4 py-3 rounded-lg font-medium transition-all duration-200 ${isActive
-                              ? 'bg-[#EF3D6A] text-white shadow-sm'
-                              : 'text-gray-700 hover:bg-blue-50 hover:text-[#EF3D6A]'
+                              ? 'bg-[#2563EB] text-white shadow-sm'
+                              : 'text-gray-700 hover:bg-blue-50 hover:text-[#2563EB]'
                               }`}
                           >
                             {item.name}
@@ -442,8 +442,8 @@ function Header({ isTrackingShow = true, logoUrl }) {
                         target={item.target}
                         onClick={() => setIsMobileMenuOpen(false)}
                         className={`mobile-menu-item px-4 py-3 rounded-lg font-medium transition-all duration-200 ${isActive
-                          ? 'bg-[#EF3D6A] text-white shadow-sm'
-                          : 'text-gray-700 hover:bg-blue-50 hover:text-[#EF3D6A]'
+                          ? 'bg-[#2563EB] text-white shadow-sm'
+                          : 'text-gray-700 hover:bg-blue-50 hover:text-[#2563EB]'
                           }`}
                         style={{
                           animationDelay: `${index * 0.05}s`

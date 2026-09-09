@@ -62,72 +62,66 @@ const DealOfTheDay = () => {
   // For now, we will just show it with 0s if expired.
 
   return (
-    <section className="container mx-auto px-4 sm:px-6 lg:px-8 mt-20">
-      <div className="bg-gradient-to-r from-blue-600 to-blue-400 rounded-3xl overflow-hidden shadow-xl flex flex-col md:flex-row items-center">
+    <section className="container mx-auto px-4 sm:px-6 lg:px-8 mt-8 sm:mt-16 relative">
+      <div 
+        className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl flex items-center aspect-[21/9] sm:aspect-auto sm:min-h-[400px] bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${deal.image})` }}
+      >
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/50 z-0"></div>
 
-        {/* Left: Content */}
-        <div className="w-full md:w-1/2 p-10 lg:p-16 text-white">
-          <div className="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm mb-6 text-sm font-bold tracking-wider uppercase">
-            <Clock className="w-4 h-4" /> Limited Time Offer
+        {/* Content */}
+        <div className="w-full md:w-2/3 lg:w-1/2 p-4 sm:p-10 lg:p-16 text-white relative z-10">
+          <div className="inline-flex items-center gap-1 sm:gap-2 bg-white/20 px-2 py-1 sm:px-4 sm:py-2 rounded-full backdrop-blur-sm mb-2 sm:mb-6 text-[8px] sm:text-sm font-bold tracking-wider uppercase border border-white/30">
+            <Clock className="w-3 h-3 sm:w-4 sm:h-4" /> Limited Time Offer
           </div>
 
-          <h2 className="text-4xl lg:text-5xl font-black mb-4 leading-tight">
+          <h2 className="text-base sm:text-4xl lg:text-5xl font-black mb-1 sm:mb-4 leading-tight">
             {deal.title}
           </h2>
-          <p className="text-blue-100 text-lg mb-8 max-w-md">
+          <p className="text-blue-100 text-xs sm:text-lg mb-3 sm:mb-8 max-w-md hidden sm:block">
             {deal.subtitle}
           </p>
 
           {/* Countdown */}
-          <div className="flex gap-2 sm:gap-4 mb-10">
+          <div className="flex gap-1.5 sm:gap-4 mb-2 sm:mb-10">
             {timeLeft.days > 0 && (
               <>
                 <div className="flex flex-col items-center">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white text-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black shadow-lg">
+                  <div className="w-8 h-8 sm:w-16 sm:h-16 bg-white text-blue-600 rounded-lg sm:rounded-2xl flex items-center justify-center text-sm sm:text-2xl font-black shadow-lg">
                     {String(timeLeft.days).padStart(2, '0')}
                   </div>
-                  <span className="text-[10px] sm:text-xs font-bold mt-2 text-blue-100 uppercase">Days</span>
+                  <span className="text-[8px] sm:text-xs font-bold mt-1 sm:mt-2 text-blue-100 uppercase">Days</span>
                 </div>
-                <div className="text-2xl sm:text-3xl font-bold mt-2 sm:mt-3">:</div>
+                <div className="text-lg sm:text-3xl font-bold mt-1 sm:mt-3">:</div>
               </>
             )}
             <div className="flex flex-col items-center">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white text-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black shadow-lg">
+              <div className="w-8 h-8 sm:w-16 sm:h-16 bg-white text-blue-600 rounded-lg sm:rounded-2xl flex items-center justify-center text-sm sm:text-2xl font-black shadow-lg">
                 {String(timeLeft.hours).padStart(2, '0')}
               </div>
-              <span className="text-[10px] sm:text-xs font-bold mt-2 text-blue-100 uppercase">Hours</span>
+              <span className="text-[8px] sm:text-xs font-bold mt-1 sm:mt-2 text-blue-100 uppercase">Hours</span>
             </div>
-            <div className="text-2xl sm:text-3xl font-bold mt-2 sm:mt-3">:</div>
+            <div className="text-lg sm:text-3xl font-bold mt-1 sm:mt-3">:</div>
             <div className="flex flex-col items-center">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white text-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black shadow-lg">
+              <div className="w-8 h-8 sm:w-16 sm:h-16 bg-white text-blue-600 rounded-lg sm:rounded-2xl flex items-center justify-center text-sm sm:text-2xl font-black shadow-lg">
                 {String(timeLeft.minutes).padStart(2, '0')}
               </div>
-              <span className="text-[10px] sm:text-xs font-bold mt-2 text-blue-100 uppercase">Mins</span>
+              <span className="text-[8px] sm:text-xs font-bold mt-1 sm:mt-2 text-blue-100 uppercase">Mins</span>
             </div>
-            <div className="text-2xl sm:text-3xl font-bold mt-2 sm:mt-3">:</div>
+            <div className="text-lg sm:text-3xl font-bold mt-1 sm:mt-3">:</div>
             <div className="flex flex-col items-center">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white text-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black shadow-lg">
+              <div className="w-8 h-8 sm:w-16 sm:h-16 bg-white text-blue-600 rounded-lg sm:rounded-2xl flex items-center justify-center text-sm sm:text-2xl font-black shadow-lg">
                 {String(timeLeft.seconds).padStart(2, '0')}
               </div>
-              <span className="text-[10px] sm:text-xs font-bold mt-2 text-blue-100 uppercase">Secs</span>
+              <span className="text-[8px] sm:text-xs font-bold mt-1 sm:mt-2 text-blue-100 uppercase">Secs</span>
             </div>
           </div>
 
-          <a href={deal.buttonLink} className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-black py-4 px-10 rounded-xl shadow-lg transition-all duration-300 inline-flex items-center gap-2">
-            {deal.buttonText} <ArrowRight className="w-5 h-5" />
+          <a href={deal.buttonLink} className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-black py-1.5 px-4 text-[10px] sm:py-4 sm:px-10 sm:text-base rounded-lg sm:rounded-xl shadow-lg transition-all duration-300 inline-flex items-center gap-1 sm:gap-2">
+            {deal.buttonText} <ArrowRight className="w-3 h-3 sm:w-5 sm:h-5" />
           </a>
         </div>
-
-        {/* Right: Image */}
-        <div className="w-full md:w-1/2 relative h-[400px] md:h-auto p-4">
-          <div className="absolute inset-0 bg-blue-500/20 mix-blend-overlay z-10"></div>
-          <img
-            src={deal.image}
-            alt={deal.title}
-            className="w-full h-full object-cover rounded-xl"
-          />
-        </div>
-
       </div>
     </section>
   );

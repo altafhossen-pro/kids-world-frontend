@@ -11,7 +11,7 @@ import PermissionDenied from '@/components/Common/PermissionDenied';
 
 export default function MenuSettings() {
     const { hasPermission, contextLoading } = useAppContext();
-    const [activeTab, setActiveTab] = useState('categories');
+    const [activeTab, setActiveTab] = useState('header');
     const [headerMenus, setHeaderMenus] = useState([]);
     const [footerMenus, setFooterMenus] = useState({});
     const [categories, setCategories] = useState([]);
@@ -52,12 +52,7 @@ export default function MenuSettings() {
             setSavingVideoMenu(false);
         }
     };
-    const [contactData, setContactData] = useState({
-        address: '',
-        phone: '',
-        email: '',
-        callToAction: ''
-    });
+
     const [formData, setFormData] = useState({
         name: '',
         href: '',
@@ -138,33 +133,7 @@ export default function MenuSettings() {
 
                 setSocialMediaData(processedSocialData);
 
-                // Process contact data
-                const contactMenus = footerResponse.data.contact || [];
-                const processedContactData = {
-                    address: '',
-                    phone: '',
-                    email: '',
-                    callToAction: ''
-                };
 
-                contactMenus.forEach(item => {
-                    switch (item.contactType) {
-                        case 'address':
-                            processedContactData.address = item.href;
-                            break;
-                        case 'phone':
-                            processedContactData.phone = item.href;
-                            break;
-                        case 'email':
-                            processedContactData.email = item.href;
-                            break;
-                        case 'callToAction':
-                            processedContactData.callToAction = item.description || item.href;
-                            break;
-                    }
-                });
-
-                setContactData(processedContactData);
             }
         } catch (error) {
             console.error('Error fetching menus:', error);
@@ -205,6 +174,13 @@ export default function MenuSettings() {
 
             // Clean the form data - remove empty strings for optional fields
             const menuData = { ...formData };
+
+            // Handle empty name for contact section
+            if (menuData.section === 'contact' && !menuData.name.trim()) {
+                menuData.name = menuData.contactType ? 
+                    menuData.contactType.charAt(0).toUpperCase() + menuData.contactType.slice(1) : 
+                    'Contact';
+            }
 
             // Remove empty strings for optional fields that have enum validation
             if (!menuData.contactType || menuData.contactType === '') {
@@ -345,56 +321,63 @@ export default function MenuSettings() {
         setMenuToDelete(null);
     };
 
-    // Handle contact data save
-    const handleContactSave = async () => {
+    // Handle move order
+    const handleMoveOrder = async (menu, direction, sectionKey) => {
+        if (!hasUpdatePermission) return;
+        
+        let sectionMenus = activeTab === 'header' 
+            ? headerMenus.filter(m => m.section === sectionKey).sort((a, b) => (a.order || 0) - (b.order || 0))
+            : footerMenus[sectionKey] || [];
+            
+        const currentIndex = sectionMenus.findIndex(m => m._id === menu._id);
+        const adjacentIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+        
+        if (adjacentIndex < 0 || adjacentIndex >= sectionMenus.length) return;
+        
+        const adjacentMenu = sectionMenus[adjacentIndex];
+        
+        let newOrder = adjacentMenu.order || 0;
+        let adjacentNewOrder = menu.order || 0;
+        
+        if (newOrder === adjacentNewOrder) {
+            newOrder = direction === 'up' ? menu.order - 1 : menu.order + 1;
+            adjacentNewOrder = menu.order;
+        }
+
         try {
-            if (!hasUpdatePermission) {
-                toast.error("You don't have permission to update settings");
-                return;
-            }
             const token = getAdminToken();
-            if (!token) {
-                toast.error('Admin authentication required');
-                return;
+            if (!token) return toast.error('Admin authentication required');
+            
+            const updateState = (menus) => {
+                const updated = [...menus];
+                const menuInState = updated.find(m => m._id === menu._id);
+                const adjInState = updated.find(m => m._id === adjacentMenu._id);
+                if(menuInState) menuInState.order = newOrder;
+                if(adjInState) adjInState.order = adjacentNewOrder;
+                return updated;
+            };
+
+            if (activeTab === 'header') {
+                setHeaderMenus(prev => updateState(prev));
+                const res1 = await menuAPI.updateHeaderMenu(menu._id, { ...menu, order: newOrder }, token);
+                const res2 = await menuAPI.updateHeaderMenu(adjacentMenu._id, { ...adjacentMenu, order: adjacentNewOrder }, token);
+                if(!res1.success || !res2.success) throw new Error("Failed to update");
+            } else {
+                setFooterMenus(prev => ({
+                    ...prev,
+                    [sectionKey]: updateState(prev[sectionKey] || [])
+                }));
+                const res1 = await menuAPI.updateFooterMenu(menu._id, { ...menu, order: newOrder, section: sectionKey }, token);
+                const res2 = await menuAPI.updateFooterMenu(adjacentMenu._id, { ...adjacentMenu, order: adjacentNewOrder, section: sectionKey }, token);
+                if(!res1.success || !res2.success) throw new Error("Failed to update");
             }
-
-            // Delete existing contact menus first
-            const existingContactMenus = footerMenus.contact || [];
-            for (const menu of existingContactMenus) {
-                await menuAPI.deleteFooterMenu(menu._id, token);
-            }
-
-            // Create new contact menus
-            const contactItems = [
-                { type: 'address', value: contactData.address, description: contactData.address },
-                { type: 'phone', value: contactData.phone, description: contactData.phone },
-                { type: 'email', value: contactData.email, description: contactData.email },
-                { type: 'callToAction', value: contactData.callToAction, description: contactData.callToAction }
-            ];
-
-            for (const item of contactItems) {
-                if (item.value.trim()) {
-                    await menuAPI.createFooterMenu({
-                        section: 'contact',
-                        name: item.type.charAt(0).toUpperCase() + item.type.slice(1),
-                        href: item.value,
-                        description: item.description,
-                        isActive: true,
-                        order: contactItems.indexOf(item),
-                        isVisible: true,
-                        target: '_self',
-                        contactType: item.type
-                    }, token);
-                }
-            }
-
-            toast.success('Contact information updated successfully');
-            fetchMenus(); // Refresh data
         } catch (error) {
-            console.error('Error saving contact data:', error);
-            toast.error('Failed to save contact information');
+            console.error('Error updating order:', error);
+            toast.error('Failed to update order');
         }
     };
+
+
 
     // Handle social media save
     const handleSocialMediaSave = async () => {
@@ -479,10 +462,23 @@ export default function MenuSettings() {
         });
     };
 
-    // Handle new menu
     const handleNewMenu = () => {
         setEditingMenu(null);
         resetForm();
+        
+        let initialSection = activeTab === 'header' ? 'leftMenu' : 'quickLinks';
+        let sectionMenus = activeTab === 'header' 
+            ? headerMenus.filter(m => m.section === initialSection)
+            : footerMenus[initialSection] || [];
+            
+        const maxOrder = sectionMenus.length > 0 ? Math.max(...sectionMenus.map(menu => menu.order || 0)) : 0;
+        
+        setFormData(prev => ({ 
+            ...prev, 
+            section: initialSection,
+            order: maxOrder + 1
+        }));
+        
         setShowForm(true);
     };
 
@@ -491,7 +487,10 @@ export default function MenuSettings() {
         setEditingMenu(null);
 
         // Get the highest order in this section and increment by 1
-        const sectionMenus = footerMenus[sectionKey] || [];
+        let sectionMenus = activeTab === 'header'
+            ? headerMenus.filter(m => m.section === sectionKey)
+            : footerMenus[sectionKey] || [];
+            
         const maxOrder = sectionMenus.length > 0 ? Math.max(...sectionMenus.map(menu => menu.order || 0)) : 0;
         const nextOrder = maxOrder + 1;
 
@@ -596,14 +595,24 @@ export default function MenuSettings() {
         saveCategoryOrder(sortedCats);
     }
 
-    // Get all footer sections for display (excluding social media and contact)
+    // Get all footer sections for display (excluding social media)
+    const getHeaderSections = () => {
+        const sections = ['leftMenu', 'rightMenu'];
+        return sections.map(section => ({
+            key: section,
+            name: section === 'leftMenu' ? 'Left Menu' : 'Right Menu',
+            menus: headerMenus.filter(m => m.section === section).sort((a, b) => (a.order || 0) - (b.order || 0))
+        }));
+    };
+
     const getFooterSections = () => {
-        const sections = ['quickLinks', 'utilities', 'about'];
+        const sections = ['quickLinks', 'utilities', 'about', 'contact', 'socialMedia'];
         return sections.map(section => ({
             key: section,
             name: section === 'quickLinks' ? 'Quick Links' :
                 section === 'utilities' ? 'Utilities' :
-                    section === 'about' ? 'About' : section,
+                    section === 'about' ? 'About' : 
+                        section === 'contact' ? 'Contact Information' : section,
             menus: footerMenus[section] || []
         }));
     };
@@ -654,7 +663,7 @@ export default function MenuSettings() {
                                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                 }`}
                         >
-                            Header Utilities Menus
+                            Header Menus
                         </button>
                         <button
                             onClick={() => setActiveTab('footer')}
@@ -709,7 +718,7 @@ export default function MenuSettings() {
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
                     <p className="mt-2 text-gray-600">Loading menus...</p>
                 </div>
-            ) : activeTab === 'categories' ? (
+            ) : activeTab === 'header' ? (
                 <div className="space-y-6">
                     {/* Video Menu Section */}
                     {hasUpdatePermission && (
@@ -823,150 +832,97 @@ export default function MenuSettings() {
                         </div>
                     )}
 
-                    <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-                            <h3 className="text-lg font-medium text-gray-900">Header Categories</h3>
-                            <p className="text-sm text-gray-500">
-                                Toggle the categories you want to display on the frontend header, and set their ordering.
-                            </p>
-                        </div>
-                        <ul className="divide-y divide-gray-200">
-                            {[...categories].sort((a, b) => (a.headerSortOrder || 0) - (b.headerSortOrder || 0)).map((category, index) => {
-                                const isChild = !!category.parent;
-                                let parentName = '';
-                                if (isChild) {
-                                    // parent might be populated object or just ID
-                                    if (category.parent.name) {
-                                        parentName = category.parent.name;
-                                    } else {
-                                        const parentDoc = categories.find(c => c._id === category.parent);
-                                        if (parentDoc) parentName = parentDoc.name;
-                                    }
-                                }
-
-                                return (
-                                    <li key={category._id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
-                                        <div className="flex items-center">
-                                            <div className="flex-shrink-0 h-10 w-10 mr-4">
-                                                {category.image ? (
-                                                    <img className="h-10 w-10 rounded-lg object-cover" src={category.image} alt={category.name} />
-                                                ) : (
-                                                    <div className="h-10 w-10 rounded-lg bg-gray-200 flex items-center justify-center">
-                                                        <FolderOpen className="h-5 w-5 text-gray-400" />
+                    {getHeaderSections().map((section) => (
+                        <div key={section.key} className="bg-white shadow overflow-hidden sm:rounded-md">
+                            <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                                <h3 className="text-lg font-medium text-gray-900">{section.name}</h3>
+                                <p className="text-sm text-gray-500">
+                                    {section.menus.length} menu item{section.menus.length !== 1 ? 's' : ''}
+                                </p>
+                            </div>
+                            {section.menus.length > 0 ? (
+                                <ul className="divide-y divide-gray-200">
+                                    {section.menus.map((menu, index) => (
+                                        <li key={menu._id} className="px-6 py-4">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center">
+                                                    <GripVertical className="w-5 h-5 text-gray-400 mr-3" />
+                                                    <div>
+                                                        <p className="text-sm font-medium text-gray-900">{menu.name}</p>
+                                                        <p className="text-sm text-gray-500">{menu.href}</p>
+                                                        <div className="flex items-center space-x-2 mt-1">
+                                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${menu.isVisible ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                                                }`}>
+                                                                {menu.isVisible ? 'Visible' : 'Hidden'}
+                                                            </span>
+                                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${menu.isActive ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
+                                                                }`}>
+                                                                {menu.isActive ? 'Active' : 'Inactive'}
+                                                            </span>
+                                                            <span className="text-xs text-gray-500">Order: {menu.order}</span>
+                                                        </div>
                                                     </div>
-                                                )}
-                                            </div>
-                                            <div>
-                                                <div className="flex items-center gap-2">
-                                                    <p className="text-sm font-medium text-gray-900">{category.name}</p>
-                                                    <span className={`px-2 py-0.5 text-[10px] font-medium rounded-full ${isChild ? 'bg-blue-100 text-blue-700' : 'bg-blue-100 text-blue-700'}`}>
-                                                        {isChild ? `Child of ${parentName || 'Unknown'}` : 'Parent'}
-                                                    </span>
                                                 </div>
-                                                <p className="text-xs text-gray-500">Slug: {category.slug}</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center space-x-6">
-                                            {!isChild && (
-                                                <div className="flex flex-col items-center">
-                                                    <label className="text-xs text-gray-500 mb-1">Show Sub Menu</label>
-                                                    <label className="relative inline-flex items-center cursor-pointer">
-                                                        <input
-                                                            type="checkbox"
-                                                            className="sr-only peer"
-                                                            checked={category.showChildAsSubMenu || false}
-                                                            onChange={(e) => handleCategoryUpdate(category._id, 'showChildAsSubMenu', e.target.checked)}
-                                                        />
-                                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                                    </label>
-                                                </div>
-                                            )}
-                                            <div className="flex flex-col items-center">
-                                                <label className="text-xs text-gray-500 mb-1">Header Sort Order</label>
-                                                <div className="flex items-center space-x-1">
-                                                    <button
-                                                        onClick={() => handleCategoryMoveUp(index)}
-                                                        className={`p-1 rounded-md ${index === 0 ? 'text-gray-300' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`}
-                                                        title="Move Up"
-                                                        disabled={index === 0}
-                                                    >
-                                                        <ArrowUp className="h-4 w-4" />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleCategoryMoveDown(index)}
-                                                        className={`p-1 rounded-md ${index === categories.length - 1 ? 'text-gray-300' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`}
-                                                        title="Move Down"
-                                                        disabled={index === categories.length - 1}
-                                                    >
-                                                        <ArrowDown className="h-4 w-4" />
-                                                    </button>
+                                                <div className="flex items-center space-x-1 sm:space-x-2">
+                                                    {hasUpdatePermission && (
+                                                        <>
+                                                            <button
+                                                                onClick={() => handleMoveOrder(menu, 'up', section.key)}
+                                                                disabled={index === 0}
+                                                                title="Move Up"
+                                                                className={`p-1.5 sm:p-2 rounded-full transition-all duration-200 border ${index === 0 ? 'text-gray-300 border-gray-100 cursor-not-allowed' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50 border-gray-300 hover:border-blue-300 cursor-pointer'}`}
+                                                            >
+                                                                <ArrowUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleMoveOrder(menu, 'down', section.key)}
+                                                                disabled={index === section.menus.length - 1}
+                                                                title="Move Down"
+                                                                className={`p-1.5 sm:p-2 rounded-full transition-all duration-200 border ${index === section.menus.length - 1 ? 'text-gray-300 border-gray-100 cursor-not-allowed' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50 border-gray-300 hover:border-blue-300 cursor-pointer'}`}
+                                                            >
+                                                                <ArrowDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                            </button>
+                                                        </>
+                                                    )}
+                                                    {hasUpdatePermission && (
+                                                        <button
+                                                            onClick={() => {
+                                                                setFormData(prev => ({ ...prev, section: section.key }));
+                                                                handleEdit(menu);
+                                                            }}
+                                                            className="p-1.5 sm:p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 border border-gray-300 hover:border-blue-300 rounded-full transition-all duration-200 cursor-pointer"
+                                                        >
+                                                            <Edit className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                        </button>
+                                                    )}
+                                                    {hasUpdatePermission && (
+                                                        <button
+                                                            onClick={() => handleDeleteClick(menu)}
+                                                            className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-full transition-all duration-200 cursor-pointer"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </div>
-                                            <div className="flex flex-col items-center">
-                                                <label className="text-xs text-gray-500 mb-1">Show on Header</label>
-                                                <label className="relative inline-flex items-center cursor-pointer">
-                                                    <input
-                                                        type="checkbox"
-                                                        className="sr-only peer"
-                                                        checked={category.showOnHeader || false}
-                                                        onChange={(e) => handleCategoryUpdate(category._id, 'showOnHeader', e.target.checked)}
-                                                    />
-                                                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </li>
-                                )
-                            })}
-                        </ul>
-                    </div>
-                </div>
-            ) : activeTab === 'header' ? (
-                <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                    <ul className="divide-y divide-gray-200">
-                        {getCurrentMenus().map((menu, index) => (
-                            <li key={menu._id} className="px-6 py-4">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center">
-                                        <GripVertical className="w-5 h-5 text-gray-400 mr-3" />
-                                        <div>
-                                            <p className="text-sm font-medium text-gray-900">{menu.name}</p>
-                                            <p className="text-sm text-gray-500">{menu.href}</p>
-                                            <div className="flex items-center space-x-2 mt-1">
-                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${menu.isVisible ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                                                    }`}>
-                                                    {menu.isVisible ? 'Visible' : 'Hidden'}
-                                                </span>
-                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${menu.isActive ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
-                                                    }`}>
-                                                    {menu.isActive ? 'Active' : 'Inactive'}
-                                                </span>
-                                                <span className="text-xs text-gray-500">Order: {menu.order}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                        {hasUpdatePermission && (
-                                            <button
-                                                onClick={() => handleEdit(menu)}
-                                                className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 border border-gray-300 hover:border-blue-300 rounded-full transition-all duration-200 cursor-pointer"
-                                            >
-                                                <Edit className="w-4 h-4" />
-                                            </button>
-                                        )}
-                                        {hasUpdatePermission && (
-                                            <button
-                                                onClick={() => handleDeleteClick(menu)}
-                                                className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-full transition-all duration-200 cursor-pointer"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
-                                        )}
-                                    </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <div className="px-6 py-8 text-center text-gray-500">
+                                    <p>No menu items in this section</p>
+                                    {hasUpdatePermission && (
+                                        <button
+                                            onClick={() => handleNewMenuForSection(section.key)}
+                                            className="mt-2 text-blue-600 hover:text-blue-700 text-sm font-medium"
+                                        >
+                                            Add first menu item
+                                        </button>
+                                    )}
                                 </div>
-                            </li>
-                        ))}
-                    </ul>
+                            )}
+                        </div>
+                    ))}
                 </div>
             ) : (
                 <div className="space-y-6">
@@ -1001,16 +957,36 @@ export default function MenuSettings() {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center space-x-2">
+                                                <div className="flex items-center space-x-1 sm:space-x-2">
+                                                    {hasUpdatePermission && (
+                                                        <>
+                                                            <button
+                                                                onClick={() => handleMoveOrder(menu, 'up', section.key)}
+                                                                disabled={index === 0}
+                                                                title="Move Up"
+                                                                className={`p-1.5 sm:p-2 rounded-full transition-all duration-200 border ${index === 0 ? 'text-gray-300 border-gray-100 cursor-not-allowed' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50 border-gray-300 hover:border-blue-300 cursor-pointer'}`}
+                                                            >
+                                                                <ArrowUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleMoveOrder(menu, 'down', section.key)}
+                                                                disabled={index === section.menus.length - 1}
+                                                                title="Move Down"
+                                                                className={`p-1.5 sm:p-2 rounded-full transition-all duration-200 border ${index === section.menus.length - 1 ? 'text-gray-300 border-gray-100 cursor-not-allowed' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50 border-gray-300 hover:border-blue-300 cursor-pointer'}`}
+                                                            >
+                                                                <ArrowDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                            </button>
+                                                        </>
+                                                    )}
                                                     {hasUpdatePermission && (
                                                         <button
                                                             onClick={() => {
                                                                 setFormData(prev => ({ ...prev, section: section.key }));
                                                                 handleEdit(menu);
                                                             }}
-                                                            className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 border border-gray-300 hover:border-blue-300 rounded-full transition-all duration-200 cursor-pointer"
+                                                            className="p-1.5 sm:p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 border border-gray-300 hover:border-blue-300 rounded-full transition-all duration-200 cursor-pointer"
                                                         >
-                                                            <Edit className="w-4 h-4" />
+                                                            <Edit className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                         </button>
                                                     )}
                                                     {hasUpdatePermission && (
@@ -1054,14 +1030,18 @@ export default function MenuSettings() {
                                     <h3 className="text-xl font-semibold text-gray-900">
                                         {editingMenu ? 'Edit Menu Item' : 'Add New Menu Item'}
                                     </h3>
-                                    {activeTab === 'footer' && (
+                                    {(activeTab === 'footer' || activeTab === 'header') && (
                                         <p className="text-sm text-gray-600 mt-1">
                                             Adding to: <span className="font-medium text-blue-600">
-                                                {formData.section === 'quickLinks' ? 'Quick Links' :
-                                                    formData.section === 'utilities' ? 'Utilities' :
-                                                        formData.section === 'about' ? 'About' :
-                                                            formData.section === 'contact' ? 'Contact' :
-                                                                formData.section === 'socialMedia' ? 'Social Media' : formData.section}
+                                                {activeTab === 'header' ? (
+                                                    formData.section === 'leftMenu' ? 'Left Menu' : 'Right Menu'
+                                                ) : (
+                                                    formData.section === 'quickLinks' ? 'Quick Links' :
+                                                        formData.section === 'utilities' ? 'Utilities' :
+                                                            formData.section === 'about' ? 'About' :
+                                                                formData.section === 'contact' ? 'Contact' :
+                                                                    formData.section === 'socialMedia' ? 'Social Media' : formData.section
+                                                )}
                                             </span>
                                         </p>
                                     )}
@@ -1076,24 +1056,35 @@ export default function MenuSettings() {
 
                             <form onSubmit={handleSubmit} className="space-y-5">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700">Name</label>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        {formData.section === 'contact' ? 'Label (Optional)' : 'Name'}
+                                    </label>
                                     <input
                                         type="text"
                                         value={formData.name}
                                         onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500 sm:text-sm"
-                                        required
+                                        required={formData.section !== 'contact'}
+                                        placeholder={formData.section === 'contact' ? 'e.g. Head Office (Leave empty to hide label)' : ''}
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700">URL</label>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        {formData.section === 'contact' 
+                                            ? (formData.contactType === 'address' ? 'Address' 
+                                                : formData.contactType === 'phone' ? 'Phone Number' 
+                                                : formData.contactType === 'email' ? 'Email Address' 
+                                                : 'Contact Value') 
+                                            : 'URL'}
+                                    </label>
                                     <input
                                         type="text"
                                         value={formData.href}
                                         onChange={(e) => setFormData(prev => ({ ...prev, href: e.target.value }))}
                                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500 sm:text-sm"
                                         required
+                                        placeholder={formData.section === 'contact' ? 'Enter contact details here...' : ''}
                                     />
                                 </div>
 
@@ -1109,24 +1100,72 @@ export default function MenuSettings() {
                                     <p className="mt-1 text-xs text-gray-500">Lower numbers appear first</p>
                                 </div>
 
-                                {activeTab === 'footer' && (
+                                {activeTab === 'header' && (
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700">Section</label>
                                         <select
                                             value={formData.section}
-                                            onChange={(e) => setFormData(prev => ({ ...prev, section: e.target.value }))}
+                                            onChange={(e) => {
+                                                const newSection = e.target.value;
+                                                setFormData(prev => {
+                                                    const newData = { ...prev, section: newSection };
+                                                    if (!editingMenu) {
+                                                        const sectionMenus = headerMenus.filter(m => m.section === newSection);
+                                                        const maxOrder = sectionMenus.length > 0 ? Math.max(...sectionMenus.map(menu => menu.order || 0)) : 0;
+                                                        newData.order = maxOrder + 1;
+                                                    }
+                                                    return newData;
+                                                });
+                                            }}
                                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500 sm:text-sm bg-gray-100"
                                             required
-                                            disabled
+                                            disabled={editingMenu || (formData.section !== 'leftMenu' && formData.section !== 'rightMenu') ? true : false}
                                         >
-                                            <option value="quickLinks">Quick Links</option>
-                                            <option value="utilities">Utilities</option>
-                                            <option value="about">About</option>
-                                            <option value="contact">Contact</option>
-                                            <option value="socialMedia">Social Media</option>
+                                            <option value="leftMenu">Left Menu</option>
+                                            <option value="rightMenu">Right Menu</option>
                                         </select>
                                         <p className="mt-1 text-xs text-gray-500">Section is automatically set based on your selection</p>
                                     </div>
+                                )}
+
+                                {activeTab === 'footer' && (
+                                    <>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700">Section</label>
+                                            <select
+                                                value={formData.section}
+                                                onChange={(e) => setFormData(prev => ({ ...prev, section: e.target.value }))}
+                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500 sm:text-sm bg-gray-100"
+                                                required
+                                                disabled
+                                            >
+                                                <option value="quickLinks">Quick Links</option>
+                                                <option value="utilities">Utilities</option>
+                                                <option value="about">About</option>
+                                                <option value="contact">Contact</option>
+                                                <option value="socialMedia">Social Media</option>
+                                            </select>
+                                            <p className="mt-1 text-xs text-gray-500">Section is automatically set based on your selection</p>
+                                        </div>
+                                        {formData.section === 'contact' && (
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">Contact Type</label>
+                                                <select
+                                                    value={formData.contactType}
+                                                    onChange={(e) => setFormData(prev => ({ ...prev, contactType: e.target.value }))}
+                                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500 sm:text-sm"
+                                                    required
+                                                >
+                                                    <option value="">Select a type</option>
+                                                    <option value="address">Address</option>
+                                                    <option value="phone">Phone</option>
+                                                    <option value="email">Email</option>
+                                                    <option value="callToAction">Call to Action</option>
+                                                </select>
+                                                <p className="mt-1 text-xs text-gray-500">Select what type of contact this is (determines icon)</p>
+                                            </div>
+                                        )}
+                                    </>
                                 )}
 
                                 <div>
@@ -1185,98 +1224,7 @@ export default function MenuSettings() {
                 </div>
             )}
 
-            {/* Contact Information Management Section - Only for Footer Tab */}
-            {activeTab === 'footer' && (
-                <div className="mt-8 bg-white shadow overflow-hidden sm:rounded-md">
-                    <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-                        <h3 className="text-lg font-medium text-gray-900">Contact Information</h3>
-                        <p className="text-sm text-gray-500">Manage contact details for footer</p>
-                    </div>
 
-                    <div className="p-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-3">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Address
-                                    </label>
-                                    <textarea
-                                        value={contactData.address}
-                                        onChange={(e) => setContactData(prev => ({
-                                            ...prev,
-                                            address: e.target.value
-                                        }))}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="230 Park Avenue, Suite 210, New York, NY 10169, USA"
-                                        rows={3}
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Phone
-                                    </label>
-                                    <input
-                                        type="tel"
-                                        value={contactData.phone}
-                                        onChange={(e) => setContactData(prev => ({
-                                            ...prev,
-                                            phone: e.target.value
-                                        }))}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="+8801XXXXXXXXX"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="space-y-3">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Email
-                                    </label>
-                                    <input
-                                        type="email"
-                                        value={contactData.email}
-                                        onChange={(e) => setContactData(prev => ({
-                                            ...prev,
-                                            email: e.target.value
-                                        }))}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="info@kidsworldbd.com"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Call to Action
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={contactData.callToAction}
-                                        onChange={(e) => setContactData(prev => ({
-                                            ...prev,
-                                            callToAction: e.target.value
-                                        }))}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="Feel free to call & mail us anytime!"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        {hasUpdatePermission && (
-                            <div className="mt-6 flex justify-end">
-                                <button
-                                    onClick={handleContactSave}
-                                    className="px-6 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transition-colors cursor-pointer"
-                                >
-                                    Save Contact Information
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
 
             {/* Social Media Management Section - Only for Footer Tab */}
             {activeTab === 'footer' && (
@@ -1384,3 +1332,4 @@ export default function MenuSettings() {
         </div>
     );
 }
+

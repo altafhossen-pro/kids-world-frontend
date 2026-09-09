@@ -21,7 +21,8 @@ export default function EditCategoryPage() {
         slug: '',
         image: '',
         parent: '',
-        isFeatured: false,
+        showHomepageCategory: false,
+        showHomepageAsSection: false,
         bgClass: '',
         banner: {
             url: '',
@@ -45,7 +46,8 @@ export default function EditCategoryPage() {
                     slug: data.data.slug,
                     image: data.data.image || '',
                     parent: data.data.parent?._id || '',
-                    isFeatured: data.data.isFeatured || false,
+                    showHomepageCategory: data.data.showHomepageCategory || false,
+                    showHomepageAsSection: data.data.showHomepageAsSection || false,
                     bgClass: data.data.bgClass || '',
                     banner: {
                         url: data.data.banner?.url || '',
@@ -242,24 +244,24 @@ export default function EditCategoryPage() {
                         </div>
                     </div>
 
-                    {/* Featured Category Checkbox */}
+                    {/* Homepage Category Checkbox */}
                     <div className="mt-6">
                         <div className="flex items-center">
                             <input
                                 type="checkbox"
-                                id="isFeatured"
-                                name="isFeatured"
-                                checked={formData.isFeatured}
+                                id="showHomepageCategory"
+                                name="showHomepageCategory"
+                                checked={formData.showHomepageCategory}
                                 onChange={handleInputChange}
                                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                             />
-                            <label htmlFor="isFeatured" className="ml-2 block text-sm text-gray-900">
-                                <span className="font-medium text-gray-700">Show on Homepage</span>
-                                <span className="text-gray-500 ml-1">- Display this category on the main homepage grid</span>
+                            <label htmlFor="showHomepageCategory" className="ml-2 block text-sm text-gray-900">
+                                <span className="font-medium text-gray-700">Show Homepage Category</span>
+                                <span className="text-gray-500 ml-1">- Display this category in the Shop by Category section</span>
                             </label>
                         </div>
                         
-                        {formData.isFeatured && (
+                        {formData.showHomepageCategory && (
                             <div className="mt-4 ml-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Background Gradient
@@ -285,6 +287,21 @@ export default function EditCategoryPage() {
                                 </p>
                             </div>
                         )}
+                        
+                        <div className="flex items-center mt-6">
+                            <input
+                                type="checkbox"
+                                id="showHomepageAsSection"
+                                name="showHomepageAsSection"
+                                checked={formData.showHomepageAsSection}
+                                onChange={handleInputChange}
+                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <label htmlFor="showHomepageAsSection" className="ml-2 block text-sm text-gray-900">
+                                <span className="font-medium text-gray-700">Show Homepage As Section</span>
+                                <span className="text-gray-500 ml-1">- Create a dedicated product section on the homepage for this category</span>
+                            </label>
+                        </div>
                     </div>
                     {/* Category Banner Section */}
                     <div className="mt-8 pt-6 border-t border-gray-200">

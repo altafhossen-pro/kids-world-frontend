@@ -42,7 +42,7 @@ const JustForYou = () => {
 
   const loadMore = useCallback(async () => {
     if (fetchingRef.current || !hasMore || initialLoading || !layoutConfig.isVisible) return;
-    
+
     // Stop if we have reached or exceeded the max limit
     if (products.length >= layoutConfig.maxProducts) {
       setHasMore(false);
@@ -66,10 +66,10 @@ const JustForYou = () => {
         }
       } else {
         // Fetch latest products using pagination
-        const res = await productAPI.getProducts({ 
-          page: page, 
-          limit: fetchLimit, 
-          sort: '-createdAt' 
+        const res = await productAPI.getProducts({
+          page: page,
+          limit: fetchLimit,
+          sort: '-createdAt'
         });
         if (res.success && res.data) {
           newProducts = Array.isArray(res.data) ? res.data : (res.data.products || []);
@@ -122,7 +122,7 @@ const JustForYou = () => {
   if (initialLoading) {
     return (
       <section className="container mx-auto px-4 sm:px-6 lg:px-8 mt-16">
-         <div className="flex justify-between items-end mb-8 border-b border-gray-100 pb-4">
+        <div className="flex justify-between items-end mb-8 border-b border-gray-100 pb-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <Sparkles className="w-5 h-5 text-gray-300" />
@@ -163,18 +163,18 @@ const JustForYou = () => {
       </div>
 
       {/* Sentinel / loader */}
-      <div ref={sentinelRef} className="flex justify-center items-center py-10 mt-4">
+      <div ref={sentinelRef} className="flex justify-center items-center py-6 mt-4">
         {loading && (
           <div className="flex items-center gap-2 text-blue-600 font-semibold text-sm">
             <Loader2 className="w-5 h-5 animate-spin" />
             Loading more products...
           </div>
         )}
-        {!hasMore && products.length > 0 && !loading && (
+        {/* {!hasMore && products.length > 0 && !loading && (
           <p className="text-gray-400 text-sm font-medium">
             You've seen all products 🎉
           </p>
-        )}
+        )} */}
       </div>
     </section>
   );

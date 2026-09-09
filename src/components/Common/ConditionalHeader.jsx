@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import NewHeader from '@/components/NewHeader/NewHeader';
 
-export default function ConditionalHeader() {
+export default function ConditionalHeader({ logoUrl }) {
   const pathname = usePathname();
   
   // Routes that should not show header at all
@@ -22,5 +22,5 @@ export default function ConditionalHeader() {
     return null;
   }
   
-  return <NewHeader />;
+  return <NewHeader logoUrl={logoUrl} />;
 }

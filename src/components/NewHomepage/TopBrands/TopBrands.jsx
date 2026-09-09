@@ -6,9 +6,9 @@ const brands = [
 
 const TopBrands = () => {
   return (
-    <section className="bg-[#F8FAFC] py-16 mt-20 border-y border-gray-100">
+    <section className="bg-[#F8FAFC] py-8 sm:py-16 mt-8 sm:mt-16 border-y border-gray-100">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-center text-xl font-bold text-gray-500 uppercase tracking-widest mb-10">
+        <h2 className="text-center text-base sm:text-xl font-bold text-gray-500 uppercase tracking-widest mb-6 sm:mb-10">
           Trusted By Top Brands
         </h2>
         

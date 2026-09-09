@@ -28,6 +28,7 @@ import TopBrands from "@/components/NewHomepage/TopBrands/TopBrands";
 import Testimonials from "@/components/NewHomepage/Testimonials/Testimonials";
 import Newsletter from "@/components/NewHomepage/Newsletter/Newsletter";
 import JustForYou from "@/components/NewHomepage/Products/JustForYou";
+import DynamicCategories from "@/components/NewHomepage/Products/DynamicCategories";
 
 export default function Home() {
   return (
@@ -42,6 +43,7 @@ export default function Home() {
       <DealOfTheDay />
       <NewArrivals />
       {/* <PromoBanners /> */}
+      <DynamicCategories />
       <JustForYou />
       <TopBrands />
       <Testimonials />

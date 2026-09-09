@@ -124,11 +124,11 @@ export default function AdminCategoriesPage() {
                category.slug.toLowerCase().includes(searchTerm.toLowerCase())
     })
 
-    const handleToggleFeatured = async (categoryId, currentStatus) => {
+    const handleToggleStatus = async (categoryId, field, currentStatus) => {
         try {
-            const data = await categoryAPI.updateCategory(categoryId, { isFeatured: !currentStatus })
+            const data = await categoryAPI.updateCategory(categoryId, { [field]: !currentStatus })
             if (data.success) {
-                toast.success(`Category ${!currentStatus ? 'added to' : 'removed from'} homepage`)
+                toast.success(`Category updated successfully`)
                 fetchCategories() // Refresh to get updated data
             } else {
                 toast.error('Failed to update status: ' + data.message)
@@ -265,7 +265,10 @@ export default function AdminCategoriesPage() {
                                     Sub Categories
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Show on Homepage
+                                    Show as Section
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Show as Category
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Created
@@ -321,15 +324,30 @@ export default function AdminCategoriesPage() {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <button
-                                                onClick={() => handleToggleFeatured(category._id, category.isFeatured)}
+                                                onClick={() => handleToggleStatus(category._id, 'showHomepageAsSection', category.showHomepageAsSection)}
                                                 disabled={!hasPermission('category', 'update')}
                                                 className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                                                    category.isFeatured ? 'bg-blue-600' : 'bg-gray-200'
+                                                    category.showHomepageAsSection ? 'bg-blue-600' : 'bg-gray-200'
                                                 } ${!hasPermission('category', 'update') ? 'opacity-50 cursor-not-allowed' : ''}`}
                                             >
                                                 <span
                                                     className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                                                        category.isFeatured ? 'translate-x-5' : 'translate-x-0'
+                                                        category.showHomepageAsSection ? 'translate-x-5' : 'translate-x-0'
+                                                    }`}
+                                                />
+                                            </button>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <button
+                                                onClick={() => handleToggleStatus(category._id, 'showHomepageCategory', category.showHomepageCategory)}
+                                                disabled={!hasPermission('category', 'update')}
+                                                className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                                                    category.showHomepageCategory ? 'bg-blue-600' : 'bg-gray-200'
+                                                } ${!hasPermission('category', 'update') ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                            >
+                                                <span
+                                                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                                                        category.showHomepageCategory ? 'translate-x-5' : 'translate-x-0'
                                                     }`}
                                                 />
                                             </button>

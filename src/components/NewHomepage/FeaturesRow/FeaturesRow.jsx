@@ -10,16 +10,16 @@ const FeaturesRow = () => {
   ];
 
   return (
-    <section className="container mx-auto px-4 sm:px-6 lg:px-8 mt-12">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <section className="container mx-auto px-4 sm:px-6 lg:px-8 mt-6 lg:mt-12">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-2 sm:gap-6">
         {features.map((item, i) => (
-          <div key={i} className="flex items-center gap-5 bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-            <div className={`${item.bg} ${item.color} p-4 rounded-2xl`}>
-              <item.icon className="w-8 h-8" />
+          <div key={i} className="flex flex-col lg:flex-row items-center gap-2 lg:gap-5 bg-white p-2 sm:p-6 rounded-xl sm:rounded-3xl shadow-sm sm:border border-gray-100 hover:shadow-md transition-shadow text-center lg:text-left">
+            <div className={`${item.bg} ${item.color} p-2 sm:p-4 rounded-xl sm:rounded-2xl`}>
+              <item.icon className="w-5 h-5 sm:w-8 sm:h-8" />
             </div>
             <div>
-              <h4 className="text-lg font-bold text-gray-800">{item.title}</h4>
-              <p className="text-sm text-gray-500 font-medium mt-1">{item.sub}</p>
+              <h4 className="text-[10px] sm:text-lg font-bold text-gray-800 leading-tight">{item.title}</h4>
+              <p className="hidden sm:block text-sm text-gray-500 font-medium mt-1">{item.sub}</p>
             </div>
           </div>
         ))}

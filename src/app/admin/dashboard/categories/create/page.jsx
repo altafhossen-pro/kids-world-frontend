@@ -20,7 +20,8 @@ export default function CreateCategoryPage() {
         slug: '',
         image: '',
         parent: '',
-        isFeatured: false,
+        showHomepageCategory: false,
+        showHomepageAsSection: false,
         bgClass: '',
         banner: {
             url: '',
@@ -245,24 +246,24 @@ export default function CreateCategoryPage() {
                         </div>
                         
                         <div className="space-y-6">
-                            {/* Featured Settings */}
-                            <div>
+                            {/* Homepage Settings */}
+                            <div className="space-y-3">
                                 <label className="flex items-center gap-3 p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
                                     <input
                                         type="checkbox"
-                                        name="isFeatured"
-                                        checked={formData.isFeatured}
+                                        name="showHomepageCategory"
+                                        checked={formData.showHomepageCategory}
                                         onChange={handleInputChange}
                                         className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                                     />
                                     <div>
-                                        <span className="block text-sm font-medium text-gray-900">Show on Homepage</span>
-                                        <span className="block text-xs text-gray-500">Feature this category on the main storefront</span>
+                                        <span className="block text-sm font-medium text-gray-900">Show Homepage Category</span>
+                                        <span className="block text-xs text-gray-500">Show this category in the Shop by Category section</span>
                                     </div>
                                 </label>
 
-                                {formData.isFeatured && (
-                                    <div className="mt-4 space-y-2 pl-2">
+                                {formData.showHomepageCategory && (
+                                    <div className="mt-2 space-y-2 pl-2">
                                         <label className="block text-sm font-medium text-gray-700">
                                             Card Background Gradient
                                         </label>
@@ -279,6 +280,20 @@ export default function CreateCategoryPage() {
                                         </select>
                                     </div>
                                 )}
+
+                                <label className="flex items-center gap-3 p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+                                    <input
+                                        type="checkbox"
+                                        name="showHomepageAsSection"
+                                        checked={formData.showHomepageAsSection}
+                                        onChange={handleInputChange}
+                                        className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                                    />
+                                    <div>
+                                        <span className="block text-sm font-medium text-gray-900">Show Homepage As Section</span>
+                                        <span className="block text-xs text-gray-500">Create a dedicated product section on the homepage for this category</span>
+                                    </div>
+                                </label>
                             </div>
 
                             {/* Banner Settings */}

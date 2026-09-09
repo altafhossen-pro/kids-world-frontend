@@ -124,8 +124,8 @@ export const productAPI = {
     },
 
     // Get trending products
-    getTrendingProducts: (limit = 10) => {
-        return apiCall(`/product/trending?limit=${limit}`);
+    getTrendingProducts: (limit = 10, extraParams = '') => {
+        return apiCall(`/product/trending?limit=${limit}${extraParams}`);
     },
 
     // Get new arrival products

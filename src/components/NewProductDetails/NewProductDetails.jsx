@@ -196,15 +196,39 @@ export default function NewProductDetails({ productSlug }) {
     }
   };
 
+  const getCartProduct = () => ({
+    _id: product._id || product.id,
+    id: product._id || product.id,
+    title: product.title || product.name,
+    slug: product.slug,
+    image: product.featuredImage || product.image,
+    featuredImage: product.featuredImage || product.image,
+    basePrice: product.basePrice || product.price,
+  });
+
+  const getFormattedVariant = () => {
+    if (!currentVariant) return null;
+    return {
+      size: currentVariant.attributes?.find(a => a.name.toLowerCase() === 'size')?.value || null,
+      color: currentVariant.attributes?.find(a => a.name.toLowerCase() === 'color')?.value || null,
+      hexCode: currentVariant.attributes?.find(a => a.name.toLowerCase() === 'color')?.hexCode || null,
+      currentPrice: currentVariant.currentPrice || displayPrice,
+      originalPrice: currentVariant.originalPrice || originalPrice,
+      sku: currentVariant.sku,
+      stockQuantity: currentVariant.stockQuantity || 0,
+      image: currentVariant.images?.[0]?.url || product.featuredImage || product.image
+    };
+  };
+
   const handleAddToCart = () => {
     if (isOutOfStock) return toast.error('Out of stock');
-    addToCart(product, currentVariant, quantity);
+    addToCart(getCartProduct(), getFormattedVariant(), quantity);
     setIsCartOpen(true);
   };
 
   const handleBuyNow = () => {
     if (isOutOfStock) return toast.error('Out of stock');
-    addToCart(product, currentVariant, quantity);
+    addToCart(getCartProduct(), getFormattedVariant(), quantity);
     router.push('/checkout');
   };
 
@@ -313,7 +337,7 @@ export default function NewProductDetails({ productSlug }) {
                 <>
                   <span className="text-xl text-gray-400 line-through font-medium leading-none mb-1">৳{originalPrice.toLocaleString()}</span>
                   <span className="bg-blue-100 text-blue-600 text-xs font-bold px-2 py-1 rounded-lg mb-0.5">
-                    Save ৳{(originalPrice - displayPrice).toLocaleString()}
+                    {Math.round(((originalPrice - displayPrice) / originalPrice) * 100)}% OFF
                   </span>
                 </>
               )}

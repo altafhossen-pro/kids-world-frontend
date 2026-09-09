@@ -1003,7 +1003,7 @@ export default function ProductDetails({ productSlug }) {
                                 ) : (
                                     <button
                                         onClick={handleAddToCart}
-                                        className="add-to-cart-btn flex-1 bg-white text-[#EF3D6A] py-3 px-1 lg:px-6 rounded-lg cursor-pointer font-semibold border-[1.5px] border-[#EF3D6A] flex items-center justify-center gap-2 relative overflow-hidden"
+                                        className="add-to-cart-btn flex-1 bg-white text-[#2563EB] py-3 px-1 lg:px-6 rounded-lg cursor-pointer font-semibold border-[1.5px] border-[#2563EB] flex items-center justify-center gap-2 relative overflow-hidden"
                                         aria-label={`Add ${product?.title} to cart`}
                                     >
                                         <ShoppingCart className="w-5 h-5 relative z-10" />
@@ -1022,7 +1022,7 @@ export default function ProductDetails({ productSlug }) {
                                 ) : (
                                     <button
                                         onClick={handleBuyNow}
-                                        className="buy-now-btn flex-1 rounded-lg bg-[#EF3D6A] border-[1.5px] border-[#EF3D6A] text-white py-3 px-1 lg:px-6 cursor-pointer font-semibold relative overflow-hidden"
+                                        className="buy-now-btn flex-1 rounded-lg bg-[#2563EB] border-[1.5px] border-[#2563EB] text-white py-3 px-1 lg:px-6 cursor-pointer font-semibold relative overflow-hidden"
                                         aria-label={`Buy ${product?.title} now`}
                                     >
                                         <span className="relative z-10">Buy Now</span>
@@ -1474,7 +1474,7 @@ export default function ProductDetails({ productSlug }) {
                 }
                 .swiper-button-next-custom:hover:not(.swiper-button-disabled),
                 .swiper-button-prev-custom:hover:not(.swiper-button-disabled) {
-                    border-color: #ef3d6a !important;
+                    border-color: #2563EB !important;
                     border-width: 2px !important;
                 }
                 .swiper-button-next-custom.swiper-button-disabled,
@@ -1510,11 +1510,11 @@ export default function ProductDetails({ productSlug }) {
                 .swiper-pagination-custom .swiper-pagination-bullet-active,
                 .swiper-pagination-custom .swiper-pagination-bullet.swiper-pagination-bullet-active,
                 .swiper-pagination-custom.swiper-pagination-bullet-active {
-                    background: #ef3d6a !important;
+                    background: #2563EB !important;
                     width: 24px !important;
                     height: 8px !important;
                     border-radius: 4px !important;
-                    border: 1px solid #ef3d6a !important;
+                    border: 1px solid #2563EB !important;
                     opacity: 1 !important;
                 }
 
@@ -1529,7 +1529,7 @@ export default function ProductDetails({ productSlug }) {
                     left: 0;
                     width: 100%;
                     height: 100%;
-                    background: #EF3D6A;
+                    background: #2563EB;
                     transform: translateX(-100%);
                     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
                     z-index: 0;
@@ -1539,7 +1539,7 @@ export default function ProductDetails({ productSlug }) {
                 }
                 .add-to-cart-btn:hover {
                     color: white;
-                    border-color: #EF3D6A;
+                    border-color: #2563EB;
                 }
                 .add-to-cart-btn:hover svg {
                     color: white;
@@ -1565,8 +1565,8 @@ export default function ProductDetails({ productSlug }) {
                     transform: translateX(0);
                 }
                 .buy-now-btn:hover {
-                    color: #EF3D6A;
-                    border: 1.5px solid #EF3D6A;
+                    color: #2563EB;
+                    border: 1.5px solid #2563EB;
                 }
             `}</style>
 
