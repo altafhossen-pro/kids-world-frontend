@@ -70,9 +70,9 @@ const ShopByCategory = () => {
             nextEl: '.category-next',
           }}
           spaceBetween={16}
-          slidesPerView={3}
+          slidesPerView={4}
           breakpoints={{
-            480: { slidesPerView: 3, spaceBetween: 16 },
+            480: { slidesPerView: 4, spaceBetween: 16 },
             640: { slidesPerView: 4, spaceBetween: 16 },
             768: { slidesPerView: 5, spaceBetween: 16 },
             1024: { slidesPerView: 7, spaceBetween: 16 },

@@ -65,7 +65,7 @@ export const AppProvider = ({ children }) => {
     const [isAvailableAffiliateCode, setIsAvailableAffiliateCode] = useState(false)
 
     // Cart functions
-    const addToCart = (product, selectedVariant, quantity = 1) => {
+    const addToCart = (product, selectedVariant, quantity = 1, openModal = true) => {
         if (product.isForceOutOfStock) {
             import('react-hot-toast').then(({ default: toast }) => toast.error(`Product "${product.title}" is currently out of stock`));
             return;
@@ -157,11 +157,13 @@ export const AppProvider = ({ children }) => {
         }
 
         // Auto-open cart modal after adding to cart
-        setIsCartOpen(true);
+        if (openModal) {
+            setIsCartOpen(true);
+        }
     }
 
     // Batch add multiple items to cart
-    const addMultipleToCart = (items) => {
+    const addMultipleToCart = (items, openModal = true) => {
         if (!items || items.length === 0) return;
 
         const newCartItems = [];
@@ -258,7 +260,9 @@ export const AppProvider = ({ children }) => {
         toast.success(`${items.length} product(s) added to cart`);
 
         // Auto-open cart modal after adding to cart
-        setIsCartOpen(true);
+        if (openModal) {
+            setIsCartOpen(true);
+        }
     }
 
     const removeFromCart = (cartItemId) => {

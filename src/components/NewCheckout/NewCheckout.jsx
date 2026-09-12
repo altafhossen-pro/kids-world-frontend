@@ -10,10 +10,11 @@ import toast from 'react-hot-toast';
 export default function NewCheckout() {
   const router = useRouter();
   const { user, token, cart = [], cartTotal, updateCartItem, removeFromCart, cartLoading, clearCart } = useAppContext();
-  
+
   const [deliveryType, setDeliveryType] = useState('inside');
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [stockOutError, setStockOutError] = useState(null);
 
   // Address State
   const [divisions, setDivisions] = useState([]);
@@ -170,7 +171,7 @@ export default function NewCheckout() {
     if (!couponCode.trim()) {
       return toast.error('Please enter a coupon code');
     }
-    
+
     setIsApplyingCoupon(true);
     try {
       const response = await couponAPI.validateCoupon(couponCode, subtotal);
@@ -247,7 +248,7 @@ export default function NewCheckout() {
           phone: formData.phone
         };
       }
-      
+
       // If notes exist
       if (formData.notes.trim()) {
         orderData.notes = formData.notes.trim();
@@ -263,39 +264,47 @@ export default function NewCheckout() {
       if (response.success) {
         toast.success('Order placed successfully!');
         clearCart();
-        
+
         const orderId = response.data.orderId || response.data._id;
         const status = response.data.status || 'pending';
         const finalTotal = response.data.total;
         const createdAt = response.data.createdAt;
         const isGuestOrder = !user;
-        
+
         let redirectUrl = `/order-confirmation?orderId=${orderId}&status=${status}&total=${finalTotal}&createdAt=${createdAt}&isGuestOrder=${isGuestOrder}`;
-        
+
         if (couponDiscount > 0) {
-           redirectUrl += `&couponDiscount=${couponDiscount}`;
+          redirectUrl += `&couponDiscount=${couponDiscount}`;
         }
         if (appliedCoupon) {
-           redirectUrl += `&coupon=${appliedCoupon}`;
+          redirectUrl += `&coupon=${appliedCoupon}`;
         }
-        
+
         router.push(redirectUrl);
-      } else {
-        toast.error(response.message || 'Failed to place order');
+        // Check if the error is an out of stock error
+        if (response.message && response.message.includes('currently out of stock')) {
+          setStockOutError(response.message);
+        } else {
+          toast.error(response.message || 'Failed to place order');
+        }
         setIsSubmitting(false);
       }
     } catch (error) {
       console.error('Order creation error:', error);
-      toast.error('An error occurred while placing the order. Please try again.');
+      if (error?.response?.data?.message?.includes('currently out of stock')) {
+         setStockOutError(error.response.data.message);
+      } else {
+         toast.error('An error occurred while placing the order. Please try again.');
+      }
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] py-8 lg:py-12">
+    <div className="min-h-screen bg-[#F8FAFC] py-3 lg:py-8">
       <div className="container mx-auto px-4 sm:px-4 lg:px-6">
 
-        <h1 className="text-3xl font-black text-gray-900 text-center mb-10">Checkout</h1>
+        <h1 className="text-3xl font-black text-gray-900 text-center mb-3 lg:mb-6">Checkout</h1>
 
         <div className="flex flex-col lg:flex-row gap-8 max-w-full mx-auto">
 
@@ -430,15 +439,15 @@ export default function NewCheckout() {
               </label>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-2">
-              <Link href="/shop" className="flex-1 flex items-center justify-center gap-2 h-14 bg-white border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-gray-700 font-bold rounded-xl transition-all disabled:opacity-50 pointer-events-auto" style={{ pointerEvents: isSubmitting ? 'none' : 'auto' }}>
-                <ArrowLeft className="w-4 h-4" /> Back to Shopping
+            {/* Action Buttons (Desktop) */}
+            <div className="hidden lg:flex flex-row gap-4 pt-4 lg:pb-0 lg:mb-0">
+              <Link href="/shop" className="flex-1 flex items-center justify-center gap-2 h-14 bg-white border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-gray-700 font-bold rounded-xl py-2 transition-all disabled:opacity-50 pointer-events-auto text-base" style={{ pointerEvents: isSubmitting ? 'none' : 'auto' }}>
+                <ArrowLeft className="w-4 h-4 shrink-0" /> <span>Back to Shop</span>
               </Link>
               <button
                 onClick={handleConfirmOrder}
                 disabled={isSubmitting}
-                className="flex-[2] flex items-center justify-center gap-2 h-14 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-200 disabled:bg-blue-400 disabled:shadow-none"
+                className="flex-[2] flex items-center justify-center gap-2 py-2 h-16 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-200 disabled:bg-blue-400 disabled:shadow-none text-base"
               >
                 {isSubmitting ? (
                   <>
@@ -521,15 +530,15 @@ export default function NewCheckout() {
                     <span>Coupon feature is available for registered users only</span>
                   </div>
                 )}
-                
+
                 {appliedCoupon ? (
                   <div className="bg-green-50 border border-green-200 rounded-xl p-3 flex justify-between items-center">
                     <div>
                       <p className="text-xs font-bold text-green-700 uppercase">{appliedCoupon}</p>
                       <p className="text-[10px] text-green-600 font-medium">Coupon applied successfully</p>
                     </div>
-                    <button 
-                      onClick={handleRemoveCoupon} 
+                    <button
+                      onClick={handleRemoveCoupon}
                       disabled={isSubmitting}
                       className="text-gray-400 hover:text-red-500 transition-colors"
                     >
@@ -537,19 +546,19 @@ export default function NewCheckout() {
                     </button>
                   </div>
                 ) : (
-                  <div className="flex gap-2">
-                    <input 
-                      type="text" 
-                      placeholder="ENTER COUPON" 
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <input
+                      type="text"
+                      placeholder="ENTER COUPON"
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                       disabled={!user || isSubmitting}
-                      className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition-all uppercase disabled:opacity-60 disabled:cursor-not-allowed" 
+                      className="flex-1 w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition-all uppercase disabled:opacity-60 disabled:cursor-not-allowed"
                     />
-                    <button 
+                    <button
                       onClick={handleApplyCoupon}
                       disabled={!user || isApplyingCoupon || isSubmitting || !couponCode.trim()}
-                      className="px-6 bg-blue-100 text-blue-600 font-bold rounded-xl hover:bg-blue-200 transition-colors text-sm disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center min-w-[80px]"
+                      className="w-full sm:w-auto px-6 py-2.5 bg-blue-100 text-blue-600 font-bold rounded-xl hover:bg-blue-200 transition-colors text-sm disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center min-w-[80px]"
                     >
                       {isApplyingCoupon ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Apply'}
                     </button>
@@ -579,11 +588,52 @@ export default function NewCheckout() {
                 </div>
               </div>
 
+              {/* Action Buttons (Mobile) */}
+              <div className="flex lg:hidden flex-row gap-2 pt-8 pb-20">
+                <Link href="/shop" className="flex-1 flex items-center justify-center gap-1 h-14 bg-white border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-gray-700 font-bold rounded-xl transition-all disabled:opacity-50 pointer-events-auto text-xs" style={{ pointerEvents: isSubmitting ? 'none' : 'auto' }}>
+                  <ArrowLeft className="w-3 h-3 shrink-0" /> <span className="truncate">Back to Shop</span>
+                </Link>
+                <button
+                  onClick={handleConfirmOrder}
+                  disabled={isSubmitting}
+                  className="flex-1 flex items-center justify-center gap-1 h-14 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-200 disabled:bg-blue-400 disabled:shadow-none text-xs"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" /> Wait...
+                    </>
+                  ) : (
+                    <>Confirm Order <ArrowRight className="w-3 h-3" /></>
+                  )}
+                </button>
+              </div>
             </div>
+
           </div>
 
         </div>
       </div>
+      
+      {/* Stock Out Error Modal */}
+      {stockOutError && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Trash2 className="w-8 h-8 text-red-600" />
+            </div>
+            <h3 className="text-xl font-bold text-center text-gray-900 mb-2">Item Out of Stock</h3>
+            <p className="text-gray-600 text-center mb-6">{stockOutError}<br/><br/>Please remove this item from your cart to continue with your checkout.</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setStockOutError(null)}
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-xl transition-colors cursor-pointer"
+              >
+                Close & Check Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

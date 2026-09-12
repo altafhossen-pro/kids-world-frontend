@@ -38,6 +38,11 @@ const ProductCard = ({ product }) => {
 
   const hasMultipleVariants = product.variants && product.variants.length > 1;
   const hasAnyVariant = product.variants && product.variants.length > 0;
+  
+  const isOutOfStock = product.isForceOutOfStock || 
+    (hasAnyVariant 
+      ? !product.variants.some(v => (v.stockQuantity || 0) > 0) 
+      : (product.totalStock || 0) <= 0);
 
   const price = hasAnyVariant && product.variants[0]?.currentPrice
     ? product.variants[0].currentPrice
@@ -97,11 +102,9 @@ const ProductCard = ({ product }) => {
         setSelectedSize(initialVariant.attributes.find(a => a.name.toLowerCase() === 'size')?.value || null);
       }
     } else {
-      addProductToCart(product, addToCart, 1);
+      addProductToCart(product, addToCart, 1, !isBuyNow);
       if (isBuyNow) {
         router.push('/checkout');
-      } else {
-        setIsCartOpen(true);
       }
     }
   };
@@ -129,15 +132,14 @@ const ProductCard = ({ product }) => {
       slug: product.slug,
       featuredImage: product.featuredImage || product.image,
       basePrice: product.price || price,
+      isForceOutOfStock: product.isForceOutOfStock || false
     };
 
-    addToCart(cartProduct, formattedVariant, 1);
+    addToCart(cartProduct, formattedVariant, 1, !isBuyNow);
     setShowModal(false);
 
     if (isBuyNow) {
       router.push('/checkout');
-    } else {
-      setIsCartOpen(true);
     }
   };
 
@@ -184,14 +186,16 @@ const ProductCard = ({ product }) => {
 
           <div className="mt-auto flex flex-col gap-2">
             <button
-              onClick={(e) => handleAction(e, false)}
-              className="w-full bg-blue-600 hover:bg-blue-700 cursor-pointer text-white py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 shadow-sm"
+              onClick={(e) => !isOutOfStock && handleAction(e, false)}
+              disabled={isOutOfStock}
+              className={`w-full py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 shadow-sm ${isOutOfStock ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 cursor-pointer text-white'}`}
             >
-              <ShoppingCart className="w-4 h-4" /> {hasMultipleVariants ? 'Select Items' : 'Add to Cart'}
+              <ShoppingCart className="w-4 h-4" /> {isOutOfStock ? 'Out of Stock' : (hasMultipleVariants ? 'Select Items' : 'Add to Cart')}
             </button>
             <button
-              onClick={(e) => handleAction(e, true)}
-              className="w-full bg-[#f4f5f6] hover:bg-[#e9ebec] text-gray-800 cursor-pointer py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+              onClick={(e) => !isOutOfStock && handleAction(e, true)}
+              disabled={isOutOfStock}
+              className={`w-full py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${isOutOfStock ? 'bg-gray-100 text-gray-400 cursor-not-allowed hidden' : 'bg-[#f4f5f6] hover:bg-[#e9ebec] text-gray-800 cursor-pointer'}`}
             >
               <ShoppingBag className="w-4 h-4" /> Buy Now
             </button>

@@ -5,9 +5,9 @@ import { formatProductName } from './productUtils';
  * Common utility function to add a product to cart with its first variant
  * @param {Object} product - The product object
  * @param {Function} addToCart - The addToCart function from AppContext
- * @param {number} quantity - Quantity to add (default: 1)
+ * @param {boolean} openModal - Whether to open the cart modal (default: true)
  */
-export const addProductToCart = (product, addToCart, quantity = 1) => {
+export const addProductToCart = (product, addToCart, quantity = 1, openModal = true) => {
   try {
     // Get the first available variant or create a proper variant object
     let selectedVariant = null;
@@ -83,10 +83,11 @@ export const addProductToCart = (product, addToCart, quantity = 1) => {
       slug: product.slug,
       featuredImage: product.featuredImage || product.image,
       basePrice: product.price,
-      variants: product.variants || []
+      variants: product.variants || [],
+      isForceOutOfStock: product.isForceOutOfStock || false
     };
 
-    addToCart(cartProduct, selectedVariant, quantity);
+    addToCart(cartProduct, selectedVariant, quantity, openModal);
   } catch (error) {
     console.error('Error adding to cart:', error);
     toast.error('Failed to add product to cart');

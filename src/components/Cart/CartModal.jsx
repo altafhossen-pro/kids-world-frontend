@@ -431,14 +431,14 @@ export default function CartModal({ isOpen, onClose }) {
 
                 {/* Footer/Checkout - Fixed at bottom */}
                 {cartLoading ? (
-                    <div className={`border-t border-gray-200 p-4 flex-shrink-0 transition-all duration-300 ease-out ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                    <div className={`border-t border-gray-200 p-4 pb-24 md:pb-4 flex-shrink-0 transition-all duration-300 ease-out ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                         <div className="w-full bg-gray-300 py-3 px-4 rounded-lg flex items-center justify-between animate-pulse">
                             <div className="h-4 bg-gray-400 rounded w-32"></div>
                             <div className="h-4 bg-gray-400 rounded w-16"></div>
                         </div>
                     </div>
                 ) : cart.length > 0 && (
-                    <div className={`border-t border-gray-200 p-4 flex-shrink-0 transition-all duration-300 ease-out ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                    <div className={`border-t border-gray-200 p-4 pb-24 md:pb-4 flex-shrink-0 transition-all duration-300 ease-out ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                         {/* Check if any items are out of stock */}
                         {cart.some(item => isOutOfStock(item)) ? (
                             <div className="w-full bg-gray-300 text-gray-500 py-3 px-4 rounded-lg font-semibold flex items-center justify-between cursor-not-allowed">
