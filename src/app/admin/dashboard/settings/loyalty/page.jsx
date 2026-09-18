@@ -349,7 +349,7 @@ export default function LoyaltySettingsPage() {
           </div>
 
           {/* Summary */}
-          <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl shadow-lg p-6">
+          <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">Current Settings Summary</h2>
 
             <div className="space-y-4">

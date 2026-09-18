@@ -341,7 +341,7 @@ const UpsellProducts = ({ currentProductId }) => {
                     ))}
 
                     {/* Add to Cart Button - Takes up one grid space */}
-                    <div className="bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl p-4 flex flex-col justify-center shadow-lg">
+                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 flex flex-col justify-center shadow-lg">
                         <div className="text-center">
                             <div className="mb-3">
                                 <ShoppingCart className="w-6 h-6 text-blue-600 mx-auto mb-1" />
@@ -410,7 +410,7 @@ const UpsellProducts = ({ currentProductId }) => {
                             <button
                                 onClick={addAllToCart}
                                 disabled={selectedProducts.length === 0 || addingToCart}
-                                className="w-full bg-gradient-to-r from-pink-600 to-pink-700 text-white py-3 px-4 rounded-lg font-bold hover:from-pink-700 hover:to-pink-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transform hover:scale-105"
+                                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg font-bold hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transform hover:scale-105"
                             >
                                 {addingToCart ? (
                                     <>

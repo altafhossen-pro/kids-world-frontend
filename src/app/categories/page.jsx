@@ -95,7 +95,7 @@ export default function CategoriesPage() {
                                 className="group bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer overflow-hidden transform hover:-translate-y-1 border border-gray-100"
                             >
                                 {/* Category Image */}
-                                <div className="relative h-32 sm:h-36 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 overflow-hidden">
+                                <div className="relative h-32 sm:h-36 bg-gradient-to-br from-blue-50 via-purple-50 to-blue-50 overflow-hidden">
                                     {category.image ? (
                                         <img
                                             src={category.image}
@@ -104,7 +104,7 @@ export default function CategoriesPage() {
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center">
-                                            <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center">
+                                            <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
                                                 <span className="text-white text-lg font-bold">
                                                     {category.name.charAt(0).toUpperCase()}
                                                 </span>

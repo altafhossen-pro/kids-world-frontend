@@ -127,48 +127,51 @@ const NewFooter = () => {
             </div>
           </div>
 
-          {/* Column 2: Quick Links */}
-          <div>
-            <h3 className="text-xl font-bold mb-6 text-white border-b border-blue-800 pb-2 inline-block">Quick Links</h3>
-            {loading ? (
-              <div className="space-y-3">
-                {[...Array(5)].map((_, index) => (
-                  <div key={index} className="h-4 bg-white/20 rounded animate-pulse w-24"></div>
-                ))}
-              </div>
-            ) : (
-              <ul className="flex flex-col gap-3">
-                {footerData.quickLinks.map((link, index) => (
-                  <li key={index}>
-                    <Link href={link.href} target={link.target || '_self'} className="text-blue-200 hover:text-blue-400 hover:pl-2 transition-all text-sm">
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          {/* Columns 2 & 3 Wrapper for Mobile Side-by-Side */}
+          <div className="grid grid-cols-2 gap-4 md:gap-10 lg:col-span-2">
+            {/* Column 2: Quick Links */}
+            <div>
+              <h3 className="text-xl font-bold mb-6 text-white border-b border-blue-800 pb-2 inline-block">Quick Links</h3>
+              {loading ? (
+                <div className="space-y-3">
+                  {[...Array(5)].map((_, index) => (
+                    <div key={index} className="h-4 bg-white/20 rounded animate-pulse w-24"></div>
+                  ))}
+                </div>
+              ) : (
+                <ul className="flex flex-col gap-3">
+                  {footerData.quickLinks.map((link, index) => (
+                    <li key={index}>
+                      <Link href={link.href} target={link.target || '_self'} className="text-blue-200 hover:text-blue-400 hover:pl-2 transition-all text-sm">
+                        {link.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
 
-          {/* Column 3: Customer Service */}
-          <div>
-            <h3 className="text-xl font-bold mb-6 text-white border-b border-blue-800 pb-2 inline-block">Customer Service</h3>
-            {loading ? (
-              <div className="space-y-3">
-                {[...Array(5)].map((_, index) => (
-                  <div key={index} className="h-4 bg-white/20 rounded animate-pulse w-28"></div>
-                ))}
-              </div>
-            ) : (
-              <ul className="flex flex-col gap-3">
-                {footerData.utilities.map((link, index) => (
-                  <li key={index}>
-                    <Link href={link.href} target={link.target || '_self'} className="text-blue-200 hover:text-blue-400 hover:pl-2 transition-all text-sm">
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
+            {/* Column 3: Customer Service */}
+            <div className="flex flex-col items-end text-right">
+              <h3 className="text-xl font-bold mb-6 text-white border-b border-blue-800 pb-2 inline-block">Customer Service</h3>
+              {loading ? (
+                <div className="space-y-3 flex flex-col items-end">
+                  {[...Array(5)].map((_, index) => (
+                    <div key={index} className="h-4 bg-white/20 rounded animate-pulse w-28"></div>
+                  ))}
+                </div>
+              ) : (
+                <ul className="flex flex-col gap-3 items-end">
+                  {footerData.utilities.map((link, index) => (
+                    <li key={index}>
+                      <Link href={link.href} target={link.target || '_self'} className="text-blue-200 hover:text-blue-400 hover:pr-2 transition-all text-sm">
+                        {link.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
 
           {/* Column 4: Contact Info */}

@@ -52,11 +52,11 @@ export default function ProductNotFound() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center px-4 py-12">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center px-4 py-12">
             <div className="max-w-4xl w-full">
                 {/* Main Error Section */}
                 <div className="text-center mb-12">
-                    <div className="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-pink-100 to-purple-100 rounded-full flex items-center justify-center">
+                    <div className="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
                         <Search className="w-16 h-16 text-blue-400" />
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 mb-4">Product Not Found</h1>

@@ -22,7 +22,7 @@ function HeroSlider({ sliderData, loading }) {
 
     if (!sliderData || sliderData.length === 0) {
         return (
-            <div className="w-full h-full bg-gradient-to-r from-pink-100 via-pink-50 to-pink-100 rounded-2xl flex items-center justify-center">
+            <div className="w-full h-full bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 rounded-2xl flex items-center justify-center">
                 <div className="text-center p-8">
                     <div className="w-20 h-20 mx-auto mb-6 bg-blue-200 rounded-full flex items-center justify-center">
                         <svg className="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -227,7 +227,7 @@ export default function HeroSection() {
     }, []);
 
     return (
-        <section className="bg-gradient-to-br from-pink-50 via-white to-purple-50 py-4 sm:py-6 lg:py-8 px-4">
+        <section className="bg-gradient-to-br from-blue-50 via-white to-purple-50 py-4 sm:py-6 lg:py-8 px-4">
             <div className="max-w-screen-2xl mx-auto">
                 <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:items-start">
                     {/* Left Slider - Full width on mobile, 64% on desktop */}

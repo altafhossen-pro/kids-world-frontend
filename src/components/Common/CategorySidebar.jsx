@@ -160,7 +160,7 @@ export default function CategorySidebar({ isOpen, onClose }) {
                         />
                       </div>
                     ) : (
-                      <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center flex-shrink-0">
                         <span className="text-white text-lg font-bold">
                           {category.name?.charAt(0)?.toUpperCase() || 'C'}
                         </span>

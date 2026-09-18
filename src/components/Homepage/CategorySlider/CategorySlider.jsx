@@ -13,7 +13,7 @@ function CategoryCard({ category, onCategoryClick }) {
             onClick={() => onCategoryClick(category)}
         >
             <div
-                className={`w-full rounded-xl overflow-hidden mb-2 transition-transform duration-300 group-hover:-translate-y-1 group-hover:shadow-md flex items-center justify-center ${category.bgClass || 'bg-gradient-to-b from-pink-50 to-purple-100'}`}
+                className={`w-full rounded-xl overflow-hidden mb-2 transition-transform duration-300 group-hover:-translate-y-1 group-hover:shadow-md flex items-center justify-center ${category.bgClass || 'bg-gradient-to-b from-blue-50 to-purple-100'}`}
                 style={{ aspectRatio: 'auto 151 / 151' }}
             >
                 {category.image ? (

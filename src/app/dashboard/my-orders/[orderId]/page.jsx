@@ -14,7 +14,8 @@ import {
     Calendar,
     RefreshCw,
     Coins,
-    ShoppingCart
+    ShoppingCart,
+    FileText
 } from 'lucide-react'
 import Link from 'next/link'
 import { useAppContext } from '@/context/AppContext'
@@ -179,8 +180,15 @@ export default function OrderDetails() {
                                 href={`/dashboard/my-orders/${params.orderId}/reorder`}
                                 className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                             >
-                                <ShoppingCart className="h-4 w-4 mr-2" />
+                                <Package className="h-4 w-4 mr-2" />
                                 Reorder
+                            </Link>
+                            <Link
+                                href={`/dashboard/my-orders/${params.orderId}/invoice`}
+                                className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                            >
+                                <FileText className="h-4 w-4 mr-2" />
+                                Invoice
                             </Link>
                         </div>
                     </div>
@@ -372,7 +380,7 @@ export default function OrderDetails() {
                                     <div className="flex items-start">
                                         <MapPin className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
                                         <div className="text-sm text-gray-700">
-                                            {order.shippingAddress.street && <div>{order.shippingAddress.street}</div>}
+                                            {(order.shippingAddress.address || order.shippingAddress.street) && <div>{order.shippingAddress.address || order.shippingAddress.street}</div>}
                                             {order.shippingAddress.area && <div>{order.shippingAddress.area}</div>}
                                             {order.shippingAddress.upazila && <div>{order.shippingAddress.upazila}</div>}
                                             {order.shippingAddress.district && <div>{order.shippingAddress.district}</div>}

@@ -41,7 +41,7 @@ export default function ReorderPage() {
                     }
                 })
                 setSelectedItems(initialSelection)
-                
+
                 // Fetch products for all items
                 await fetchProductsForItems(response.data.items)
             } else {
@@ -67,7 +67,7 @@ export default function ReorderPage() {
                 try {
                     // Get product ID - could be item.product (ObjectId), item.product._id (populated), or item.productId
                     const productId = item.product?._id || item.product || item.productId
-                    
+
                     if (!productId) {
                         console.warn(`No product ID found for item: ${item.name}`)
                         return null
@@ -124,7 +124,7 @@ export default function ReorderPage() {
         const item = order.items[index]
         const productId = item.product?._id || item.product || item.productId
         const product = products[productId]
-        
+
         if (!product) {
             toast.error('Product information not available')
             return
@@ -132,7 +132,7 @@ export default function ReorderPage() {
 
         // Get the selected variant
         const selectedVariant = getSelectedVariant(item, product)
-        
+
         // Check stock availability
         let availableStock = 0
         if (product.variants && product.variants.length > 0) {
@@ -173,10 +173,10 @@ export default function ReorderPage() {
         return product.variants.find(variant => {
             const sizeAttr = variant.attributes?.find(attr => attr.name === 'Size')
             const colorAttr = variant.attributes?.find(attr => attr.name === 'Color')
-            
+
             const sizeMatches = sizeAttr?.value === itemSize
-            const colorMatches = itemColor 
-                ? colorAttr?.value === itemColor 
+            const colorMatches = itemColor
+                ? colorAttr?.value === itemColor
                 : !colorAttr // If no color in order, variant should also have no color
 
             return sizeMatches && colorMatches
@@ -186,9 +186,9 @@ export default function ReorderPage() {
     // Get available stock for an item
     const getAvailableStock = (item, product) => {
         if (!product) return 0
-        
+
         const selectedVariant = getSelectedVariant(item, product)
-        
+
         if (product.variants && product.variants.length > 0) {
             if (!selectedVariant) return 0
             return selectedVariant.stockQuantity || 0
@@ -218,7 +218,7 @@ export default function ReorderPage() {
                 const item = order.items[index]
                 const productId = item.product?._id || item.product || item.productId
                 const product = products[productId]
-                
+
                 if (!product) {
                     toast.error(`Product "${item.name}" is no longer available`)
                     continue
@@ -236,7 +236,7 @@ export default function ReorderPage() {
                 // Check stock availability before adding to cart
                 const requestedQuantity = selectedItems[index].quantity
                 let availableStock = 0
-                
+
                 if (product.variants && product.variants.length > 0) {
                     availableStock = selectedVariant?.stockQuantity || 0
                 } else {
@@ -274,8 +274,8 @@ export default function ReorderPage() {
 
             if (itemsToAdd.length > 0) {
                 addMultipleToCart(itemsToAdd)
-                toast.success(`${itemsToAdd.length} item(s) added to cart!`)
-                router.push('/cart')
+                // toast.success(`${itemsToAdd.length} item(s) added to cart!`)
+                // router.push('/checkout')
             }
         } catch (error) {
             console.error('Error adding to cart:', error)
@@ -356,26 +356,26 @@ export default function ReorderPage() {
     // Check if any selected item has insufficient stock
     const hasInsufficientStock = () => {
         if (!order || !order.items) return false
-        
+
         const selectedIndices = Object.keys(selectedItems).filter(
             index => selectedItems[index]?.selected
         )
-        
+
         for (const index of selectedIndices) {
             const item = order.items[index]
             const productId = item.product?._id || item.product || item.productId
             const product = products[productId]
-            
+
             if (!product) continue
-            
+
             const availableStock = getAvailableStock(item, product)
             const requestedQuantity = selectedItems[index].quantity
-            
+
             if (availableStock <= 0 || requestedQuantity > availableStock) {
                 return true
             }
         }
-        
+
         return false
     }
 
@@ -425,7 +425,7 @@ export default function ReorderPage() {
                                 const isAvailable = product && (!product.variants?.length || selectedVariant)
                                 const availableStock = product ? getAvailableStock(item, product) : 0
                                 const canIncreaseQuantity = quantity < availableStock
-                                
+
                                 return (
                                     <div key={index} className="p-6 hover:bg-gray-50">
                                         <div className="flex items-start gap-4">
@@ -433,11 +433,10 @@ export default function ReorderPage() {
                                             <div className="flex-shrink-0 pt-1">
                                                 <button
                                                     onClick={() => toggleItemSelection(index)}
-                                                    className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
-                                                        isSelected
-                                                            ? 'bg-blue-600 border-blue-600'
-                                                            : 'border-gray-300 hover:border-blue-400'
-                                                    } ${!isAvailable ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                                                    className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${isSelected
+                                                        ? 'bg-blue-600 border-blue-600'
+                                                        : 'border-gray-300 hover:border-blue-400'
+                                                        } ${!isAvailable ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                                                     disabled={!isAvailable}
                                                 >
                                                     {isSelected && (
@@ -525,11 +524,10 @@ export default function ReorderPage() {
                                                         <button
                                                             onClick={() => updateQuantity(index, quantity + 1)}
                                                             disabled={!canIncreaseQuantity}
-                                                            className={`w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center transition-colors ${
-                                                                canIncreaseQuantity
-                                                                    ? 'hover:bg-gray-100 cursor-pointer'
-                                                                    : 'opacity-50 cursor-not-allowed bg-gray-100'
-                                                            }`}
+                                                            className={`w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center transition-colors ${canIncreaseQuantity
+                                                                ? 'hover:bg-gray-100 cursor-pointer'
+                                                                : 'opacity-50 cursor-not-allowed bg-gray-100'
+                                                                }`}
                                                         >
                                                             <Plus className="h-4 w-4" />
                                                         </button>
@@ -572,11 +570,10 @@ export default function ReorderPage() {
                         <button
                             onClick={handleAddToCart}
                             disabled={selectedCount === 0 || addingToCart || fetchingProducts || hasInsufficientStock()}
-                            className={`px-6 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${
-                                selectedCount === 0 || addingToCart || fetchingProducts || hasInsufficientStock()
-                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                    : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
-                            }`}
+                            className={`px-6 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${selectedCount === 0 || addingToCart || fetchingProducts || hasInsufficientStock()
+                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
+                                }`}
                         >
                             {addingToCart ? (
                                 <>

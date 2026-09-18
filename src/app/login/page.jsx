@@ -112,7 +112,13 @@ const LoginPage = () => {
       }
     } catch (error) {
       console.error('Login error:', error);
-      toast.error('Login failed. Please try again.');
+      let errorMessage = 'Login failed. Please try again.';
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

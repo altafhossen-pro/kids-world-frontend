@@ -12,7 +12,7 @@ export default function EditCategoryPage() {
     const router = useRouter()
     const params = useParams()
     const categoryId = params.id
-    
+
     const [loading, setLoading] = useState(false)
     const [fetching, setFetching] = useState(true)
     const [categories, setCategories] = useState([])
@@ -39,7 +39,7 @@ export default function EditCategoryPage() {
         try {
             setFetching(true)
             const data = await categoryAPI.getCategoryById(categoryId)
-            
+
             if (data.success) {
                 setFormData({
                     name: data.data.name,
@@ -82,7 +82,7 @@ export default function EditCategoryPage() {
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target
-        
+
         if (name === 'banner.isActive') {
             setFormData(prev => ({
                 ...prev,
@@ -141,7 +141,7 @@ export default function EditCategoryPage() {
 
     return (
         <div className="space-y-6">
-            
+
             {/* Header */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -175,7 +175,7 @@ export default function EditCategoryPage() {
             <form id="edit-category-form" onSubmit={handleSubmit} className="space-y-8">
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                     <h2 className="text-lg font-medium text-gray-900 mb-6">Category Information</h2>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -260,7 +260,7 @@ export default function EditCategoryPage() {
                                 <span className="text-gray-500 ml-1">- Display this category in the Shop by Category section</span>
                             </label>
                         </div>
-                        
+
                         {formData.showHomepageCategory && (
                             <div className="mt-4 ml-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -268,16 +268,16 @@ export default function EditCategoryPage() {
                                 </label>
                                 <select
                                     name="bgClass"
-                                    value={formData.bgClass || 'bg-gradient-to-b from-pink-50 to-purple-100'}
+                                    value={formData.bgClass || 'bg-gradient-to-b from-blue-50 to-purple-100'}
                                     onChange={handleInputChange}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 >
-                                    <option value="bg-gradient-to-b from-pink-50 to-purple-100">Default (Light Pink to Purple)</option>
+                                    <option value="bg-gradient-to-b from-blue-50 to-purple-100">Default (Light Pink to Purple)</option>
                                     <option value="bg-gradient-to-b from-blue-50 to-cyan-100">Light Blue to Cyan</option>
                                     <option value="bg-gradient-to-b from-green-50 to-emerald-100">Light Green to Emerald</option>
                                     <option value="bg-gradient-to-b from-orange-50 to-rose-100">Light Orange to Rose</option>
                                     <option value="bg-gradient-to-b from-purple-50 to-indigo-100">Light Purple to Indigo</option>
-                                    <option value="bg-gradient-to-br from-purple-300 to-pink-300">Vibrant Purple to Pink</option>
+                                    <option value="bg-gradient-to-br from-purple-300 to-blue-300">Vibrant Purple to Pink</option>
                                     <option value="bg-gradient-to-br from-blue-300 to-cyan-300">Vibrant Blue to Cyan</option>
                                     <option value="bg-gradient-to-br from-orange-300 to-red-300">Vibrant Orange to Red</option>
                                     <option value="bg-gradient-to-br from-green-300 to-teal-300">Vibrant Green to Teal</option>
@@ -287,7 +287,7 @@ export default function EditCategoryPage() {
                                 </p>
                             </div>
                         )}
-                        
+
                         <div className="flex items-center mt-6">
                             <input
                                 type="checkbox"
@@ -320,7 +320,7 @@ export default function EditCategoryPage() {
                                 <span className="text-gray-500 ml-1">- Display a banner at the top of the shop page for this category</span>
                             </label>
                         </div>
-                        
+
                         {formData.banner?.isActive && (
                             <div className="mt-4 ml-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                 <ImageUpload

@@ -97,7 +97,8 @@ export default function EditOrder() {
                     return {
                         ...item,
                         product: item.product?._id || item.product, // ensure it's just the ID
-                        maxStock
+                        maxStock,
+                        image: item.variant?.image || item.product?.featuredImage || item.image || '/images/placeholder.png'
                     }
                 });
                 setItems(formattedItems)
@@ -114,7 +115,7 @@ export default function EditOrder() {
                         area: addr.area || '',
                         areaId: addr.areaId || '',
                         deliveryType: 'outsideDhaka',
-                        deliveryAddress: addr.street || ''
+                        deliveryAddress: addr.address || addr.street || ''
                     })
                     if (addr.divisionId) fetchDistricts(addr.divisionId)
                     if (addr.districtId) {
@@ -354,7 +355,7 @@ export default function EditOrder() {
             setItems([...items, {
                 product: product._id,
                 name: product.title,
-                image: product.featuredImage || product.image || '/images/placeholder.png',
+                image: variant?.image || product.featuredImage || product.image || '/images/placeholder.png',
                 price: price,
                 quantity: 1,
                 subtotal: price,
@@ -371,27 +372,12 @@ export default function EditOrder() {
     // Calculations
     const subtotal = items.reduce((sum, item) => sum + (item.subtotal || 0), 0)
 
-    let shippingCost = 0
-    if (deliveryChargeSettings && formData.deliveryType) {
-        if (subtotal >= deliveryChargeSettings.shippingFreeRequiredAmount) {
-            shippingCost = 0
-        } else if (formData.deliveryType === 'insideDhaka') {
-            shippingCost = deliveryChargeSettings.insideDhaka
-        } else if (formData.deliveryType === 'subDhaka') {
-            shippingCost = deliveryChargeSettings.subDhaka
-        } else if (formData.deliveryType === 'outsideDhaka') {
-            shippingCost = deliveryChargeSettings.outsideDhaka
-        }
-    }
+    let shippingCost = order?.shippingCost || 0
     const total = subtotal + shippingCost
 
     const onSaveClick = () => {
         if (items.length === 0) {
             toast.error('Order must have at least one item')
-            return
-        }
-        if (!formData.deliveryAddress || !formData.divisionId || !formData.districtId) {
-            toast.error('Please complete all required address fields')
             return
         }
         setShowConfirmModal(true)
@@ -404,18 +390,7 @@ export default function EditOrder() {
             setSaving(true)
             const payload = {
                 items,
-                shippingAddress: {
-                    ...order.shippingAddress,
-                    division: formData.division,
-                    divisionId: formData.divisionId,
-                    district: formData.district,
-                    districtId: formData.districtId,
-                    upazila: formData.upazila,
-                    upazilaId: formData.upazilaId,
-                    area: formData.area,
-                    areaId: formData.areaId,
-                    street: formData.deliveryAddress
-                },
+                shippingAddress: order.shippingAddress,
                 shippingCost
             }
 
@@ -527,47 +502,7 @@ export default function EditOrder() {
                         </div>
                     </div>
 
-                    {/* Shipping Address */}
-                    <div className="bg-white rounded-lg shadow-sm p-6">
-                        <h2 className="text-lg font-semibold text-gray-900 mb-4">Delivery Address</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Division *</label>
-                                <select name="divisionId" value={formData.divisionId} onChange={handleInputChange} className="w-full px-3 py-2 border rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-pink-500">
-                                    <option value="">Select Division</option>
-                                    {divisions.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">District *</label>
-                                <select name="districtId" value={formData.districtId} onChange={handleInputChange} disabled={!formData.divisionId} className="w-full px-3 py-2 border rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-pink-500">
-                                    <option value="">Select District</option>
-                                    {districts.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                                </select>
-                            </div>
-                            {formData.districtId === '65' ? (
-                                <div className="sm:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Area *</label>
-                                    <select name="areaId" value={formData.areaId} onChange={handleInputChange} className="w-full px-3 py-2 border rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-pink-500">
-                                        <option value="">Select Area</option>
-                                        {dhakaAreas.map(a => <option key={a._id} value={a._id}>{a.name}</option>)}
-                                    </select>
-                                </div>
-                            ) : (
-                                <div className="sm:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Upazila *</label>
-                                    <select name="upazilaId" value={formData.upazilaId} onChange={handleInputChange} disabled={!formData.districtId} className="w-full px-3 py-2 border rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-pink-500">
-                                        <option value="">Select Upazila</option>
-                                        {upazilas.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
-                                    </select>
-                                </div>
-                            )}
-                            <div className="sm:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Street Address *</label>
-                                <textarea name="deliveryAddress" value={formData.deliveryAddress} onChange={handleInputChange} rows={3} className="w-full px-3 py-2 border rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-pink-500" placeholder="House/Road No, specific details"></textarea>
-                            </div>
-                        </div>
-                    </div>
+
 
                     {/* Order Summary & Actions */}
                     <div className="bg-white rounded-lg shadow-sm p-6">

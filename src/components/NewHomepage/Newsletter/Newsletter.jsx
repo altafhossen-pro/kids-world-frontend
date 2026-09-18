@@ -20,14 +20,14 @@ const Newsletter = () => {
         </div>
 
         <div className="w-full md:w-5/12 relative z-10">
-          <form className="flex w-full bg-white p-2 rounded-full shadow-lg">
+          <form className="flex flex-col sm:flex-row w-full gap-3 sm:gap-0 sm:bg-white sm:p-2 sm:rounded-full shadow-none sm:shadow-lg">
             <input
               type="email"
               placeholder="Enter your email address"
-              className="flex-1 px-6 outline-none text-gray-700 bg-transparent"
+              className="w-full sm:flex-1 px-6 py-3.5 sm:py-0 rounded-full sm:rounded-none outline-none text-gray-700 bg-white sm:bg-transparent shadow-lg sm:shadow-none"
               required
             />
-            <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transition-colors">
+            <button type="submit" className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white font-bold py-3.5 px-6 rounded-full flex items-center justify-center gap-2 transition-colors shadow-lg sm:shadow-none border-2 border-white sm:border-0">
               Subscribe <Send className="w-4 h-4" />
             </button>
           </form>

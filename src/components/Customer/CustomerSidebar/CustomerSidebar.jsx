@@ -32,7 +32,7 @@ const navigation = [
     // { name: 'Loyalty Points', href: '/dashboard/loyalty', icon: Coins },
     // { name: 'Affiliate', href: '/dashboard/affiliate', icon: Users },
     { name: 'My Reviews', href: '/dashboard/my-reviews', icon: Star },
-    { name: 'Wishlist', href: '/dashboard/wishlist', icon: Heart },
+    // { name: 'Wishlist', href: '/dashboard/wishlist', icon: Heart },
     { name: 'Profile', href: '/dashboard/profile', icon: User }
 ]
 

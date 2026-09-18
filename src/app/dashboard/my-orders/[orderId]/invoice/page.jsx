@@ -24,61 +24,57 @@ import {
     Coins,
     CreditCard
 } from 'lucide-react';
-import { orderAPI, menuAPI } from '@/services/api';
+import { orderAPI, settingsAPI } from '@/services/api';
 import { toast } from 'react-hot-toast';
+import { getCookie } from 'cookies-next';
+
+const INVOICE_BRAND_INFO = {
+    name: 'Kidsworldbd.com',
+    tagline: 'Kids Toys & Accessories',
+    address: 'Shop# 1A-013, 1st Floor, (Near West Court), Gulshan D.N.C.C Corner, Jamuna Future Park, Dhaka-1229, Bangladesh',
+    phone: '+8801633075357',
+    email: 'support@kidsworldbd.com',
+    logo: '/images/logo.webp'
+};
 
 export default function OrderInvoicePage() {
-    const { id: orderId } = useParams();
+    const { orderId } = useParams();
     const router = useRouter();
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
-
-    const [brandInfo, setBrandInfo] = useState({
-        address: 'Jamuna Future Park Level 1 DNCC corner A-1-013, Gulshan DNCC Market shop number 66',
-        phone: '01633075357',
-        email: 'kidsworld6476@gmail.com'
-    });
+    const [logoUrl, setLogoUrl] = useState(INVOICE_BRAND_INFO.logo);
 
     useEffect(() => {
         fetchOrderDetails();
-        fetchBrandInfo();
+        fetchSiteLogo();
     }, [orderId]);
 
-    const fetchBrandInfo = async () => {
+    const fetchSiteLogo = async () => {
         try {
-            const res = await menuAPI.getFooterMenus();
-            if (res?.success && res?.data?.contact) {
-                const contact = res.data.contact;
-                const address = contact.find(c => c.contactType === 'address')?.href;
-                const phone = contact.find(c => c.contactType === 'phone')?.href;
-                const email = contact.find(c => c.contactType === 'email')?.href;
-                
-                setBrandInfo(prev => ({
-                    address: address || prev.address,
-                    phone: phone || prev.phone,
-                    email: email || prev.email
-                }));
+            const res = await settingsAPI.getSiteSettings();
+            if (res?.success && res?.data?.logoUrl) {
+                setLogoUrl(res.data.logoUrl);
             }
         } catch (error) {
-            console.error('Error fetching brand info:', error);
+            console.error('Error fetching site logo:', error);
         }
     };
 
     const fetchOrderDetails = async () => {
         try {
             setLoading(true);
-            const data = await orderAPI.getAdminOrderDetails(orderId);
-
-            if (data.success) {
-                setOrder(data.data);
+            const token = getCookie("token");
+            const response = await orderAPI.getUserOrderById(orderId, token);
+            if (response.success) {
+                setOrder(response.data);
             } else {
                 toast.error('Failed to fetch order details');
-                router.push('/admin/dashboard/orders');
+                router.push('/dashboard/my-orders');
             }
         } catch (error) {
             console.error('Error fetching order details:', error);
             toast.error('Error fetching order details');
-            router.push('/admin/dashboard/orders');
+            router.push('/dashboard/my-orders');
         } finally {
             setLoading(false);
         }
@@ -135,7 +131,7 @@ export default function OrderInvoicePage() {
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
                     <p className="text-gray-600">Order not found</p>
-                    <Link href="/admin/dashboard/orders" className="text-blue-600 hover:underline">
+                    <Link href="/dashboard/my-orders" className="text-blue-600 hover:underline">
                         Back to Orders
                     </Link>
                 </div>
@@ -154,7 +150,7 @@ export default function OrderInvoicePage() {
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
                             <Link
-                                href={`/admin/dashboard/orders/${orderId}`}
+                                href={`/dashboard/my-orders/${orderId}`}
                                 className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                             >
                                 <ArrowLeft className="h-4 w-4 mr-2" />
@@ -324,19 +320,30 @@ export default function OrderInvoicePage() {
                     <div className="max-w-4xl mx-auto px-6 pb-6">
                         <div className="bg-white shadow-lg rounded-lg overflow-hidden print-area">
                             {/* Invoice Header */}
-                            <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4 text-white">
+                            <div className="bg-white px-6 py-8 border-b border-gray-200">
                                 <div className="flex justify-between items-start">
                                     <div>
-                                        <h1 className="text-2xl font-bold">INVOICE</h1>
-                                        <p className="text-blue-100 mt-1 text-sm">Kidsworldbd.com</p>
-                                        <p className="text-blue-100 text-sm">Kids Toys & Accessories</p>
+                                        <div className="mb-2">
+                                            <img
+                                                src={logoUrl}
+                                                alt="Kids World Logo"
+                                                className="h-10 object-contain"
+                                                onError={(e) => {
+                                                    e.target.onerror = null;
+                                                    e.target.style.display = 'none';
+                                                }}
+                                            />
+                                        </div>
+                                        <p className="text-gray-600 mt-2 font-medium text-sm">{INVOICE_BRAND_INFO.name}</p>
+                                        <p className="text-gray-500 text-sm">{INVOICE_BRAND_INFO.tagline}</p>
                                     </div>
                                     <div className="text-right">
-                                        <div className="text-xl font-bold">#{order.orderId}</div>
-                                        <div className="text-blue-100 mt-1 text-sm">
+                                        <h1 className="text-3xl font-black tracking-tight text-gray-900 uppercase mb-2">INVOICE</h1>
+                                        <div className="text-xl font-bold text-gray-900">#{order.orderId}</div>
+                                        <div className="text-gray-600 mt-1 text-sm font-medium">
                                             {formatDate(order.createdAt)}
                                         </div>
-                                        <div className="text-blue-100 text-sm">
+                                        <div className="text-gray-500 text-sm">
                                             {formatTime(order.createdAt)}
                                         </div>
                                     </div>
@@ -369,27 +376,27 @@ export default function OrderInvoicePage() {
                                     <div>
                                         <h3 className="text-sm font-semibold text-gray-900 mb-1">From:</h3>
                                         <div className="text-gray-700 text-sm">
-                                            <div className="font-semibold">Kidsworldbd.com</div>
-                                            <div>{brandInfo.address}</div>
+                                            <div className="font-semibold">{INVOICE_BRAND_INFO.name}</div>
+                                            <div>{INVOICE_BRAND_INFO.address}</div>
                                             <div className="flex items-center mt-1">
                                                 <Phone className="h-3 w-3 mr-1" />
-                                                {brandInfo.phone}
+                                                {INVOICE_BRAND_INFO.phone}
                                             </div>
                                             <div className="flex items-center">
                                                 <Mail className="h-3 w-3 mr-1" />
-                                                {brandInfo.email}
+                                                {INVOICE_BRAND_INFO.email}
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Customer Info */}
-                                    <div>
-                                        <h3 className="text-sm font-semibold text-gray-900 mb-1">Bill To:</h3>
-                                        <div className="text-gray-700 text-sm">
+                                    <div className="text-right">
+                                        <h3 className="text-sm font-bold text-gray-900 mb-1">Bill To:</h3>
+                                        <div className="text-gray-700 text-sm flex flex-col items-end">
                                             <div className="font-semibold">{order.user?.name || 'Customer'}</div>
                                             <div>{order.user?.email || 'customer@email.com'}</div>
                                             {order.shippingAddress && (
-                                                <div className="mt-1">
+                                                <div className="mt-1 text-right">
                                                     <div className="font-medium text-gray-600">Delivery Address:</div>
                                                     <div>{order.shippingAddress.street}</div>
                                                     <div>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.postalCode}</div>

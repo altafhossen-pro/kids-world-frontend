@@ -264,7 +264,7 @@ const LoyaltyPageContent = () => {
                         </div>
 
                         {/* Usage Info */}
-                        <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-blue-200 p-6">
+                        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200 p-6">
                             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                                 <Coins className="h-5 w-5 mr-2 text-blue-600" />
                                 How to Use Coins

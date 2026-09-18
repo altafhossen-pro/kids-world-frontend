@@ -1052,7 +1052,7 @@ export default function OrderDetailsPage() {
                                             variantImage = matchedVariant.images?.[0]?.url || matchedVariant.attributes?.find(a => a.image)?.image;
                                         }
                                     }
-                                    const displayImage = variantImage || item.image;
+                                    const displayImage = variantImage || item.image || item.product?.featuredImage || '/images/placeholder.png';
                                     const imageType = variantImage ? 'Variant Image' : 'Featured Image';
 
                                     return (
@@ -1408,7 +1408,7 @@ export default function OrderDetailsPage() {
                                     <Truck className="h-6 w-6 mr-3 text-blue-600" />
                                     Steadfast Courier Tracking
                                 </h2>
-                                <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-xl p-6 border border-blue-200">
+                                <div className="bg-gradient-to-r from-blue-50 to-rose-50 rounded-xl p-6 border border-blue-200">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center">
                                             <div className="p-2 bg-blue-100 rounded-lg">
@@ -1674,7 +1674,7 @@ export default function OrderDetailsPage() {
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-3">
                     <div className="bg-white rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
                         {/* Header - Fixed */}
-                        <div className="bg-gradient-to-r from-pink-600 to-red-500 px-4 py-3 flex-shrink-0">
+                        <div className="bg-gradient-to-r from-blue-600 to-red-500 px-4 py-3 flex-shrink-0">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center space-x-2">
                                     <div className="bg-white/20 p-1.5 rounded-md">
@@ -1853,7 +1853,7 @@ export default function OrderDetailsPage() {
                                         disabled={updatingStatus}
                                         className={`w-full sm:w-auto px-4 py-1.5 rounded-md text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-600 transition-colors ${updatingStatus
                                             ? 'bg-gray-400 cursor-not-allowed'
-                                            : 'bg-gradient-to-r from-pink-600 to-red-500 hover:from-pink-600 hover:to-red-600 shadow-lg'
+                                            : 'bg-gradient-to-r from-blue-600 to-red-500 hover:from-blue-600 hover:to-red-600 shadow-lg'
                                             }`}
                                     >
                                         {updatingStatus ? (

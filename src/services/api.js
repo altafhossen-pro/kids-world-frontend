@@ -105,6 +105,11 @@ export const productAPI = {
         return apiCall(`/product?${queryString}`);
     },
 
+    // Get all distinct brands
+    getBrands: () => {
+        return apiCall('/product/brands');
+    },
+
     // Check stock availability for cart items
     checkStockAvailability: (cartItems) => {
         return apiCall('/product/check-stock', {

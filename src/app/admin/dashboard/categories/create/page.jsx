@@ -65,7 +65,7 @@ export default function CreateCategoryPage() {
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target
-        
+
         if (name === 'banner.isActive') {
             setFormData(prev => ({
                 ...prev,
@@ -82,12 +82,12 @@ export default function CreateCategoryPage() {
                 ...prev,
                 [name]: type === 'checkbox' ? checked : value
             }
-            
+
             // Auto-update slug if name changes and slug was generated from name or empty
             if (name === 'name' && (!prev.slug || prev.slug === generateSlugString(prev.name))) {
                 newData.slug = generateSlugString(value)
             }
-            
+
             return newData
         })
     }
@@ -164,13 +164,13 @@ export default function CreateCategoryPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-                
+
                 {/* Basic Information */}
                 <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                     <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
                         Basic Information
                     </h2>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700">
@@ -229,7 +229,7 @@ export default function CreateCategoryPage() {
                     <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
                         Media & Layout
                     </h2>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -244,7 +244,7 @@ export default function CreateCategoryPage() {
                                 />
                             </div>
                         </div>
-                        
+
                         <div className="space-y-6">
                             {/* Homepage Settings */}
                             <div className="space-y-3">
@@ -274,7 +274,7 @@ export default function CreateCategoryPage() {
                                             className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors text-sm"
                                         >
                                             <option value="bg-gradient-to-b from-blue-50 to-cyan-100">Light Blue to Cyan (Default)</option>
-                                            <option value="bg-gradient-to-b from-pink-50 to-purple-100">Light Pink to Purple</option>
+                                            <option value="bg-gradient-to-b from-blue-50 to-purple-100">Light Pink to Purple</option>
                                             <option value="bg-gradient-to-b from-green-50 to-emerald-100">Light Green to Emerald</option>
                                             <option value="bg-gradient-to-b from-orange-50 to-rose-100">Light Orange to Rose</option>
                                         </select>

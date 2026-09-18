@@ -95,7 +95,7 @@ export default function Offers() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
 
             {/* Main Content */}
             <div className="max-w-7xl mx-auto px-4 py-6">
@@ -150,7 +150,7 @@ export default function Offers() {
                             return (
                                 <div key={coupon._id} className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 ">
                                     {/* Header with discount badge */}
-                                    <div className="bg-gradient-to-r from-pink-500 to-purple-500 p-4 text-white text-center">
+                                    <div className="bg-gradient-to-r from-blue-500 to-purple-500 p-4 text-white text-center">
                                         <div className="text-2xl font-bold">{formatDiscount(coupon)}</div>
                                         <div className="text-sm opacity-90">{coupon.description || 'Special Offer'}</div>
                                     </div>
@@ -170,7 +170,7 @@ export default function Offers() {
                                                 ].map((item, index) => (
                                                     <div key={index} className={`rounded-lg p-3 text-center shadow-sm border ${isExpired
                                                         ? 'bg-red-50 border-red-200'
-                                                        : 'bg-gradient-to-br from-pink-50 to-purple-50 border-blue-200'
+                                                        : 'bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200'
                                                         }`}>
                                                         <div className="text-lg font-bold text-gray-900">
                                                             {formatNumber(item.value)}
@@ -183,7 +183,7 @@ export default function Offers() {
 
                                         {/* Coupon Code Section */}
                                         <div className="mb-4">
-                                            <div className="bg-gradient-to-r from-pink-50 to-purple-50 border-2 border-dashed border-blue-300 rounded-xl p-4 shadow-sm">
+                                            <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-dashed border-blue-300 rounded-xl p-4 shadow-sm">
                                                 <div className="text-center mb-2">
                                                     <span className="text-sm text-gray-600">Coupon Code</span>
                                                 </div>
@@ -257,8 +257,8 @@ export default function Offers() {
                                 description: "Paste the code at checkout and enjoy your discount"
                             }
                         ].map((item, index) => (
-                            <div key={index} className="text-center p-6 rounded-xl bg-gradient-to-br from-pink-50 to-purple-50 border border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                                <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-lg shadow-lg">
+                            <div key={index} className="text-center p-6 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-lg shadow-lg">
                                     {item.step}
                                 </div>
                                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.title}</h3>

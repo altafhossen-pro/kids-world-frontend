@@ -224,7 +224,7 @@ export default function NewCheckout() {
         items: orderItems,
         shippingAddress: {
           phone: formData.phone,
-          address: formData.address,
+          street: formData.address,
           divisionId: formData.divisionId || undefined,
           districtId: formData.districtId || undefined,
           upazilaId: formData.upazilaId || undefined,
@@ -281,6 +281,7 @@ export default function NewCheckout() {
         }
 
         router.push(redirectUrl);
+      } else {
         // Check if the error is an out of stock error
         if (response.message && response.message.includes('currently out of stock')) {
           setStockOutError(response.message);

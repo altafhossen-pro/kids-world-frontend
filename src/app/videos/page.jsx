@@ -116,7 +116,7 @@ const VideoCard = ({ video, autoplayEnabled }) => {
                     {video.slug ? (
                         <Link
                             href={`/product/${video.slug}`}
-                            className="px-6 py-2.5 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-sm font-medium rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 flex items-center gap-2 cursor-pointer"
+                            className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-sm font-medium rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 flex items-center gap-2 cursor-pointer"
                         >
                             <ShoppingBag className="h-4 w-4" />
                             View Product
@@ -195,7 +195,7 @@ const page = () => {
                             <div key={i} className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden animate-pulse">
                                 {/* Video Container Skeleton */}
                                 <div className="relative w-full aspect-[9/16] bg-gray-200"></div>
-                                
+
                                 {/* Product Info Skeleton */}
                                 <div className="p-5 space-y-4 flex flex-col items-center">
                                     <div className="h-10 bg-gray-200 rounded-lg w-32"></div>

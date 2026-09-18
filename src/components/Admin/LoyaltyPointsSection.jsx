@@ -213,7 +213,7 @@ export default function LoyaltyPointsSection({ userId, customerName }) {
 
             {/* Current Status */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl p-6 border border-blue-200 shadow-sm">
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200 shadow-sm">
                     <div className="flex items-center space-x-4">
                         <div className="p-3 bg-blue-500 rounded-xl shadow-sm">
                             <Coins className="h-6 w-6 text-white" />
@@ -260,7 +260,7 @@ export default function LoyaltyPointsSection({ userId, customerName }) {
             <div className="flex justify-center space-x-6">
                 <button
                     onClick={() => setShowAddModal(true)}
-                    className="flex items-center justify-center space-x-3 px-5 py-2 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-lg hover:from-pink-600 hover:to-pink-700 transition-all duration-300 font-semibold cursor-pointer shadow-lg hover:shadow-xl "
+                    className="flex items-center justify-center space-x-3 px-5 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-semibold cursor-pointer shadow-lg hover:shadow-xl "
                 >
                     <Plus className="h-5 w-5" />
                     <span>Add Coins</span>
@@ -349,7 +349,7 @@ export default function LoyaltyPointsSection({ userId, customerName }) {
                                 <button
                                     type="submit"
                                     disabled={actionLoading}
-                                    className="flex-1 px-6 py-3 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-xl hover:from-pink-600 hover:to-pink-700 disabled:opacity-50 transition-all duration-300 font-semibold cursor-pointer disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                                    className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 transition-all duration-300 font-semibold cursor-pointer disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
                                 >
                                     {actionLoading ? 'Adding...' : 'Add Coins'}
                                 </button>

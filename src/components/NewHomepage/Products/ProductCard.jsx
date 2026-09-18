@@ -195,7 +195,7 @@ const ProductCard = ({ product }) => {
             <button
               onClick={(e) => !isOutOfStock && handleAction(e, true)}
               disabled={isOutOfStock}
-              className={`w-full py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${isOutOfStock ? 'bg-gray-100 text-gray-400 cursor-not-allowed hidden' : 'bg-[#f4f5f6] hover:bg-[#e9ebec] text-gray-800 cursor-pointer'}`}
+              className={`w-full py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${isOutOfStock ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-[#f4f5f6] hover:bg-[#e9ebec] text-gray-800 cursor-pointer'}`}
             >
               <ShoppingBag className="w-4 h-4" /> Buy Now
             </button>

@@ -72,7 +72,7 @@ export default function OfferBanner() {
                 {/* Check if it's promo code type - no link needed */}
                 {banner.type === 'promo' ? (
                     <div className="relative overflow-hidden rounded-lg">
-                        <div className="flex flex-col lg:flex-row items-center min-h-[400px] bg-gradient-to-r from-pink-50 to-purple-50">
+                        <div className="flex flex-col lg:flex-row items-center min-h-[400px] bg-gradient-to-r from-blue-50 to-purple-50">
                             {/* Left Side - Image */}
                             <div className="w-full lg:w-1/2 relative h-[300px] lg:h-[400px]">
                                 <Image
@@ -111,7 +111,7 @@ export default function OfferBanner() {
                     /* Offer type - with link */
                     <Link href={banner.buttonLink || '#'}>
                         <div className="relative overflow-hidden rounded-lg">
-                            <div className="flex flex-col lg:flex-row items-center min-h-[400px] bg-gradient-to-r from-pink-50 to-purple-50">
+                            <div className="flex flex-col lg:flex-row items-center min-h-[400px] bg-gradient-to-r from-blue-50 to-purple-50">
                                 {/* Left Side - Image */}
                                 <div className="w-full lg:w-1/2 relative h-[300px] lg:h-[400px]">
                                     <Image
