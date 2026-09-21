@@ -1,5 +1,8 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
+const apiCache = new Map();
+const pendingRequests = new Map();
+
 // Generic API call function
 const apiCall = async (endpoint, options = {}) => {
     try {
@@ -15,19 +18,51 @@ const apiCall = async (endpoint, options = {}) => {
             ...options,
         };
 
+        const method = requestOptions.method || 'GET';
+        const cacheKey = `${method}:${endpoint}`;
+        
+        // Cache and deduplicate ONLY GET requests that do NOT have an Authorization header
+        const canCache = method === 'GET' && (!options.headers || !options.headers.Authorization);
 
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, requestOptions);
-        const data = await response.json();
+        if (canCache) {
+            // Short-term cache (30 seconds)
+            const cached = apiCache.get(cacheKey);
+            if (cached && Date.now() - cached.timestamp < 30000) {
+                return cached.data;
+            }
 
-        // Include status code in response for error handling
-        if (!response.ok) {
-            const error = new Error(data.message || 'Request failed');
-            error.status = response.status;
-            error.response = { data, status: response.status };
-            throw error;
+            // Deduplicate concurrent requests
+            if (pendingRequests.has(cacheKey)) {
+                return pendingRequests.get(cacheKey);
+            }
         }
 
-        return data;
+        const fetchPromise = (async () => {
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, requestOptions);
+            const data = await response.json();
+
+            // Include status code in response for error handling
+            if (!response.ok) {
+                const error = new Error(data.message || 'Request failed');
+                error.status = response.status;
+                error.response = { data, status: response.status };
+                throw error;
+            }
+
+            if (canCache) {
+                apiCache.set(cacheKey, { data, timestamp: Date.now() });
+            }
+
+            return data;
+        })();
+
+        if (canCache) {
+            pendingRequests.set(cacheKey, fetchPromise);
+            // Clean up pending requests after resolution or error
+            fetchPromise.finally(() => pendingRequests.delete(cacheKey));
+        }
+
+        return await fetchPromise;
     } catch (error) {
         // Re-throw with status if it's a fetch error
         if (error.status || error.response) {

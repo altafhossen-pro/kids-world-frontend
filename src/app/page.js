@@ -36,7 +36,7 @@ export default function Home() {
 
       {/* NEW STATIC DESIGN COMPONENTS */}
       <NewHeroBanner />
-      <FeaturesRow />
+      {/* <FeaturesRow /> */}
       <ShopByCategory />
       <TrendingProducts />
       <BestSellers />

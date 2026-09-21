@@ -423,11 +423,20 @@ export default function EditOrder() {
     return (
         <div className="min-h-screen bg-gray-50 py-6">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between mb-6">
-                    <Link href={`/dashboard/my-orders/${params.orderId}`} className="inline-flex items-center text-gray-600 hover:text-gray-900">
-                        <ArrowLeft className="h-4 w-4 mr-2" /> Back to Order
+                <div className="mb-6">
+                    <Link 
+                        href={`/dashboard/my-orders/${params.orderId}`} 
+                        className="inline-flex items-center text-gray-600 hover:text-gray-900 text-sm font-medium mb-4"
+                    >
+                        <ArrowLeft className="h-4 w-4 mr-2" /> 
+                        Back to Order
                     </Link>
-                    <h1 className="text-2xl font-bold text-gray-900">Edit Order #{order.orderId}</h1>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-900">Edit Order</h1>
+                            <p className="text-sm text-gray-500 mt-1">Order #{order.orderId}</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="space-y-6">
@@ -472,27 +481,27 @@ export default function EditOrder() {
 
                         <div className="space-y-4">
                             {items.map((item, index) => (
-                                <div key={index} className="flex items-center justify-between border-b pb-4">
-                                    <div className="flex items-center flex-1">
-                                        <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-lg mr-4" />
-                                        <div>
-                                            <div className="font-medium text-gray-900">{item.name}</div>
+                                <div key={index} className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-4 gap-4">
+                                    <div className="flex items-start sm:items-center flex-1 w-full">
+                                        <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-lg mr-4 shrink-0" />
+                                        <div className="flex-1 min-w-0">
+                                            <div className="font-medium text-gray-900 truncate whitespace-normal break-words">{item.name}</div>
                                             {item.variant && (
-                                                <div className="text-sm text-gray-500">
+                                                <div className="text-sm text-gray-500 mt-1">
                                                     {item.variant.size && `Size: ${item.variant.size} `}
                                                     {item.variant.color && `Color: ${item.variant.color}`}
                                                 </div>
                                             )}
-                                            <div className="text-blue-600 font-medium">৳{item.price}</div>
+                                            <div className="text-blue-600 font-medium mt-1">৳{item.price}</div>
                                         </div>
                                     </div>
-                                    <div className="flex items-center space-x-4">
-                                        <div className="flex items-center border rounded-lg">
-                                            <button type="button" onClick={() => handleQuantityChange(index, -1)} className="p-2 hover:bg-gray-100 cursor-pointer"><Minus className="w-4 h-4" /></button>
+                                    <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto space-x-4 pl-[80px] sm:pl-0">
+                                        <div className="flex items-center border rounded-lg bg-white">
+                                            <button type="button" onClick={() => handleQuantityChange(index, -1)} className="p-2 hover:bg-gray-100 cursor-pointer rounded-l-lg"><Minus className="w-4 h-4" /></button>
                                             <span className="w-12 text-center font-medium">{item.quantity}</span>
-                                            <button type="button" onClick={() => handleQuantityChange(index, 1)} className="p-2 hover:bg-gray-100 cursor-pointer"><Plus className="w-4 h-4" /></button>
+                                            <button type="button" onClick={() => handleQuantityChange(index, 1)} className="p-2 hover:bg-gray-100 cursor-pointer rounded-r-lg"><Plus className="w-4 h-4" /></button>
                                         </div>
-                                        <button type="button" onClick={() => handleRemoveItem(index)} className="text-red-500 hover:text-red-700 p-2 cursor-pointer"><Trash2 className="w-5 h-5" /></button>
+                                        <button type="button" onClick={() => handleRemoveItem(index)} className="text-red-500 hover:text-red-700 p-2 cursor-pointer bg-red-50 rounded-lg"><Trash2 className="w-5 h-5" /></button>
                                     </div>
                                 </div>
                             ))}

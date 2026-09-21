@@ -261,15 +261,15 @@ function TrackingPageContent() {
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-6">Order Progress</h3>
 
-                <div className="space-y-4">
+                <div className="flex flex-col">
                   {orderData.trackingSteps.map((step, index) => (
                     <div key={step.status} className="relative">
                       {/* Main Content */}
-                      <div className="flex justify-between items-center pb-4">
+                      <div className="flex flex-col sm:flex-row justify-between items-start pb-8 sm:pb-6 gap-2 sm:gap-4">
                         {/* Left Side */}
-                        <div className="flex items-center">
+                        <div className="flex items-start">
                           {/* Icon */}
-                          <div className="mr-4">
+                          <div className="mr-4 shrink-0">
                             <div className={`w-12 h-12 rounded-full flex items-center justify-center ${(step.status === 'cancelled' || step.status === 'returned') && step.completed
                               ? step.status === 'cancelled'
                                 ? 'bg-red-100 border-2 border-red-500'
@@ -283,7 +283,7 @@ function TrackingPageContent() {
                           </div>
 
                           {/* Label and Description */}
-                          <div>
+                          <div className="pt-1.5 sm:pt-3">
                             <h4 className={`font-medium ${(step.status === 'cancelled' || step.status === 'returned') && step.completed
                               ? step.status === 'cancelled'
                                 ? 'text-red-700'
@@ -309,7 +309,7 @@ function TrackingPageContent() {
 
                         {/* Right Side - Timestamp */}
                         {step.timestamp && (
-                          <div className="text-sm text-gray-500 whitespace-nowrap">
+                          <div className="text-sm text-gray-500 whitespace-nowrap sm:pt-3 ml-16 sm:ml-0">
                             {formatDate(step.timestamp)}
                           </div>
                         )}
@@ -317,7 +317,7 @@ function TrackingPageContent() {
 
                       {/* Timeline Line - Outside main content */}
                       {index < orderData.trackingSteps.length - 1 && (
-                        <div className="absolute left-6 top-12 w-0.5 h-8 bg-gray-300"></div>
+                        <div className="absolute left-6 -translate-x-1/2 top-12 bottom-0 w-0.5 bg-gray-300"></div>
                       )}
                     </div>
                   ))}

@@ -158,7 +158,7 @@ export default function AdminTestimonialsPage() {
     }
 
     const renderStars = (rating) => {
-        return Array.from({ length: 1 }, (_, index) => (
+        return Array.from({ length: 5 }, (_, index) => (
             <StarIcon
                 key={index}
                 className={`w-4 h-4 ${
@@ -258,7 +258,10 @@ export default function AdminTestimonialsPage() {
                         <thead className="bg-gray-50">
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Testimonial Image
+                                    Customer
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Rating
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Status
@@ -293,12 +296,25 @@ export default function AdminTestimonialsPage() {
                                 filteredTestimonials.map((testimonial) => (
                                     <tr key={testimonial._id} className="hover:bg-gray-50">
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex-shrink-0 h-20 w-auto">
-                                                <img
-                                                    className="h-20 object-contain rounded"
-                                                    src={testimonial.image}
-                                                    alt="Testimonial"
-                                                />
+                                            <div className="flex items-center">
+                                                <div className="flex-shrink-0 h-10 w-10">
+                                                    {testimonial.image ? (
+                                                        <img className="h-10 w-10 rounded-full object-cover" src={testimonial.image} alt="" />
+                                                    ) : (
+                                                        <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                                                            {testimonial.name?.charAt(0) || 'U'}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="ml-4">
+                                                    <div className="text-sm font-medium text-gray-900">{testimonial.name || 'Screenshot'}</div>
+                                                    <div className="text-sm text-gray-500">{testimonial.role || 'Testimonial'}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="flex text-yellow-400">
+                                                {renderStars(testimonial.rating || 5)}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">

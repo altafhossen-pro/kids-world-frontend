@@ -428,8 +428,9 @@ export default function ReorderPage() {
 
                                 return (
                                     <div key={index} className="p-6 hover:bg-gray-50">
-                                        <div className="flex items-start gap-4">
-                                            {/* Checkbox */}
+                                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                                            <div className="flex items-start gap-4 flex-1 w-full sm:w-auto">
+                                                {/* Checkbox */}
                                             <div className="flex-shrink-0 pt-1">
                                                 <button
                                                     onClick={() => toggleItemSelection(index)}
@@ -458,7 +459,7 @@ export default function ReorderPage() {
                                             </div>
 
                                             {/* Product Info */}
-                                            <div className="flex-1 min-w-0">
+                                            <div className="flex-1 min-w-0 break-words">
                                                 <div className="flex items-start justify-between">
                                                     <div className="flex-1">
                                                         {product?.slug ? (
@@ -507,10 +508,11 @@ export default function ReorderPage() {
                                                     </div>
                                                 )}
                                             </div>
+                                        </div>
 
-                                            {/* Quantity Controls */}
-                                            {isSelected && isAvailable && (
-                                                <div className="flex-shrink-0 flex flex-col items-end gap-2">
+                                        {/* Quantity Controls */}
+                                        {isSelected && isAvailable && (
+                                            <div className="flex-shrink-0 flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2 w-full sm:w-auto pl-[40px] sm:pl-0 mt-2 sm:mt-0 pt-2 sm:pt-0 border-t sm:border-0 border-gray-100">
                                                     <div className="flex items-center gap-3">
                                                         <button
                                                             onClick={() => updateQuantity(index, quantity - 1)}
@@ -552,25 +554,25 @@ export default function ReorderPage() {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="mt-6 flex items-center justify-between bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                    <div className="text-sm text-gray-600">
+                <div className="mt-6 flex flex-col sm:flex-row items-center justify-between bg-white rounded-lg shadow-sm border border-gray-200 p-4 gap-4">
+                    <div className="text-sm text-gray-600 w-full text-center sm:text-left">
                         {selectedCount > 0 ? (
                             <span>{selectedCount} item(s) selected</span>
                         ) : (
                             <span>No items selected</span>
                         )}
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
                         <Link
                             href={`/dashboard/my-orders/${params.orderId}`}
-                            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                            className="flex-1 sm:flex-none text-center px-3 sm:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap"
                         >
                             Cancel
                         </Link>
                         <button
                             onClick={handleAddToCart}
                             disabled={selectedCount === 0 || addingToCart || fetchingProducts || hasInsufficientStock()}
-                            className={`px-6 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${selectedCount === 0 || addingToCart || fetchingProducts || hasInsufficientStock()
+                            className={`flex-1 sm:flex-none justify-center px-3 sm:px-6 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 whitespace-nowrap ${selectedCount === 0 || addingToCart || fetchingProducts || hasInsufficientStock()
                                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                 : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
                                 }`}

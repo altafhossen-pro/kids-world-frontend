@@ -161,12 +161,12 @@ export default function OrderDetails() {
                         <ArrowLeft className="h-4 w-4 mr-2" />
                         Back to Orders
                     </Link>
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                             <h1 className="text-2xl font-bold text-gray-900">Order Details</h1>
                             <p className="text-sm text-gray-500 mt-1">Order #{order.orderId}</p>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap gap-2">
                             {order.status === 'pending' && (
                                 <Link
                                     href={`/dashboard/my-orders/${params.orderId}/edit`}
@@ -196,7 +196,7 @@ export default function OrderDetails() {
 
                 {/* Order Status */}
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div className="flex items-center space-x-3">
                             <StatusIcon className={`h-5 w-5 ${statusInfo.color}`} />
                             <div>
@@ -206,7 +206,7 @@ export default function OrderDetails() {
                                 </span>
                             </div>
                         </div>
-                        <div className="text-right">
+                        <div className="text-left sm:text-right">
                             <p className="text-sm text-gray-500">Order Date</p>
                             <p className="text-sm font-medium text-gray-900">{formatDate(order.createdAt)}</p>
                             <p className="text-xs text-gray-500">{formatTime(order.createdAt)}</p>

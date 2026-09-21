@@ -92,7 +92,7 @@ function OrderConfirmation() {
 
                     {/* Success Message */}
                     <h1 className="text-xl sm:text-2xl font-extrabold text-gray-900 mb-2 flex items-center justify-center gap-2">
-                        <PartyPopper className="w-6 h-6 text-amber-500" /> Order Placed Successfully!
+                        <PartyPopper className="hidden sm:block w-6 h-6 text-amber-500" /> Order Placed Successfully!
                     </h1>
                     <p className="text-sm text-gray-600 mb-4">
                         Thank you for your order! We'll process it shortly.
@@ -167,7 +167,7 @@ function OrderConfirmation() {
                         {total && (
                             <div className="bg-emerald-50/80 rounded-xl p-3 border border-emerald-100 transition-colors hover:bg-emerald-50">
                                 <div className="flex items-center justify-center mb-1.5">
-                                    <DollarSign className="w-4 h-4 text-emerald-600 mr-1.5" />
+                                    <span className="font-bold text-emerald-600 mr-1.5">৳</span>
                                     <span className="text-xs font-semibold text-emerald-600">Total</span>
                                 </div>
                                 {originalTotal > finalTotal ? (

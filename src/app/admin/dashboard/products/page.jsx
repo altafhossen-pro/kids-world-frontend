@@ -540,11 +540,17 @@ export default function AdminProductsPage() {
                                                             onMouseLeave={() => setHoveredImage(null)}
                                                         />
                                                     </div>
-                                                    <div className="ml-4">
-                                                        <div className="text-sm font-medium text-gray-900">
+                                                    <div className="ml-4 max-w-[300px] lg:max-w-[400px]">
+                                                        <div 
+                                                            className="text-sm font-medium text-gray-900 truncate"
+                                                            title={product.title}
+                                                        >
                                                             {product.title}
                                                         </div>
-                                                        <div className="text-sm text-gray-500">
+                                                        <div 
+                                                            className="text-sm text-gray-500 truncate"
+                                                            title={product.slug}
+                                                        >
                                                             {product.slug}
                                                         </div>
                                                         {/* Jewelry Type Indicators */}

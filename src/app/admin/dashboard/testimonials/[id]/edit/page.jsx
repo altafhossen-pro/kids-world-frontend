@@ -20,6 +20,10 @@ export default function EditTestimonialPage({ params }) {
     const [submitting, setSubmitting] = useState(false)
     const [uploading, setUploading] = useState(false)
     const [formData, setFormData] = useState({
+        name: '',
+        role: '',
+        text: '',
+        rating: 5,
         image: '',
         isActive: true,
         order: 0
@@ -49,6 +53,10 @@ export default function EditTestimonialPage({ params }) {
             if (response.success) {
                 const data = response.data.testimonial
                 setFormData({
+                    name: data.name || '',
+                    role: data.role || '',
+                    text: data.text || '',
+                    rating: data.rating || 5,
                     image: data.image || '',
                     isActive: data.isActive !== undefined ? data.isActive : true,
                     order: data.order || 0
@@ -131,8 +139,8 @@ export default function EditTestimonialPage({ params }) {
     const handleSubmit = async (e) => {
         e.preventDefault()
         
-        if (!formData.image) {
-            toast.error('Please provide a testimonial screenshot (URL or upload)')
+        if (!formData.name || !formData.text) {
+            toast.error('Please provide a name and testimonial text')
             return
         }
 
@@ -205,9 +213,73 @@ export default function EditTestimonialPage({ params }) {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         
+                        {/* Customer Name */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Customer Name *
+                            </label>
+                            <input
+                                type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleInputChange}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="e.g. Sarah M."
+                                required
+                            />
+                        </div>
+
+                        {/* Customer Role */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Customer Role / Subtitle
+                            </label>
+                            <input
+                                type="text"
+                                name="role"
+                                value={formData.role}
+                                onChange={handleInputChange}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="e.g. Mother of 2"
+                            />
+                        </div>
+
+                        {/* Testimonial Text */}
                         <div className="lg:col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Testimonial Screenshot *
+                                Testimonial Text *
+                            </label>
+                            <textarea
+                                name="text"
+                                value={formData.text}
+                                onChange={handleInputChange}
+                                rows={4}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Write the testimonial here..."
+                                required
+                            />
+                        </div>
+
+                        {/* Rating */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Rating (1-5)
+                            </label>
+                            <input
+                                type="number"
+                                name="rating"
+                                value={formData.rating}
+                                onChange={handleInputChange}
+                                min="1"
+                                max="5"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                required
+                            />
+                        </div>
+
+                        <div className="lg:col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Customer Avatar (Optional)
                             </label>
                             
                             <div className="mb-4">

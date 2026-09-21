@@ -10,6 +10,7 @@ import { useAppContext } from '@/context/AppContext'
 import PermissionDenied from '@/components/Common/PermissionDenied'
 import CategorySKUModal from '@/components/Admin/CategorySKUModal'
 import { Settings } from 'lucide-react'
+import Pagination from '@/components/Common/Pagination'
 
 export default function AdminCategoriesPage() {
     const { hasPermission, contextLoading } = useAppContext()
@@ -23,6 +24,8 @@ export default function AdminCategoriesPage() {
     const [checkingPermission, setCheckingPermission] = useState(true)
     const [hasReadPermission, setHasReadPermission] = useState(false)
     const [permissionError, setPermissionError] = useState(null)
+    const [currentPage, setCurrentPage] = useState(1)
+    const limit = 20
 
     useEffect(() => {
         if (contextLoading) return
@@ -41,7 +44,7 @@ export default function AdminCategoriesPage() {
         try {
             setLoading(true)
             const data = await categoryAPI.getCategories({ sort: 'sortOrder', limit: 1000 })
-            
+
             if (data.success) {
                 setCategories(data.data)
                 setPermissionError(null)
@@ -83,7 +86,7 @@ export default function AdminCategoriesPage() {
         try {
             setIsDeleting(true)
             const data = await categoryAPI.deleteCategory(deleteModal.categoryId)
-            
+
             if (data.success) {
                 toast.success('Category deleted successfully!')
                 fetchCategories() // Refresh the list
@@ -103,7 +106,7 @@ export default function AdminCategoriesPage() {
         try {
             setIsUpdatingSku(true)
             const data = await categoryAPI.updateCategory(skuModal.category._id, { skuSettings })
-            
+
             if (data.success) {
                 toast.success('SKU settings updated successfully!')
                 fetchCategories() // Refresh the list
@@ -121,8 +124,15 @@ export default function AdminCategoriesPage() {
 
     const filteredCategories = categories.filter(category => {
         return category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-               category.slug.toLowerCase().includes(searchTerm.toLowerCase())
+            category.slug.toLowerCase().includes(searchTerm.toLowerCase())
     })
+
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [searchTerm])
+
+    const totalPages = Math.ceil(filteredCategories.length / limit)
+    const currentCategories = filteredCategories.slice((currentPage - 1) * limit, currentPage * limit)
 
     const handleToggleStatus = async (categoryId, field, currentStatus) => {
         try {
@@ -170,7 +180,7 @@ export default function AdminCategoriesPage() {
         const temp = newCategories[index];
         newCategories[index] = newCategories[index - 1];
         newCategories[index - 1] = temp;
-        
+
         newCategories.forEach((cat, i) => cat.sortOrder = i);
         setCategories(newCategories);
         saveOrder(newCategories);
@@ -219,7 +229,7 @@ export default function AdminCategoriesPage() {
                         </p>
                     </div>
                     <div className="flex items-center space-x-3">
-                        {hasPermission('category','create') && (
+                        {hasPermission('category', 'create') && (
                             <Link
                                 href="/admin/dashboard/categories/create"
                                 className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 cursor-pointer"
@@ -282,14 +292,14 @@ export default function AdminCategoriesPage() {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {filteredCategories.length === 0 ? (
+                            {currentCategories.length === 0 ? (
                                 <tr>
                                     <td colSpan="7" className="px-6 py-12 text-center text-gray-500">
                                         {searchTerm ? 'No categories found matching your search.' : 'No categories found.'}
                                     </td>
                                 </tr>
                             ) : (
-                                filteredCategories.map((category) => (
+                                currentCategories.map((category) => (
                                     <tr key={category._id} className="hover:bg-gray-50">
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
@@ -326,14 +336,12 @@ export default function AdminCategoriesPage() {
                                             <button
                                                 onClick={() => handleToggleStatus(category._id, 'showHomepageAsSection', category.showHomepageAsSection)}
                                                 disabled={!hasPermission('category', 'update')}
-                                                className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                                                    category.showHomepageAsSection ? 'bg-blue-600' : 'bg-gray-200'
-                                                } ${!hasPermission('category', 'update') ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${category.showHomepageAsSection ? 'bg-blue-600' : 'bg-gray-200'
+                                                    } ${!hasPermission('category', 'update') ? 'opacity-50 cursor-not-allowed' : ''}`}
                                             >
                                                 <span
-                                                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                                                        category.showHomepageAsSection ? 'translate-x-5' : 'translate-x-0'
-                                                    }`}
+                                                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${category.showHomepageAsSection ? 'translate-x-5' : 'translate-x-0'
+                                                        }`}
                                                 />
                                             </button>
                                         </td>
@@ -341,14 +349,12 @@ export default function AdminCategoriesPage() {
                                             <button
                                                 onClick={() => handleToggleStatus(category._id, 'showHomepageCategory', category.showHomepageCategory)}
                                                 disabled={!hasPermission('category', 'update')}
-                                                className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                                                    category.showHomepageCategory ? 'bg-blue-600' : 'bg-gray-200'
-                                                } ${!hasPermission('category', 'update') ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${category.showHomepageCategory ? 'bg-blue-600' : 'bg-gray-200'
+                                                    } ${!hasPermission('category', 'update') ? 'opacity-50 cursor-not-allowed' : ''}`}
                                             >
                                                 <span
-                                                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                                                        category.showHomepageCategory ? 'translate-x-5' : 'translate-x-0'
-                                                    }`}
+                                                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${category.showHomepageCategory ? 'translate-x-5' : 'translate-x-0'
+                                                        }`}
                                                 />
                                             </button>
                                         </td>
@@ -379,7 +385,7 @@ export default function AdminCategoriesPage() {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <div className="flex items-center justify-end space-x-2">
-                                                {hasPermission('category','read') && (
+                                                {hasPermission('category', 'read') && (
                                                     <Link
                                                         href={`/admin/dashboard/categories/${category._id}`}
                                                         className="text-blue-600 hover:text-blue-900 p-1 cursor-pointer"
@@ -388,7 +394,7 @@ export default function AdminCategoriesPage() {
                                                         <Eye className="h-4 w-4" />
                                                     </Link>
                                                 )}
-                                                {hasPermission('category','read') && (
+                                                {hasPermission('category', 'read') && (
                                                     <Link
                                                         href={`/admin/dashboard/categories/products/${category.slug}`}
                                                         className="text-teal-600 hover:text-teal-900 p-1 cursor-pointer"
@@ -397,7 +403,7 @@ export default function AdminCategoriesPage() {
                                                         <Package className="h-4 w-4" />
                                                     </Link>
                                                 )}
-                                                {hasPermission('category','update') && (
+                                                {hasPermission('category', 'update') && (
                                                     <Link
                                                         href={`/admin/dashboard/categories/${category._id}/edit`}
                                                         className="text-indigo-600 hover:text-indigo-900 p-1 cursor-pointer"
@@ -406,7 +412,7 @@ export default function AdminCategoriesPage() {
                                                         <Edit className="h-4 w-4" />
                                                     </Link>
                                                 )}
-                                                {hasPermission('category','update') && (
+                                                {hasPermission('category', 'update') && (
                                                     <button
                                                         onClick={() => setSkuModal({ isOpen: true, category })}
                                                         className="text-orange-600 hover:text-orange-900 p-1 cursor-pointer"
@@ -415,7 +421,7 @@ export default function AdminCategoriesPage() {
                                                         <Settings className="h-4 w-4" />
                                                     </button>
                                                 )}
-                                                {hasPermission('category','delete') && (
+                                                {hasPermission('category', 'delete') && (
                                                     <button
                                                         onClick={() => openDeleteModal(category._id, category.name)}
                                                         className="text-red-600 hover:text-red-900 p-1 cursor-pointer"
@@ -434,11 +440,15 @@ export default function AdminCategoriesPage() {
                 </div>
             </div>
 
-            {/* Summary */}
+            {/* Summary & Pagination */}
             <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                <div className="text-sm text-gray-500">
-                    Showing {filteredCategories.length} of {categories.length} categories
-                </div>
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                    totalItems={filteredCategories.length}
+                    itemsPerPage={limit}
+                />
             </div>
 
             {/* Delete Confirmation Modal */}

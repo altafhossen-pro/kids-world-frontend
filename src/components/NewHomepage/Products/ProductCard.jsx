@@ -44,12 +44,22 @@ const ProductCard = ({ product }) => {
       ? !product.variants.some(v => (v.stockQuantity || 0) > 0) 
       : (product.totalStock || 0) <= 0);
 
-  const price = hasAnyVariant && product.variants[0]?.currentPrice
-    ? product.variants[0].currentPrice
+  const availableVariants = hasAnyVariant 
+    ? product.variants.filter(v => (v.stockQuantity || 0) > 0)
+    : [];
+    
+  const variantsToUseForPrice = availableVariants.length > 0 ? availableVariants : (product.variants || []);
+  
+  const lowestPriceVariant = variantsToUseForPrice.length > 0 
+    ? variantsToUseForPrice.reduce((prev, curr) => ((prev.currentPrice || 0) < (curr.currentPrice || 0)) ? prev : curr)
+    : null;
+
+  const price = hasAnyVariant && lowestPriceVariant
+    ? lowestPriceVariant.currentPrice
     : (product.price || product.basePrice || product.calculatedPriceRange?.min || 0);
 
-  const originalPrice = hasAnyVariant && product.variants[0]?.originalPrice
-    ? product.variants[0].originalPrice
+  const originalPrice = hasAnyVariant && lowestPriceVariant?.originalPrice
+    ? lowestPriceVariant.originalPrice
     : product.originalPrice;
 
   const discount = product.discount || (originalPrice > price ? (originalPrice - price) : 0);

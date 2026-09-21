@@ -152,19 +152,19 @@ const NewFooter = () => {
             </div>
 
             {/* Column 3: Customer Service */}
-            <div className="flex flex-col items-end text-right">
+            <div className="flex flex-col items-end text-right md:items-start md:text-left">
               <h3 className="text-xl font-bold mb-6 text-white border-b border-blue-800 pb-2 inline-block">Customer Service</h3>
               {loading ? (
-                <div className="space-y-3 flex flex-col items-end">
+                <div className="space-y-3 flex flex-col items-end md:items-start">
                   {[...Array(5)].map((_, index) => (
                     <div key={index} className="h-4 bg-white/20 rounded animate-pulse w-28"></div>
                   ))}
                 </div>
               ) : (
-                <ul className="flex flex-col gap-3 items-end">
+                <ul className="flex flex-col gap-3 items-end md:items-start">
                   {footerData.utilities.map((link, index) => (
                     <li key={index}>
-                      <Link href={link.href} target={link.target || '_self'} className="text-blue-200 hover:text-blue-400 hover:pr-2 transition-all text-sm">
+                      <Link href={link.href} target={link.target || '_self'} className="text-blue-200 hover:text-blue-400 hover:pr-2 md:hover:pr-0 md:hover:pl-2 transition-all text-sm">
                         {link.name}
                       </Link>
                     </li>

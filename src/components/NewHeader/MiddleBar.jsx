@@ -90,7 +90,7 @@ const MiddleBar = ({ logoUrl }) => {
               className="flex-1 px-3 md:px-6 outline-none text-xs md:text-sm text-gray-700 bg-white font-medium placeholder-gray-400"
             />
 
-            <button type="submit" className="bg-orange-500 text-white px-4 md:px-8 hover:bg-orange-600 transition-colors flex items-center justify-center">
+            <button type="submit" className="bg-white text-gray-800 px-4 md:px-8 hover:bg-gray-50 transition-colors flex items-center justify-center border-l border-gray-200">
               {isSearching ? <Loader2 className="w-4 h-4 md:w-5 md:h-5 animate-spin" /> : <Search className="w-4 h-4 md:w-5 md:h-5" />}
             </button>
           </form>

@@ -20,10 +20,12 @@ function ShopContent() {
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([{ _id: 'all', name: 'All' }]);
+  const [initialDataLoading, setInitialDataLoading] = useState(true);
   
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(20);
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
 
@@ -59,6 +61,8 @@ function ShopContent() {
         }
       } catch (err) {
         console.error('Failed to fetch initial data', err);
+      } finally {
+        setInitialDataLoading(false);
       }
     };
     fetchInitialData();
@@ -71,7 +75,7 @@ function ShopContent() {
       try {
         const params = {
           page,
-          limit: 12
+          limit
         };
 
         // Add Search
@@ -95,10 +99,10 @@ function ShopContent() {
         // Add Sort
         switch (sort) {
           case 'price-asc':
-            params.sort = 'basePrice';
+            params.sort = 'priceRange.min';
             break;
           case 'price-desc':
-            params.sort = '-basePrice';
+            params.sort = '-priceRange.min';
             break;
           case 'new-arrivals':
             params.sort = '-createdAt';
@@ -134,7 +138,7 @@ function ShopContent() {
     if (categories.length > 1 || selectedCat === 'All') {
       fetchProducts();
     }
-  }, [page, debouncedSearch, selectedCat, selectedBrands, sort, categories]);
+  }, [page, debouncedSearch, selectedCat, selectedBrands, sort, categories, limit]);
 
   // Generate pagination buttons
   const renderPagination = () => {
@@ -236,46 +240,65 @@ function ShopContent() {
               {/* Categories */}
               <div className="mb-6">
                 <p className="text-sm font-bold text-gray-800 mb-3">Categories</p>
-                <ul className="space-y-2">
-                  {categories.map(cat => (
-                    <li key={cat._id}>
-                      <button
-                        onClick={() => { setSelectedCat(cat.name); handleFilterChange(); }}
-                        className={`w-full flex items-center justify-between text-sm py-1.5 transition-colors ${selectedCat === cat.name ? 'text-blue-600 font-bold' : 'text-gray-600 hover:text-blue-600 font-medium'}`}
-                      >
-                        {cat.name}
-                        {selectedCat === cat.name && <Check className="w-4 h-4" />}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Brands */}
-              {brands.length > 0 && (
-                <div>
-                  <p className="text-sm font-bold text-gray-800 mb-3">Brands</p>
-                  <ul className="space-y-2.5">
-                    {brands.map(brand => (
-                      <li key={brand} className="flex items-center gap-2.5 cursor-pointer">
-                        <input 
-                          type="checkbox" 
-                          id={brand} 
-                          checked={selectedBrands.includes(brand)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedBrands([...selectedBrands, brand]);
-                            } else {
-                              setSelectedBrands(selectedBrands.filter(b => b !== brand));
-                            }
-                            handleFilterChange();
-                          }}
-                          className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" 
-                        />
-                        <label htmlFor={brand} className="text-sm text-gray-600 font-medium cursor-pointer flex-1">{brand}</label>
+                {initialDataLoading ? (
+                  <div className="space-y-3 animate-pulse mt-2">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <div key={i} className="h-4 bg-gray-200 rounded w-full"></div>
+                    ))}
+                  </div>
+                ) : (
+                  <ul className="space-y-2">
+                    {categories.map(cat => (
+                      <li key={cat._id}>
+                        <button
+                          onClick={() => { setSelectedCat(cat.name); handleFilterChange(); }}
+                          className={`w-full flex items-center justify-between text-sm py-1.5 transition-colors ${selectedCat === cat.name ? 'text-blue-600 font-bold' : 'text-gray-600 hover:text-blue-600 font-medium'}`}
+                        >
+                          {cat.name}
+                          {selectedCat === cat.name && <Check className="w-4 h-4" />}
+                        </button>
                       </li>
                     ))}
                   </ul>
+                )}
+              </div>
+
+              {/* Brands */}
+              {(initialDataLoading || brands.length > 0) && (
+                <div>
+                  <p className="text-sm font-bold text-gray-800 mb-3">Brands</p>
+                  {initialDataLoading ? (
+                    <div className="space-y-4 animate-pulse mt-3">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                          <div className="w-4 h-4 bg-gray-200 rounded"></div>
+                          <div className="h-4 bg-gray-200 rounded flex-1"></div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <ul className="space-y-2.5">
+                      {brands.map(brand => (
+                        <li key={brand} className="flex items-center gap-2.5 cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            id={brand} 
+                            checked={selectedBrands.includes(brand)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedBrands([...selectedBrands, brand]);
+                              } else {
+                                setSelectedBrands(selectedBrands.filter(b => b !== brand));
+                              }
+                              handleFilterChange();
+                            }}
+                            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" 
+                          />
+                          <label htmlFor={brand} className="text-sm text-gray-600 font-medium cursor-pointer flex-1">{brand}</label>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               )}
               
@@ -286,9 +309,18 @@ function ShopContent() {
           <div className="flex-1">
             {/* Top Bar */}
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-wrap items-center justify-between gap-4">
-              <p className="text-sm font-bold text-gray-700">
-                Showing <span className="text-blue-600">{products.length}</span> of <span className="text-blue-600">{totalProducts}</span> products
-              </p>
+              <div className="flex items-center gap-2 text-sm font-medium">
+                <span className="text-gray-500">Per page:</span>
+                <select 
+                  value={limit}
+                  onChange={(e) => { setLimit(Number(e.target.value)); handleFilterChange(); }}
+                  className="bg-gray-50 border border-gray-200 rounded-lg py-1.5 px-3 focus:outline-none focus:border-blue-500 text-gray-700 font-bold cursor-pointer"
+                >
+                  <option value={20}>20</option>
+                  <option value={30}>30</option>
+                  <option value={50}>50</option>
+                </select>
+              </div>
               <div className="flex items-center gap-2 text-sm font-medium">
                 <span className="text-gray-500">Sort by:</span>
                 <select 
@@ -307,8 +339,25 @@ function ShopContent() {
 
             {/* Grid */}
             {loading ? (
-              <div className="flex justify-center items-center py-20">
-                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
+                {Array.from({ length: limit || 12 }).map((_, idx) => (
+                  <div key={idx} className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full animate-pulse">
+                    <div className="w-full aspect-square bg-gray-200"></div>
+                    <div className="p-3 flex flex-col flex-1">
+                      <div className="flex justify-between items-center mb-3">
+                        <div className="w-10 h-3 bg-gray-200 rounded"></div>
+                        <div className="w-12 h-3 bg-gray-200 rounded"></div>
+                      </div>
+                      <div className="w-full h-4 bg-gray-200 rounded mb-2"></div>
+                      <div className="w-2/3 h-4 bg-gray-200 rounded mb-4"></div>
+                      <div className="w-1/3 h-5 bg-gray-200 rounded mb-4"></div>
+                      <div className="mt-auto flex flex-col gap-2">
+                        <div className="w-full h-10 bg-gray-200 rounded-lg"></div>
+                        <div className="w-full h-10 bg-gray-200 rounded-lg"></div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : products.length > 0 ? (
               <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
@@ -344,7 +393,30 @@ function ShopContent() {
 
 export default function NewShop() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 pt-6 pb-20 animate-pulse">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="h-10 w-48 bg-gray-200 rounded mb-2"></div>
+          <div className="h-5 w-64 bg-gray-200 rounded mb-8"></div>
+          <div className="flex flex-col lg:flex-row gap-8">
+            <div className="w-full lg:w-64 shrink-0 hidden lg:block">
+               <div className="bg-white h-96 rounded-2xl shadow-sm border border-gray-100 p-6"></div>
+            </div>
+            <div className="flex-1">
+               <div className="bg-white h-16 rounded-xl shadow-sm border border-gray-100 mb-6"></div>
+               <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
+                 {Array.from({ length: 8 }).map((_, idx) => (
+                   <div key={idx} className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full">
+                     <div className="w-full aspect-square bg-gray-200"></div>
+                     <div className="p-3"><div className="w-full h-24 bg-gray-200 rounded mt-2"></div></div>
+                   </div>
+                 ))}
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }>
       <ShopContent />
     </Suspense>
   );

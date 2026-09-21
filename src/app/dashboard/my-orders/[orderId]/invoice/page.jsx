@@ -145,31 +145,27 @@ export default function OrderInvoicePage() {
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Header */}
-            <div className="bg-white border-b border-gray-200 print:hidden">
-                <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                            <Link
-                                href={`/dashboard/my-orders/${orderId}`}
-                                className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                            >
-                                <ArrowLeft className="h-4 w-4 mr-2" />
-                                Back to Order
-                            </Link>
-                            <div>
-                                <h1 className="text-2xl font-bold text-gray-900">Invoice</h1>
-                                <p className="text-sm text-gray-600">Order #{order.orderId}</p>
-                            </div>
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 print:hidden">
+                <div className="mb-4 sm:mb-6">
+                    <Link 
+                        href={`/dashboard/my-orders/${orderId}`} 
+                        className="inline-flex items-center text-gray-600 hover:text-gray-900 text-sm font-medium mb-4"
+                    >
+                        <ArrowLeft className="h-4 w-4 mr-2" /> 
+                        Back to Order
+                    </Link>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-900">Invoice</h1>
+                            <p className="text-sm text-gray-500 mt-1">Order #{order.orderId}</p>
                         </div>
-                        <div className="flex items-center space-x-3">
-                            <button
-                                onClick={handlePrint}
-                                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-                            >
-                                <Download className="h-4 w-4 mr-2" />
-                                Print Invoice
-                            </button>
-                        </div>
+                        <button
+                            onClick={handlePrint}
+                            className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium w-full sm:w-auto"
+                        >
+                            <Download className="h-4 w-4 mr-2" />
+                            Print Invoice
+                        </button>
                     </div>
                 </div>
             </div>
@@ -313,15 +309,15 @@ export default function OrderInvoicePage() {
                 }
             `}</style>
 
-                <div className="min-h-screen bg-gray-50 mt-5">
+                <div className="bg-gray-50 pb-8">
 
 
                     {/* Invoice Container */}
-                    <div className="max-w-4xl mx-auto px-6 pb-6">
-                        <div className="bg-white shadow-lg rounded-lg overflow-hidden print-area">
+                    <div className="max-w-4xl mx-auto px-0 sm:px-6 lg:px-8 pb-6">
+                        <div className="bg-white shadow-lg rounded-none sm:rounded-lg overflow-hidden print-area">
                             {/* Invoice Header */}
                             <div className="bg-white px-6 py-8 border-b border-gray-200">
-                                <div className="flex justify-between items-start">
+                                <div className="flex flex-col sm:flex-row justify-between items-start gap-6 sm:gap-0">
                                     <div>
                                         <div className="mb-2">
                                             <img
@@ -337,7 +333,7 @@ export default function OrderInvoicePage() {
                                         <p className="text-gray-600 mt-2 font-medium text-sm">{INVOICE_BRAND_INFO.name}</p>
                                         <p className="text-gray-500 text-sm">{INVOICE_BRAND_INFO.tagline}</p>
                                     </div>
-                                    <div className="text-right">
+                                    <div className="text-left sm:text-right">
                                         <h1 className="text-3xl font-black tracking-tight text-gray-900 uppercase mb-2">INVOICE</h1>
                                         <div className="text-xl font-bold text-gray-900">#{order.orderId}</div>
                                         <div className="text-gray-600 mt-1 text-sm font-medium">
@@ -353,7 +349,7 @@ export default function OrderInvoicePage() {
                             {/* Invoice Body */}
                             <div className="px-6 py-4">
                                 {/* Status Badge */}
-                                <div className="flex justify-between items-center mb-4">
+                                <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mb-4 gap-4 sm:gap-0">
                                     <div className="flex items-center space-x-4">
                                         <span className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${statusInfo.bg} ${statusInfo.color}`}>
                                             <StatusIcon className="h-4 w-4 mr-2" />
@@ -371,7 +367,7 @@ export default function OrderInvoicePage() {
                                 </div>
 
                                 {/* Company & Customer Info - Compact Horizontal */}
-                                <div className="grid grid-cols-2 gap-6 mb-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-4">
                                     {/* Company Info */}
                                     <div>
                                         <h3 className="text-sm font-semibold text-gray-900 mb-1">From:</h3>
@@ -390,13 +386,13 @@ export default function OrderInvoicePage() {
                                     </div>
 
                                     {/* Customer Info */}
-                                    <div className="text-right">
+                                    <div className="text-left sm:text-right mt-4 sm:mt-0 pt-4 sm:pt-0 border-t sm:border-0 border-gray-100">
                                         <h3 className="text-sm font-bold text-gray-900 mb-1">Bill To:</h3>
-                                        <div className="text-gray-700 text-sm flex flex-col items-end">
+                                        <div className="text-gray-700 text-sm flex flex-col items-start sm:items-end">
                                             <div className="font-semibold">{order.user?.name || 'Customer'}</div>
                                             <div>{order.user?.email || 'customer@email.com'}</div>
                                             {order.shippingAddress && (
-                                                <div className="mt-1 text-right">
+                                                <div className="mt-1 text-left sm:text-right">
                                                     <div className="font-medium text-gray-600">Delivery Address:</div>
                                                     <div>{order.shippingAddress.street}</div>
                                                     <div>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.postalCode}</div>
@@ -426,7 +422,7 @@ export default function OrderInvoicePage() {
                                                     <tr key={index} className="hover:bg-gray-50">
                                                         <td className="border border-gray-300 px-2 py-2">
                                                             <img
-                                                                src={item.image || '/images/placeholder.png'}
+                                                                src={item.image || item.variant?.image || item.product?.featuredImage || '/images/placeholder.png'}
                                                                 alt={item.name}
                                                                 className="h-12 w-12 object-cover rounded"
                                                             />
@@ -458,8 +454,8 @@ export default function OrderInvoicePage() {
                                 </div>
 
                                 {/* Order Summary */}
-                                <div className="flex justify-end">
-                                    <div className="w-full max-w-sm">
+                                <div className="flex justify-center sm:justify-end mt-4 sm:mt-0">
+                                    <div className="w-full sm:max-w-sm">
                                         <div className="bg-gray-50 p-4 rounded-lg">
                                             <h3 className="text-base font-semibold text-gray-900 mb-2">Order Summary</h3>
                                             <div className="space-y-2">
