@@ -11,6 +11,10 @@ import {
 import { useAppContext } from '@/context/AppContext';
 import { productAPI } from '@/services/api';
 import toast from 'react-hot-toast';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 const StarRow = ({ rating, size = 'sm' }) => {
@@ -271,16 +275,35 @@ export default function NewProductDetails({ productSlug }) {
 
             {/* Thumbnails */}
             {images.length > 1 && (
-              <div className="grid grid-cols-4 gap-3">
-                {images.map((img, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setSelectedImage(i)}
-                    className={`aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${selectedImage === i ? 'border-blue-500 shadow-md shadow-blue-100' : 'border-gray-100 hover:border-blue-300'}`}
-                  >
-                    <img src={img} alt={`Thumbnail ${i + 1}`} className="w-full h-full object-cover" />
-                  </button>
-                ))}
+              <div className="relative px-8 mt-4">
+                <Swiper
+                  modules={[Navigation]}
+                  navigation={{
+                    prevEl: '.thumb-prev',
+                    nextEl: '.thumb-next',
+                  }}
+                  spaceBetween={12}
+                  slidesPerView={4}
+                  loop={true}
+                  className="thumb-swiper"
+                >
+                  {images.map((img, i) => (
+                    <SwiperSlide key={i}>
+                      <button
+                        onClick={() => setSelectedImage(i)}
+                        className={`w-full aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer block ${selectedImage === i ? 'border-blue-500 shadow-md shadow-blue-100' : 'border-gray-100 hover:border-blue-300'}`}
+                      >
+                        <img src={img} alt={`Thumbnail ${i + 1}`} className="w-full h-full object-cover" />
+                      </button>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+                <button className="thumb-prev absolute left-0 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm text-gray-600 hover:text-blue-600 hover:border-blue-300 z-10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <button className="thumb-next absolute right-0 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm text-gray-600 hover:text-blue-600 hover:border-blue-300 z-10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </button>
               </div>
             )}
           </div>
@@ -307,9 +330,10 @@ export default function NewProductDetails({ productSlug }) {
             
             {/* Short Description */}
             {product.shortDescription && (
-              <p className="text-sm text-gray-600 leading-relaxed">
-                {product.shortDescription}
-              </p>
+              <div 
+                className="text-sm text-gray-600 leading-relaxed [&>ul]:list-disc [&>ul]:ml-5 [&>ol]:list-decimal [&>ol]:ml-5 [&>li]:mb-1 [&>p]:mb-2"
+                dangerouslySetInnerHTML={{ __html: product.shortDescription }}
+              />
             )}
             {/* Meta info */}
             <div className="text-xs text-gray-400 space-y-1">
@@ -486,9 +510,10 @@ export default function NewProductDetails({ productSlug }) {
 
           <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 sm:p-8">
             {activeTab === 'description' && (
-              <div className="text-gray-700 leading-relaxed text-sm sm:text-base whitespace-pre-line">
-                {product.description || product.shortDescription || 'No description available for this product.'}
-              </div>
+              <div 
+                className="text-gray-700 leading-relaxed text-sm sm:text-base [&_ul]:list-disc [&_ul]:ml-6 [&_ol]:list-decimal [&_ol]:ml-6 [&_li]:mb-2 [&_p]:mb-4 [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-3 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-3 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mb-2"
+                dangerouslySetInnerHTML={{ __html: product.description || product.shortDescription || 'No description available for this product.' }}
+              />
             )}
 
             {activeTab === 'additional' && (

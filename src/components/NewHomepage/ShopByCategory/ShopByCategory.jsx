@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { categoryAPI } from '@/services/api';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
+import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
@@ -64,7 +64,11 @@ const ShopByCategory = () => {
         </div>
       ) : (
         <Swiper
-          modules={[Navigation]}
+          modules={[Navigation, Autoplay]}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
           navigation={{
             prevEl: '.category-prev',
             nextEl: '.category-next',

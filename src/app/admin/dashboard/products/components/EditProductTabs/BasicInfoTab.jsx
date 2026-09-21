@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Search, Loader2 } from 'lucide-react';
+import { X, Search, Loader2, ChevronDown } from 'lucide-react';
 import { productAPI } from '@/services/api';
 import { getCookie } from 'cookies-next';
 
@@ -32,6 +32,10 @@ export default function BasicInfoTab({
     const [showAnnouncementSuggestions, setShowAnnouncementSuggestions] = useState(false);
     const announcementSearchRef = useRef(null);
 
+    const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+    const [categorySearchTerm, setCategorySearchTerm] = useState('');
+    const categoryDropdownRef = useRef(null);
+
     // Handle outside click to close suggestions
     useEffect(() => {
         function handleClickOutside(event) {
@@ -43,6 +47,9 @@ export default function BasicInfoTab({
             }
             if (announcementSearchRef.current && !announcementSearchRef.current.contains(event.target)) {
                 setShowAnnouncementSuggestions(false);
+            }
+            if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target)) {
+                setIsCategoryDropdownOpen(false);
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
@@ -263,24 +270,70 @@ export default function BasicInfoTab({
                     </div>
                 </div>
 
-                <div>
+                <div className="relative" ref={categoryDropdownRef}>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                         Category *
                     </label>
-                    <select
-                        name="category"
-                        value={formData.category}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        required
+                    
+                    <div 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg cursor-pointer bg-white flex justify-between items-center focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500"
+                        onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
                     >
-                        <option value="">Select Category</option>
-                        {categories.map(category => (
-                            <option key={category._id} value={category._id}>
-                                {category.name}
-                            </option>
-                        ))}
-                    </select>
+                        <span className={formData.category ? "text-gray-900" : "text-gray-500"}>
+                            {formData.category ? categories.find(c => c._id === formData.category)?.name || 'Unknown Category' : 'Select Category'}
+                        </span>
+                        <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${isCategoryDropdownOpen ? 'rotate-180' : ''}`} />
+                    </div>
+
+                    {isCategoryDropdownOpen && (
+                        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden">
+                            <div className="p-2 border-b border-gray-100 bg-gray-50 sticky top-0">
+                                <div className="relative">
+                                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        placeholder="Search category..."
+                                        value={categorySearchTerm}
+                                        onChange={(e) => setCategorySearchTerm(e.target.value)}
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                        autoFocus
+                                    />
+                                </div>
+                            </div>
+                            <div className="max-h-60 overflow-y-auto py-1">
+                                <div 
+                                    className={`px-4 py-2 text-sm cursor-pointer hover:bg-blue-50 ${!formData.category ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-700'}`}
+                                    onClick={() => {
+                                        handleInputChange({ target: { name: 'category', value: '' } });
+                                        setIsCategoryDropdownOpen(false);
+                                    }}
+                                >
+                                    Select Category
+                                </div>
+                                {categories
+                                    .filter(c => c.name.toLowerCase().includes(categorySearchTerm.toLowerCase()))
+                                    .map(category => (
+                                        <div 
+                                            key={category._id}
+                                            onClick={() => {
+                                                handleInputChange({ target: { name: 'category', value: category._id } });
+                                                setIsCategoryDropdownOpen(false);
+                                                setCategorySearchTerm('');
+                                            }}
+                                            className={`px-4 py-2 text-sm cursor-pointer hover:bg-blue-50 border-b border-gray-50 last:border-0 ${formData.category === category._id ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700'}`}
+                                        >
+                                            {category.name}
+                                        </div>
+                                ))}
+                                {categories.filter(c => c.name.toLowerCase().includes(categorySearchTerm.toLowerCase())).length === 0 && (
+                                    <div className="px-4 py-3 text-sm text-gray-500 text-center">
+                                        No categories found.
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div>

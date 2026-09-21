@@ -95,6 +95,7 @@ const navigation = [
             { name: 'Offer Banners', href: '/admin/dashboard/offer-banner', icon: Megaphone },
             { name: 'Android Banners', href: '/admin/dashboard/android-banner', icon: Megaphone },
             { name: 'Testimonials', href: '/admin/dashboard/testimonials', icon: Star },
+            { name: 'Top Brands', href: '/admin/dashboard/top-brands', icon: Star },
         ]
     },
     {
@@ -175,6 +176,9 @@ export default function AdminSidebar({ onMobileMenuClose }) {
         if (child.href === '/admin/dashboard/inventory/stock-adjustment') {
             return pathname === '/admin/dashboard/inventory/stock-adjustment' || pathname.startsWith('/admin/dashboard/inventory/stock-adjustment/')
         }
+        if (child.href === '/admin/dashboard/top-brands') {
+            return pathname === '/admin/dashboard/top-brands' || pathname.startsWith('/admin/dashboard/top-brands/')
+        }
         // For other routes, use exact match or startsWith for sub-routes
         return pathname === child.href || pathname.startsWith(child.href + '/')
     }
@@ -218,6 +222,9 @@ export default function AdminSidebar({ onMobileMenuClose }) {
                     }
                     if (child.href === '/admin/dashboard/inventory/stock-adjustment') {
                         return pathname === '/admin/dashboard/inventory/stock-adjustment' || pathname.startsWith('/admin/dashboard/inventory/stock-adjustment/')
+                    }
+                    if (child.href === '/admin/dashboard/top-brands') {
+                        return pathname === '/admin/dashboard/top-brands' || pathname.startsWith('/admin/dashboard/top-brands/')
                     }
                     return pathname === child.href || pathname.startsWith(child.href + '/')
                 })

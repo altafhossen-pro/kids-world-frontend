@@ -75,6 +75,39 @@ const apiCall = async (endpoint, options = {}) => {
     }
 };
 
+export const topBrandAPI = {
+    getAll: (activeOnly = false) => apiCall(`/top-brands${activeOnly ? '?active=true' : ''}`),
+    create: (data, token) => apiCall('/top-brands', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(data)
+    }),
+    update: (id, data, token) => apiCall(`/top-brands/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(data)
+    }),
+    delete: (id, token) => apiCall(`/top-brands/${id}`, {
+        method: 'DELETE',
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }),
+    reorder: (items, token) => apiCall('/top-brands/reorder', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ items })
+    })
+};
 // Deal of the Day API functions
 export const dealOfTheDayAPI = {
     getAllDeals: (token) => {
