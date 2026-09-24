@@ -70,7 +70,8 @@ export default function EmailSMSSettingsPage() {
 
   const fetchSettings = async () => {
     try {
-      const response = await settingsAPI.getEmailSMSSettings();
+      const token = getCookie('token');
+      const response = await settingsAPI.getEmailSMSSettings(token);
       if (response.success) {
         setSettings(prev => ({ ...prev, ...response.data }));
       } else {

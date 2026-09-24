@@ -1707,8 +1707,12 @@ export const settingsAPI = {
     },
 
     // Get email & SMS settings only
-    getEmailSMSSettings: () => {
-        return apiCall('/settings/email-sms');
+    getEmailSMSSettings: (token) => {
+        return apiCall('/settings/email-sms', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
     },
 
     // Update email & SMS settings only (Admin only)
