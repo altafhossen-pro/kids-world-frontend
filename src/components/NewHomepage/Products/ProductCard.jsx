@@ -39,10 +39,12 @@ const ProductCard = ({ product }) => {
   const hasMultipleVariants = product.variants && product.variants.length > 1;
   const hasAnyVariant = product.variants && product.variants.length > 0;
   
+  const isSingleProduct = product.productType === 'simple' && product.singleVariant;
+
   const isOutOfStock = product.isForceOutOfStock || 
     (hasAnyVariant 
       ? !product.variants.some(v => (v.stockQuantity || 0) > 0) 
-      : (product.totalStock || 0) <= 0);
+      : isSingleProduct ? (product.singleVariant?.stockQuantity || 0) <= 0 : (product.totalStock || 0) <= 0);
 
   const availableVariants = hasAnyVariant 
     ? product.variants.filter(v => (v.stockQuantity || 0) > 0)
@@ -54,13 +56,17 @@ const ProductCard = ({ product }) => {
     ? variantsToUseForPrice.reduce((prev, curr) => ((prev.currentPrice || 0) < (curr.currentPrice || 0)) ? prev : curr)
     : null;
 
-  const price = hasAnyVariant && lowestPriceVariant
-    ? lowestPriceVariant.currentPrice
-    : (product.price || product.basePrice || product.calculatedPriceRange?.min || 0);
+  const price = isSingleProduct && product.singleVariant?.currentPrice 
+    ? product.singleVariant.currentPrice
+    : hasAnyVariant && lowestPriceVariant
+      ? lowestPriceVariant.currentPrice
+      : (product.price || product.basePrice || product.calculatedPriceRange?.min || 0);
 
-  const originalPrice = hasAnyVariant && lowestPriceVariant?.originalPrice
-    ? lowestPriceVariant.originalPrice
-    : product.originalPrice;
+  const originalPrice = isSingleProduct && product.singleVariant?.originalPrice
+    ? product.singleVariant.originalPrice
+    : hasAnyVariant && lowestPriceVariant
+      ? lowestPriceVariant.originalPrice
+      : product.originalPrice;
 
   const discount = product.discount || (originalPrice > price ? (originalPrice - price) : 0);
   const discountPercentage = originalPrice > 0 ? Math.round((discount / originalPrice) * 100) : 0;
@@ -189,9 +195,9 @@ const ProductCard = ({ product }) => {
 
           <div className="flex items-center gap-2 mb-4">
             {originalPrice > price && (
-              <span className="text-sm text-gray-400 line-through">৳ {originalPrice.toLocaleString()}</span>
+              <span className="text-sm text-gray-400 line-through">৳ {originalPrice?.toLocaleString() || 0}</span>
             )}
-            <span className="text-base font-bold text-gray-900">৳ {price.toLocaleString()}</span>
+            <span className="text-base font-bold text-gray-900">৳ {price?.toLocaleString() || 0}</span>
           </div>
 
           <div className="mt-auto flex flex-col gap-2">
@@ -247,11 +253,11 @@ const ProductCard = ({ product }) => {
                   <h3 className="font-bold text-gray-900 leading-tight mb-2 line-clamp-2">{name}</h3>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-2xl font-black text-[#ff5c00]">
-                      ৳ {(selectedVariant?.currentPrice || price).toLocaleString()}
+                      ৳ {(selectedVariant?.currentPrice || price)?.toLocaleString() || 0}
                     </span>
                     {(selectedVariant?.originalPrice || originalPrice) > (selectedVariant?.currentPrice || price) && (
                       <span className="text-sm text-gray-400 line-through">
-                        ৳ {(selectedVariant?.originalPrice || originalPrice).toLocaleString()}
+                        ৳ {(selectedVariant?.originalPrice || originalPrice)?.toLocaleString() || 0}
                       </span>
                     )}
                   </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Search, Loader2, ChevronDown } from 'lucide-react';
+import { X, Search, Loader2, ChevronDown, Plus, Trash2 } from 'lucide-react';
 import { productAPI } from '@/services/api';
 import { getCookie } from 'cookies-next';
 
@@ -12,7 +12,10 @@ export default function BasicInfoTab({
     handleTagInputKeyPress, 
     addTag, 
     removeTag, 
-    generateSlug 
+    generateSlug,
+    addSpecification,
+    removeSpecification,
+    updateSpecification
 }) {
     const [descSearchQuery, setDescSearchQuery] = useState('');
     const [descSearchResults, setDescSearchResults] = useState([]);
@@ -679,6 +682,71 @@ export default function BasicInfoTab({
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Dynamic text to display below the Buy Now button"
                 />
+            </div>
+
+            {/* Product Specifications */}
+            <div className="mt-6 border-t border-gray-100 pt-6">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-sm font-medium text-gray-700">Specifications</h2>
+                    <button
+                        type="button"
+                        onClick={addSpecification}
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 bg-blue-50 hover:bg-blue-100 cursor-pointer transition-colors"
+                    >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Specification
+                    </button>
+                </div>
+
+                {formData.specifications.length === 0 ? (
+                    <div className="text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                        <p className="text-sm text-gray-500">No specifications added yet.</p>
+                        <button
+                            type="button"
+                            onClick={addSpecification}
+                            className="mt-2 text-sm text-blue-600 hover:text-blue-800 font-medium cursor-pointer"
+                        >
+                            Click to add one
+                        </button>
+                    </div>
+                ) : (
+                    <div className="space-y-4">
+                        {formData.specifications.map((spec, index) => (
+                            <div key={index} className="flex gap-4 items-start bg-gray-50 p-4 rounded-lg">
+                                <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-medium text-gray-700 mb-1">Key (e.g. Material)</label>
+                                        <input
+                                            type="text"
+                                            value={spec.key}
+                                            onChange={(e) => updateSpecification(index, 'key', e.target.value)}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            placeholder="Property Name"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-medium text-gray-700 mb-1">Value (e.g. 18k Gold)</label>
+                                        <input
+                                            type="text"
+                                            value={spec.value}
+                                            onChange={(e) => updateSpecification(index, 'value', e.target.value)}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            placeholder="Property Value"
+                                        />
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => removeSpecification(index)}
+                                    className="p-2 text-gray-400 hover:text-red-500 mt-5 transition-colors cursor-pointer"
+                                    title="Remove specification"
+                                >
+                                    <Trash2 className="w-5 h-5" />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );

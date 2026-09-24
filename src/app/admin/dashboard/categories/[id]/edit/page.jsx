@@ -69,7 +69,7 @@ export default function EditCategoryPage() {
 
     const fetchCategories = async () => {
         try {
-            const data = await categoryAPI.getCategories()
+            const data = await categoryAPI.getCategories({ limit: 1000 })
             if (data.success) {
                 // Filter out the current category from parent options
                 const filteredCategories = data.data.filter(cat => cat._id !== categoryId)

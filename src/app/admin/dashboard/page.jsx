@@ -12,47 +12,18 @@ import {
     XAxis, YAxis, CartesianGrid, Tooltip,
     ResponsiveContainer, Legend
 } from 'recharts';
+import { getCookie } from 'cookies-next';
+import { dashboardAPI } from '@/services/api';
+import toast from 'react-hot-toast';
+import { useAppContext } from '@/context/AppContext';
 
-// ─── Fake Data ─────────────────────────────────────────────────────────────
+// ─── Fake Data (Initial empty state) ─────────────────────────────────────────────────────────────
 
-const salesChartData = [
-    { date: 'May 15', thisWeek: 42000, lastWeek: 30000 },
-    { date: 'May 16', thisWeek: 35000, lastWeek: 28000 },
-    { date: 'May 17', thisWeek: 48000, lastWeek: 38000 },
-    { date: 'May 18', thisWeek: 68540, lastWeek: 50000 },
-    { date: 'May 19', thisWeek: 55000, lastWeek: 42000 },
-    { date: 'May 20', thisWeek: 62000, lastWeek: 48000 },
-    { date: 'May 21', thisWeek: 70000, lastWeek: 55000 },
-];
-
-const categoryData = [
-    { name: 'Ride On Cars', value: 128450, color: '#6366F1', pct: '37.5%' },
-    { name: 'Scooters', value: 67890, color: '#EC4899', pct: '19.8%' },
-    { name: 'Bicycles', value: 58640, color: '#F59E0B', pct: '17.1%' },
-    { name: 'Toys & Games', value: 45230, color: '#10B981', pct: '13.2%' },
-    { name: 'Others', value: 42240, color: '#3B82F6', pct: '12.4%' },
-];
-
-const recentOrders = [
-    { id: 'KW1248', time: 'May 21, 2024 · 10:30 AM', status: 'Completed', amount: 8990, img: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=48&q=80' },
-    { id: 'KW1247', time: 'May 21, 2024 · 09:15 AM', status: 'Processing', amount: 2490, img: 'https://images.unsplash.com/photo-1520114002364-e4c1fcda0e05?w=48&q=80' },
-    { id: 'KW1246', time: 'May 20, 2024 · 08:45 PM', status: 'Pending', amount: 1490, img: 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=48&q=80' },
-    { id: 'KW1245', time: 'May 20, 2024 · 07:30 PM', status: 'Completed', amount: 1090, img: 'https://images.unsplash.com/photo-1587654780228-6a454f9a0e69?w=48&q=80' },
-    { id: 'KW1244', time: 'May 20, 2024 · 06:20 PM', status: 'Processing', amount: 6490, img: 'https://images.unsplash.com/photo-1558981852-426c6c22a060?w=48&q=80' },
-];
-
-const topProducts = [
-    { rank: 1, name: 'Kids Electric Ride On Car', sold: 320, revenue: 8890, img: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=48&q=80' },
-    { rank: 2, name: 'Kids Scooter', sold: 295, revenue: 2490, img: 'https://images.unsplash.com/photo-1520114002364-e4c1fcda0e05?w=48&q=80' },
-    { rank: 3, name: 'Kids Bicycle 16 Inch', sold: 210, revenue: 6490, img: 'https://images.unsplash.com/photo-1558981852-426c6c22a060?w=48&q=80' },
-    { rank: 4, name: 'Kids Smart Watch', sold: 185, revenue: 1490, img: 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=48&q=80' },
-];
-
-const lowStockItems = [
-    { name: 'Kids Scooter (Pink)', stock: 5, img: 'https://images.unsplash.com/photo-1520114002364-e4c1fcda0e05?w=48&q=80' },
-    { name: 'Kids Smart Watch (Blue)', stock: 7, img: 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=48&q=80' },
-    { name: 'Kids Bicycle 16 Inch', stock: 3, img: 'https://images.unsplash.com/photo-1558981852-426c6c22a060?w=48&q=80' },
-];
+const initialSalesChartData = [];
+const initialCategoryData = [];
+const initialRecentOrders = [];
+const initialTopProducts = [];
+const initialLowStockItems = [];
 
 const quickActions = [
     { label: 'Add New Product', icon: Package, color: 'bg-blue-100 text-blue-600', href: '/admin/dashboard/products' },
@@ -130,7 +101,37 @@ const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent
 // ─── Main Page ──────────────────────────────────────────────────────────────
 
 export default function NewAdminDashboard() {
-    const [dateLabel] = useState('May 15, 2024 – May 21, 2024');
+    const { user } = useAppContext();
+    const [dateLabel, setDateLabel] = useState('Last 7 Days');
+    const [loading, setLoading] = useState(true);
+    const [dashboardData, setDashboardData] = useState({
+        stats: { totalSales: 0, totalOrders: 0, totalCustomers: 0, totalProducts: 0, salesChange: '0%' },
+        salesChartData: initialSalesChartData,
+        categoryData: initialCategoryData,
+        recentOrders: initialRecentOrders,
+        topProducts: initialTopProducts,
+        lowStockItems: initialLowStockItems
+    });
+
+    React.useEffect(() => {
+        const fetchDashboardData = async () => {
+            try {
+                const token = getCookie('token');
+                const response = await dashboardAPI.getSummary(token);
+                if (response.success) {
+                    setDashboardData(response.data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch dashboard data", error);
+                toast.error("Failed to load dashboard data");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchDashboardData();
+    }, []);
+
+    const { stats, salesChartData, categoryData, recentOrders, topProducts, lowStockItems } = dashboardData;
 
     return (
         <div className="space-y-6 pb-8">
@@ -141,7 +142,7 @@ export default function NewAdminDashboard() {
                         <h1 className="text-2xl font-extrabold text-gray-900">Dashboard</h1>
                         <span className="text-xl">👋</span>
                     </div>
-                    <p className="text-sm text-gray-500 mt-0.5">Welcome back, Nirob Rahman Hridoy</p>
+                    <p className="text-sm text-gray-500 mt-0.5">Welcome back, {user?.name || 'Admin'}</p>
                 </div>
                 <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-4 py-2.5 shadow-sm cursor-pointer hover:bg-gray-50 text-sm font-semibold text-gray-700">
                     📅 {dateLabel}
@@ -150,10 +151,10 @@ export default function NewAdminDashboard() {
 
             {/* Stat Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <StatCard title="Total Sales" value="৳ 3,42,450" change="+18.5%" color="bg-blue-100 text-blue-600" icon={DollarSign} />
-                <StatCard title="Total Orders" value="1,248" change="+22.5%" color="bg-green-100 text-green-600" icon={ShoppingCart} />
-                <StatCard title="Total Customers" value="892" change="+15.3%" color="bg-orange-100 text-orange-500" icon={Users} />
-                <StatCard title="Total Products" value="156" change="+8.2%" color="bg-purple-100 text-purple-600" icon={Package} />
+                <StatCard title={<>Total Sales <span className="text-[9px] normal-case tracking-normal block -mt-1 opacity-75">(w/o shipping charge)</span></>} value={`৳${stats.totalSales.toLocaleString()}`} change={stats.salesChange} color="bg-blue-100 text-blue-600" icon={DollarSign} />
+                <StatCard title="Total Orders" value={stats.totalOrders.toLocaleString()} change={null} color="bg-green-100 text-green-600" icon={ShoppingCart} />
+                <StatCard title="Total Customers" value={stats.totalCustomers.toLocaleString()} change={null} color="bg-orange-100 text-orange-500" icon={Users} />
+                <StatCard title="Total Products" value={stats.totalProducts.toLocaleString()} change={null} color="bg-purple-100 text-purple-600" icon={Package} />
             </div>
 
             {/* Middle row: Sales Overview + Recent Orders */}
@@ -211,8 +212,8 @@ export default function NewAdminDashboard() {
                         </Link>
                     </div>
                     <div className="space-y-3">
-                        {recentOrders.map((order) => (
-                            <div key={order.id} className="flex items-center gap-3">
+                        {recentOrders.map((order, idx) => (
+                            <div key={order.id || `order-${idx}`} className="flex items-center gap-3">
                                 <img src={order.img} alt={order.id} className="w-10 h-10 rounded-xl object-cover bg-gray-100 flex-shrink-0" />
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-bold text-gray-800">Order #{order.id}</p>
@@ -240,8 +241,8 @@ export default function NewAdminDashboard() {
                         <Link href="/admin/dashboard/products" className="text-xs font-bold text-blue-600 hover:underline">View All</Link>
                     </div>
                     <div className="space-y-4">
-                        {topProducts.map((p) => (
-                            <div key={p.rank} className="flex items-center gap-3">
+                        {topProducts.map((p, idx) => (
+                            <div key={p.rank || `top-${idx}`} className="flex items-center gap-3">
                                 <span className="text-xs font-black text-gray-300 w-4 text-center">{p.rank}</span>
                                 <img src={p.img} alt={p.name} className="w-10 h-10 rounded-xl object-cover bg-gray-100 flex-shrink-0" />
                                 <div className="flex-1 min-w-0">
@@ -282,19 +283,19 @@ export default function NewAdminDashboard() {
                                         label={renderCustomLabel}
                                     >
                                         {categoryData.map((entry, i) => (
-                                            <Cell key={i} fill={entry.color} />
+                                            <Cell key={`cell-${entry.name || i}`} fill={entry.color} />
                                         ))}
                                     </Pie>
                                 </PieChart>
                             </ResponsiveContainer>
                             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <span className="text-sm font-extrabold text-gray-800">৳3,42,450</span>
-                                <span className="text-[10px] text-gray-400 font-medium">Total Sales</span>
+                                <span className="text-sm font-extrabold text-gray-800">Top 5</span>
+                                <span className="text-[10px] text-gray-400 font-medium">Categories</span>
                             </div>
                         </div>
                         <div className="mt-3 w-full space-y-1.5">
-                            {categoryData.map((c) => (
-                                <div key={c.name} className="flex items-center justify-between">
+                            {categoryData.map((c, i) => (
+                                <div key={c.name || `cat-${i}`} className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: c.color }} />
                                         <span className="text-xs text-gray-600 font-medium">{c.name}</span>
@@ -313,8 +314,8 @@ export default function NewAdminDashboard() {
                         <Link href="/admin/dashboard/inventory" className="text-xs font-bold text-blue-600 hover:underline">View All</Link>
                     </div>
                     <div className="space-y-4">
-                        {lowStockItems.map((item) => (
-                            <div key={item.name} className="flex items-center gap-3">
+                        {lowStockItems.map((item, idx) => (
+                            <div key={item.id || item.name || `low-${idx}`} className="flex items-center gap-3">
                                 <img src={item.img} alt={item.name} className="w-10 h-10 rounded-xl object-cover bg-gray-100 flex-shrink-0" />
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-bold text-gray-800 truncate">{item.name}</p>
@@ -333,9 +334,9 @@ export default function NewAdminDashboard() {
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
                 <h2 className="text-base font-extrabold text-gray-900 mb-4">Quick Actions</h2>
                 <div className="flex flex-wrap gap-4">
-                    {quickActions.map((action) => (
+                    {quickActions.map((action, idx) => (
                         <Link
-                            key={action.label}
+                            key={action.label || `action-${idx}`}
                             href={action.href}
                             className="flex flex-col items-center gap-2 group cursor-pointer"
                         >

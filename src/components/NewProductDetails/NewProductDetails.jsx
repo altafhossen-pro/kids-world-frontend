@@ -133,26 +133,64 @@ export default function NewProductDetails({ productSlug }) {
   }
 
   // Formatting Product Data
-  const images = product.gallery?.length > 0
-    ? product.gallery.map(g => g.url)
-    : [product.featuredImage];
+  const allImages = new Set();
+  
+  if (product.featuredImage) {
+      allImages.add(product.featuredImage);
+  }
+  
+  if (product.gallery?.length > 0) {
+      product.gallery.forEach(g => {
+          if (g.url) allImages.add(g.url);
+      });
+  }
+  
+  if (product.variants?.length > 0) {
+      product.variants.forEach(v => {
+          if (v.images?.length > 0) {
+              v.images.forEach(img => {
+                  if (img.url) allImages.add(img.url);
+              });
+          }
+      });
+  } else if (product.singleVariant?.images?.length > 0) {
+      product.singleVariant.images.forEach(img => {
+          if (img.url) allImages.add(img.url);
+      });
+  }
+  
+  const images = Array.from(allImages);
+  
+  if (images.length === 0) {
+      images.push('/images/placeholder.png');
+  }
 
   // Find current matching variant
+  const isSingleProduct = product.productType === 'simple' && product.singleVariant;
   let currentVariant = null;
-  if (product.variants?.length > 0) {
+  if (!isSingleProduct && product.variants?.length > 0) {
     currentVariant = product.variants.find(v => {
       const matchColor = selectedColor ? v.attributes.find(a => a.name.toLowerCase() === 'color' && a.value === selectedColor) : true;
       const matchSize = selectedSize ? v.attributes.find(a => a.name.toLowerCase() === 'size' && a.value === selectedSize) : true;
       return matchColor && matchSize;
     });
+  } else if (isSingleProduct) {
+    currentVariant = {
+      ...product.singleVariant,
+      currentPrice: product.singleVariant.currentPrice || product.basePrice || 0,
+      originalPrice: product.singleVariant.originalPrice,
+      stockQuantity: product.singleVariant.stockQuantity || 0,
+      attributes: [],
+      images: product.singleVariant.images || []
+    };
   }
 
   // If the combination doesn't exist, it means the specific size isn't available for this color
-  const isCombinationUnavailable = !currentVariant;
+  const isCombinationUnavailable = !isSingleProduct && !currentVariant && product.variants?.length > 0;
 
-  const displayPrice = currentVariant ? currentVariant.currentPrice : product.basePrice;
+  const displayPrice = currentVariant ? currentVariant.currentPrice : product.basePrice || product.price || 0;
   const originalPrice = currentVariant && currentVariant.originalPrice ? currentVariant.originalPrice : (displayPrice * 1.2);
-  const stockQuantity = currentVariant ? currentVariant.stockQuantity : (isCombinationUnavailable ? 0 : (product.stockQuantity || product.totalStock));
+  const stockQuantity = currentVariant ? currentVariant.stockQuantity : (isCombinationUnavailable ? 0 : (product.totalStock || 0));
   const isOutOfStock = product.isForceOutOfStock || stockQuantity <= 0 || isCombinationUnavailable;
 
   const colorOptions = product.availableAttributes?.find(a => a.name.toLowerCase() === 'color')?.values || [];
@@ -366,10 +404,10 @@ export default function NewProductDetails({ productSlug }) {
 
             {/* Price */}
             <div className="flex items-end gap-3 py-3 border-y border-gray-100">
-              <span className="text-4xl font-black text-blue-600 leading-none">৳{displayPrice.toLocaleString()}</span>
+              <span className="text-4xl font-black text-blue-600 leading-none">৳{displayPrice?.toLocaleString() || 0}</span>
               {originalPrice > displayPrice && !isCombinationUnavailable && (
                 <>
-                  <span className="text-xl text-gray-400 line-through font-medium leading-none mb-1">৳{originalPrice.toLocaleString()}</span>
+                  <span className="text-xl text-gray-400 line-through font-medium leading-none mb-1">৳{originalPrice?.toLocaleString() || 0}</span>
                   <span className="bg-blue-100 text-blue-600 text-xs font-bold px-2 py-1 rounded-lg mb-0.5">
                     {Math.round(((originalPrice - displayPrice) / originalPrice) * 100)}% OFF
                   </span>

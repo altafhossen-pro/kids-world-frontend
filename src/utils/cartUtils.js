@@ -37,7 +37,7 @@ export const addProductToCart = (product, addToCart, quantity = 1, openModal = t
         size: sizeAttr?.value || null, // Size is optional now
         color: colorAttr?.value || null, // Color is optional
         hexCode: colorAttr?.hexCode || null, // Only set if color exists
-        currentPrice: selectedVariantData.currentPrice || product.price,
+        currentPrice: selectedVariantData.currentPrice || product.basePrice || product.price,
         originalPrice: selectedVariantData.originalPrice || product.originalPrice,
         sku: selectedVariantData.sku,
         stockQuantity: selectedVariantData.stockQuantity || 0,
@@ -45,8 +45,10 @@ export const addProductToCart = (product, addToCart, quantity = 1, openModal = t
         image: selectedVariantData.images?.[0]?.url || null
       };
     } else {
-      // If no variants, create a default variant
-      const isProductOutOfStock = (product.totalStock || 0) <= 0;
+      // If no variants, check if it's a 'simple' product with singleVariant
+      const hasSingleVariant = product.productType === 'simple' || (product.singleVariant && product.singleVariant.stockQuantity !== undefined);
+      const stock = hasSingleVariant ? (product.singleVariant?.stockQuantity || 0) : (product.totalStock || 0);
+      const isProductOutOfStock = stock <= 0;
       
       if (isProductOutOfStock) {
         // If product is out of stock, show error and don't add to cart
@@ -58,11 +60,12 @@ export const addProductToCart = (product, addToCart, quantity = 1, openModal = t
         size: null, // Size is optional now
         color: null, // Color is optional
         hexCode: null, // No color by default
-        currentPrice: product.price,
-        originalPrice: product.originalPrice,
-        sku: product.slug || 'default-sku',
-        stockQuantity: product.totalStock || 0,
-        stockStatus: (product.totalStock || 0) > 0 ? 'in_stock' : 'out_of_stock'
+        currentPrice: hasSingleVariant && product.singleVariant?.currentPrice ? product.singleVariant.currentPrice : (product.basePrice || product.price),
+        originalPrice: hasSingleVariant && product.singleVariant?.originalPrice ? product.singleVariant.originalPrice : product.originalPrice,
+        sku: hasSingleVariant ? product.singleVariant?.sku : (product.slug || 'default-sku'),
+        stockQuantity: stock,
+        stockStatus: stock > 0 ? 'in_stock' : 'out_of_stock',
+        image: hasSingleVariant && product.singleVariant?.images?.[0]?.url ? product.singleVariant.images[0].url : (product.featuredImage || product.image)
       };
     }
 
@@ -82,7 +85,7 @@ export const addProductToCart = (product, addToCart, quantity = 1, openModal = t
       name: product.name || formatProductName(product.title, activeSubtitle),
       slug: product.slug,
       featuredImage: product.featuredImage || product.image,
-      basePrice: product.price,
+      basePrice: product.basePrice || product.price,
       variants: product.variants || [],
       isForceOutOfStock: product.isForceOutOfStock || false
     };

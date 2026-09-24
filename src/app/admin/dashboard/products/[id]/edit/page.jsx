@@ -14,7 +14,6 @@ import { useAppContext } from '@/context/AppContext'
 // Import Tab Components
 import BasicInfoTab from '../../components/EditProductTabs/BasicInfoTab'
 import ImagesMediaTab from '../../components/EditProductTabs/ImagesMediaTab'
-import JewelrySpecsTab from '../../components/EditProductTabs/JewelrySpecsTab'
 import VariantsTab from '../../components/EditProductTabs/VariantsTab'
 import SettingsTab from '../../components/EditProductTabs/SettingsTab'
 import StockManagementModal from '../../components/StockManagementModal'
@@ -71,6 +70,14 @@ export default function EditProductPage() {
         specifications: [],
         productVideos: [],
         variants: [],
+        productType: 'simple',
+        singleVariant: {
+            sku: '',
+            currentPrice: '',
+            originalPrice: '',
+            stockQuantity: 0,
+            stockStatus: 'in_stock'
+        },
         announcementText: ''
     })
 
@@ -96,7 +103,6 @@ export default function EditProductPage() {
     const tabs = [
         { id: 'basic_info', label: 'Basic Info' },
         { id: 'images', label: 'Images & Media' },
-        { id: 'jewelry_specs', label: 'Jewelry & Specs' },
         { id: 'variants', label: 'Variants' },
         { id: 'settings', label: 'Settings' }
     ];
@@ -165,6 +171,14 @@ export default function EditProductPage() {
                     specifications: product.specifications || [],
                     productVideos: product.productVideos || [],
                     variants: product.variants || [],
+                    productType: product.productType || 'simple',
+                    singleVariant: product.singleVariant || {
+                        sku: '',
+                        currentPrice: '',
+                        originalPrice: '',
+                        stockQuantity: 0,
+                        stockStatus: 'in_stock'
+                    },
                     announcementText: product.announcementText || ''
                 })
             } else {
@@ -681,6 +695,9 @@ export default function EditProductPage() {
                         addTag={addTag}
                         removeTag={removeTag}
                         generateSlug={generateSlug}
+                        addSpecification={addSpecification}
+                        removeSpecification={removeSpecification}
+                        updateSpecification={updateSpecification}
                     />
                 )}
 
@@ -696,20 +713,7 @@ export default function EditProductPage() {
                     />
                 )}
 
-                {activeTab === 'jewelry_specs' && (
-                    <JewelrySpecsTab 
-                        formData={formData}
-                        setFormData={setFormData}
-                        handleInputChange={handleInputChange}
-                        customBraceletSize={customBraceletSize}
-                        setCustomBraceletSize={setCustomBraceletSize}
-                        customRingSize={customRingSize}
-                        setCustomRingSize={setCustomRingSize}
-                        addSpecification={addSpecification}
-                        removeSpecification={removeSpecification}
-                        updateSpecification={updateSpecification}
-                    />
-                )}
+
 
                 {activeTab === 'variants' && (
                     <VariantsTab 

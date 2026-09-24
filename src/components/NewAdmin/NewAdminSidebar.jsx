@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { settingsAPI } from '@/services/api';
 import {
     LayoutDashboard,
     ShoppingBag,
@@ -90,11 +91,7 @@ const navigation = [
         type: 'group',
         children: [
             { name: 'Deal of the Day', href: '/admin/dashboard/deal-of-the-day', icon: Clock },
-            { name: 'Hero Offers', href: '/admin/dashboard/hero-offer', icon: Grid3X3 },
             { name: 'Hero Banners', href: '/admin/dashboard/hero-banner', icon: Image },
-            { name: 'Hero Products', href: '/admin/dashboard/hero-products', icon: Grid3X3 },
-            { name: 'Offer Banners', href: '/admin/dashboard/offer-banner', icon: Megaphone },
-            { name: 'Android Banners', href: '/admin/dashboard/android-banner', icon: Megaphone },
             { name: 'Testimonials', href: '/admin/dashboard/testimonials', icon: Star },
             { name: 'Top Brands', href: '/admin/dashboard/top-brands', icon: Star },
         ]
@@ -105,8 +102,6 @@ const navigation = [
         type: 'group',
         children: [
             { name: 'Coupons', href: '/admin/dashboard/coupons', icon: Ticket },
-            { name: 'Upsells', href: '/admin/dashboard/upsells', icon: Link2 },
-            { name: 'Own Products Ads', href: '/admin/dashboard/own-ads', icon: Presentation },
             { name: 'Category Discount', href: '/admin/dashboard/category-discount', icon: Tag },
         ]
     },
@@ -120,9 +115,9 @@ const navigation = [
         ]
     },
     {
-        name: 'Notifications',
-        href: '/admin/dashboard/notifications',
-        icon: Bell,
+        name: 'Contact MSG',
+        href: '/admin/dashboard/contact-messages',
+        icon: MessageSquare,
         type: 'single'
     },
     {
@@ -184,6 +179,15 @@ export default function NewAdminSidebar({ onClose }) {
     };
 
     const [expandedItems, setExpandedItems] = useState({});
+    const [logoUrl, setLogoUrl] = useState('/images/logo.webp');
+
+    useEffect(() => {
+        settingsAPI.getSiteSettings().then(res => {
+            if (res?.data?.logoUrl) {
+                setLogoUrl(res.data.logoUrl);
+            }
+        }).catch(err => console.error("Failed to load logo", err));
+    }, []);
 
     useEffect(() => {
         const initialExpanded = {};
@@ -223,8 +227,9 @@ export default function NewAdminSidebar({ onClose }) {
         <div className="flex flex-col h-full bg-white border-r border-gray-200 select-none">
             {/* Logo */}
             <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100">
-                <Link href="/admin/dashboard" className="flex items-center gap-2">
-                    <img src="/images/logo.webp" alt="Kids World" className="h-8 w-auto" />
+                <Link href="/admin/dashboard" className="flex items-center gap-3">
+                    <img src={logoUrl} alt="Kids World" className="h-8 w-auto object-contain" />
+                    <span className="text-base font-bold text-blue-600 tracking-tight">KIDS<span className="text-blue-600 ms-1">WORLD</span></span>
                 </Link>
                 {onClose && (
                     <button onClick={onClose} className="md:hidden p-1 text-gray-400 hover:text-gray-600">

@@ -1,27 +1,83 @@
 'use client';
 import React, { useState, useEffect, Suspense, useCallback } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import ProductCard from '@/components/NewHomepage/Products/ProductCard';
 import { Filter, Search, ChevronDown, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { productAPI, categoryAPI } from '@/services/api';
 
+const CategoryTreeItem = ({ category, allCategories = [], selectedCat, setSelectedCat, handleFilterChange, depth = 0, isLast = false }) => {
+  const children = allCategories.filter(cat => cat.parent && (cat.parent === category._id || cat.parent._id === category._id));
+  const hasChildren = children.length > 0;
+  const [isExpanded, setIsExpanded] = useState(false);
+  const isSelected = selectedCat === category.slug;
+
+  return (
+    <li className="relative">
+      {depth > 0 && (
+        <>
+          <div className="absolute left-[-16px] top-[14px] w-4 border-t border-gray-300" />
+          <div className={`absolute left-[-16px] top-0 border-l border-gray-300 ${isLast ? 'h-[15px]' : 'h-full'}`} />
+        </>
+      )}
+
+      <div className={`flex items-center gap-2 py-1 relative z-10 ${depth > 0 ? '' : 'mt-1'}`}>
+        {category.image && (
+          <img src={category.image} alt="" className="w-5 h-5 object-contain flex-shrink-0" />
+        )}
+        <button
+          onClick={() => { setSelectedCat(category.slug); handleFilterChange(); }}
+          className={`flex-1 text-left text-sm cursor-pointer ${isSelected ? 'text-blue-600 font-bold' : 'text-gray-700 hover:text-blue-600'}`}
+        >
+          {category.name}
+        </button>
+        {hasChildren ? (
+          <button onClick={() => setIsExpanded(!isExpanded)} className="text-gray-400 hover:text-gray-600 p-0.5 cursor-pointer">
+            <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+          </button>
+        ) : (
+          isSelected && <Check className="w-4 h-4 text-blue-600" />
+        )}
+      </div>
+
+      {isExpanded && hasChildren && (
+        <ul className="ml-6 relative mt-1">
+          {children.map((child, idx) => (
+            <CategoryTreeItem
+              key={child._id}
+              category={child}
+              allCategories={allCategories}
+              selectedCat={selectedCat}
+              setSelectedCat={setSelectedCat}
+              handleFilterChange={handleFilterChange}
+              depth={depth + 1}
+              isLast={idx === children.length - 1}
+            />
+          ))}
+        </ul>
+      )}
+    </li>
+  );
+};
+
 function ShopContent() {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category');
   const sortParam = searchParams.get('sort');
-  
+
   const [selectedCat, setSelectedCat] = useState(categoryParam || 'All');
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [sort, setSort] = useState(sortParam || 'recommended');
-  
+
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([{ _id: 'all', name: 'All' }]);
   const [initialDataLoading, setInitialDataLoading] = useState(true);
-  
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -43,19 +99,45 @@ function ShopContent() {
     setPage(1);
   };
 
+  // Update URL params when filters change
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams);
+    
+    if (selectedCat && selectedCat !== 'All') {
+      params.set('category', selectedCat);
+    } else {
+      params.delete('category');
+    }
+
+    if (sort && sort !== 'recommended') {
+      params.set('sort', sort);
+    } else {
+      params.delete('sort');
+    }
+
+    // Only update if URL actually changed to prevent loops
+    const newQueryString = params.toString();
+    const currentQueryString = searchParams.toString();
+    
+    if (newQueryString !== currentQueryString) {
+      const newUrl = newQueryString ? `${pathname}?${newQueryString}` : pathname;
+      window.history.pushState(null, '', newUrl);
+    }
+  }, [selectedCat, sort, pathname, searchParams]);
+
   // Fetch initial data (Categories and Brands)
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
         const [catRes, brandRes] = await Promise.all([
-          categoryAPI.getCategories(),
+          categoryAPI.getCategories({ limit: 1000 }),
           productAPI.getBrands()
         ]);
-        
+
         if (catRes.success && catRes.data) {
           setCategories([{ _id: 'all', name: 'All' }, ...catRes.data]);
         }
-        
+
         if (brandRes.success && brandRes.data) {
           setBrands(brandRes.data);
         }
@@ -85,7 +167,7 @@ function ShopContent() {
 
         // Add Category
         if (selectedCat !== 'All') {
-          const catObj = categories.find(c => c.name === selectedCat);
+          const catObj = categories.find(c => c.slug === selectedCat || c.name === selectedCat); // Fallback to name match just in case
           if (catObj && catObj._id !== 'all') {
             params.category = catObj._id;
           }
@@ -105,10 +187,12 @@ function ShopContent() {
             params.sort = '-priceRange.min';
             break;
           case 'new-arrivals':
+            params.isNewArrival = true;
             params.sort = '-createdAt';
             break;
           case 'best-sellers':
-            params.sort = '-displayTotalSold'; // Assuming backend supports sorting by totalSold or displayTotalSold
+            params.isBestselling = true;
+            params.sort = '-displayTotalSold'; // Or whatever field it uses
             break;
           default:
             // recommended: no specific sort, backend defaults to sortOrder -createdAt
@@ -116,7 +200,7 @@ function ShopContent() {
         }
 
         const prodRes = await productAPI.getProducts(params);
-        
+
         if (prodRes.success && prodRes.data) {
           setProducts(prodRes.data);
           setTotalPages(prodRes.pagination?.totalPages || 1);
@@ -143,23 +227,23 @@ function ShopContent() {
   // Generate pagination buttons
   const renderPagination = () => {
     if (totalPages <= 1) return null;
-    
+
     const pages = [];
     let startPage = Math.max(1, page - 2);
     let endPage = Math.min(totalPages, page + 2);
-    
+
     if (page <= 3) {
       endPage = Math.min(totalPages, 5);
     }
-    
+
     if (page >= totalPages - 2) {
       startPage = Math.max(1, totalPages - 4);
     }
 
     for (let i = startPage; i <= endPage; i++) {
       pages.push(
-        <button 
-          key={i} 
+        <button
+          key={i}
           onClick={() => { setPage(i); window.scrollTo(0, 0); }}
           className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold transition-colors shadow-sm ${page === i ? 'bg-blue-600 border border-blue-600 text-white shadow-md shadow-blue-100' : 'bg-white border border-gray-200 text-gray-600 hover:text-blue-600 hover:border-blue-300'}`}
         >
@@ -167,20 +251,20 @@ function ShopContent() {
         </button>
       );
     }
-    
+
     return (
       <div className="mt-10 flex justify-center gap-2">
-        <button 
+        <button
           onClick={() => { setPage(Math.max(1, page - 1)); window.scrollTo(0, 0); }}
           disabled={page === 1}
           className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold transition-colors shadow-sm ${page === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-100' : 'bg-white border border-gray-200 text-gray-600 hover:text-blue-600 hover:border-blue-300 cursor-pointer'}`}
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
-        
+
         {pages}
-        
-        <button 
+
+        <button
           onClick={() => { setPage(Math.min(totalPages, page + 1)); window.scrollTo(0, 0); }}
           disabled={page === totalPages}
           className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold transition-colors shadow-sm ${page === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-100' : 'bg-white border border-gray-200 text-gray-600 hover:text-blue-600 hover:border-blue-300 cursor-pointer'}`}
@@ -193,8 +277,8 @@ function ShopContent() {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-6 pb-20">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+
         {/* Header Section */}
         <div className="mb-8">
           <h1 className="text-3xl lg:text-4xl font-extrabold text-gray-900 mb-2">Shop All Products</h1>
@@ -202,11 +286,11 @@ function ShopContent() {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
-          
+
           {/* Mobile Filter Toggle */}
           <div className="lg:hidden flex items-center justify-between bg-white p-4 rounded-xl shadow-sm border border-gray-100">
             <span className="font-bold text-gray-800">Filters</span>
-            <button 
+            <button
               onClick={() => setShowMobileFilters(!showMobileFilters)}
               className="bg-blue-50 text-blue-600 p-2 rounded-lg"
             >
@@ -215,13 +299,13 @@ function ShopContent() {
           </div>
 
           {/* Sidebar Filters */}
-          <aside className={`w-full lg:w-64 shrink-0 ${showMobileFilters ? 'block' : 'hidden lg:block'}`}>
+          <aside className={`w-full lg:w-[300px] shrink-0 ${showMobileFilters ? 'block' : 'hidden lg:block'}`}>
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-24 max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
               <div className="flex items-center gap-2 mb-6 border-b border-gray-100 pb-4">
                 <Filter className="w-5 h-5 text-blue-600" />
                 <h2 className="text-lg font-extrabold text-gray-900">Filters</h2>
               </div>
-              
+
               {/* Search */}
               <div className="mb-6">
                 <p className="text-sm font-bold text-gray-800 mb-3">Search</p>
@@ -247,17 +331,31 @@ function ShopContent() {
                     ))}
                   </div>
                 ) : (
-                  <ul className="space-y-2">
-                    {categories.map(cat => (
-                      <li key={cat._id}>
+                  <ul className="space-y-1">
+                    {/* Render All Category Manually */}
+                    <li className="relative">
+                      <div className="flex items-center gap-2 py-1">
                         <button
-                          onClick={() => { setSelectedCat(cat.name); handleFilterChange(); }}
-                          className={`w-full flex items-center justify-between text-sm py-1.5 transition-colors ${selectedCat === cat.name ? 'text-blue-600 font-bold' : 'text-gray-600 hover:text-blue-600 font-medium'}`}
+                          onClick={() => { setSelectedCat('All'); handleFilterChange(); }}
+                          className={`cursor-pointer flex-1 text-left text-sm ${selectedCat === 'All' ? 'text-blue-600 font-bold' : 'text-gray-700 hover:text-blue-600'}`}
                         >
-                          {cat.name}
-                          {selectedCat === cat.name && <Check className="w-4 h-4" />}
+                          All
                         </button>
-                      </li>
+                        {selectedCat === 'All' && <Check className="w-4 h-4 text-blue-600" />}
+                      </div>
+                    </li>
+
+                    {/* Render Root Categories Only */}
+                    {categories.filter(cat => cat._id !== 'all' && (!cat.parent || cat.parent === null)).map((cat, idx, arr) => (
+                      <CategoryTreeItem
+                        key={cat._id}
+                        category={cat}
+                        allCategories={categories}
+                        selectedCat={selectedCat}
+                        setSelectedCat={setSelectedCat}
+                        handleFilterChange={handleFilterChange}
+                        isLast={idx === arr.length - 1}
+                      />
                     ))}
                   </ul>
                 )}
@@ -280,9 +378,9 @@ function ShopContent() {
                     <ul className="space-y-2.5">
                       {brands.map(brand => (
                         <li key={brand} className="flex items-center gap-2.5 cursor-pointer">
-                          <input 
-                            type="checkbox" 
-                            id={brand} 
+                          <input
+                            type="checkbox"
+                            id={brand}
                             checked={selectedBrands.includes(brand)}
                             onChange={(e) => {
                               if (e.target.checked) {
@@ -292,7 +390,7 @@ function ShopContent() {
                               }
                               handleFilterChange();
                             }}
-                            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" 
+                            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                           />
                           <label htmlFor={brand} className="text-sm text-gray-600 font-medium cursor-pointer flex-1">{brand}</label>
                         </li>
@@ -301,7 +399,7 @@ function ShopContent() {
                   )}
                 </div>
               )}
-              
+
             </div>
           </aside>
 
@@ -311,7 +409,7 @@ function ShopContent() {
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-2 text-sm font-medium">
                 <span className="text-gray-500">Per page:</span>
-                <select 
+                <select
                   value={limit}
                   onChange={(e) => { setLimit(Number(e.target.value)); handleFilterChange(); }}
                   className="bg-gray-50 border border-gray-200 rounded-lg py-1.5 px-3 focus:outline-none focus:border-blue-500 text-gray-700 font-bold cursor-pointer"
@@ -323,7 +421,7 @@ function ShopContent() {
               </div>
               <div className="flex items-center gap-2 text-sm font-medium">
                 <span className="text-gray-500">Sort by:</span>
-                <select 
+                <select
                   value={sort}
                   onChange={(e) => { setSort(e.target.value); handleFilterChange(); }}
                   className="bg-gray-50 border border-gray-200 rounded-lg py-1.5 px-3 focus:outline-none focus:border-blue-500 text-gray-700 font-bold cursor-pointer"
@@ -372,7 +470,7 @@ function ShopContent() {
                 </div>
                 <h3 className="text-xl font-extrabold text-gray-900 mb-2">No products found</h3>
                 <p className="text-gray-500 font-medium">Try adjusting your filters or searching for something else.</p>
-                <button 
+                <button
                   onClick={() => { setSelectedCat('All'); setSearch(''); setSelectedBrands([]); setSort('recommended'); handleFilterChange(); }}
                   className="mt-6 text-blue-600 font-bold hover:underline"
                 >
@@ -380,7 +478,7 @@ function ShopContent() {
                 </button>
               </div>
             )}
-            
+
             {/* Pagination Placeholder */}
             {renderPagination()}
           </div>
@@ -400,18 +498,18 @@ export default function NewShop() {
           <div className="h-5 w-64 bg-gray-200 rounded mb-8"></div>
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="w-full lg:w-64 shrink-0 hidden lg:block">
-               <div className="bg-white h-96 rounded-2xl shadow-sm border border-gray-100 p-6"></div>
+              <div className="bg-white h-96 rounded-2xl shadow-sm border border-gray-100 p-6"></div>
             </div>
             <div className="flex-1">
-               <div className="bg-white h-16 rounded-xl shadow-sm border border-gray-100 mb-6"></div>
-               <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
-                 {Array.from({ length: 8 }).map((_, idx) => (
-                   <div key={idx} className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full">
-                     <div className="w-full aspect-square bg-gray-200"></div>
-                     <div className="p-3"><div className="w-full h-24 bg-gray-200 rounded mt-2"></div></div>
-                   </div>
-                 ))}
-               </div>
+              <div className="bg-white h-16 rounded-xl shadow-sm border border-gray-100 mb-6"></div>
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
+                {Array.from({ length: 8 }).map((_, idx) => (
+                  <div key={idx} className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full">
+                    <div className="w-full aspect-square bg-gray-200"></div>
+                    <div className="p-3"><div className="w-full h-24 bg-gray-200 rounded mt-2"></div></div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

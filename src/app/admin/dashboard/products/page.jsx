@@ -282,7 +282,8 @@ export default function AdminProductsPage() {
                 return min === max ? `৳${min.toFixed(2)}` : `৳${min.toFixed(2)} - ৳${max.toFixed(2)}`
             }
         }
-        return product.basePrice ? `৳${Number(product.basePrice).toFixed(2)}` : 'N/A'
+        const price = product.basePrice || product.currentPrice || product.singleVariant?.currentPrice;
+        return price ? `৳${Number(price).toFixed(2)}` : 'N/A'
     }
 
     // Show permission denied if permission error exists

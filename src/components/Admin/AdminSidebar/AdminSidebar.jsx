@@ -89,11 +89,7 @@ const navigation = [
         type: 'group',
         children: [
             { name: 'Deal of the Day', href: '/admin/dashboard/deal-of-the-day', icon: Clock },
-            { name: 'Hero Offers', href: '/admin/dashboard/hero-offer', icon: Grid3X3 },
             { name: 'Hero Banners', href: '/admin/dashboard/hero-banner', icon: Image },
-            { name: 'Hero Products', href: '/admin/dashboard/hero-products', icon: Grid3X3 },
-            { name: 'Offer Banners', href: '/admin/dashboard/offer-banner', icon: Megaphone },
-            { name: 'Android Banners', href: '/admin/dashboard/android-banner', icon: Megaphone },
             { name: 'Testimonials', href: '/admin/dashboard/testimonials', icon: Star },
             { name: 'Top Brands', href: '/admin/dashboard/top-brands', icon: Star },
         ]
@@ -104,8 +100,6 @@ const navigation = [
         type: 'group',
         children: [
             { name: 'Coupons', href: '/admin/dashboard/coupons', icon: Ticket },
-            { name: 'Upsells', href: '/admin/dashboard/upsells', icon: Link2 },
-            { name: 'Own Products Ads', href: '/admin/dashboard/own-ads', icon: Presentation },
             { name: 'Category Discount', href: '/admin/dashboard/category-discount', icon: Tag },
         ]
     },

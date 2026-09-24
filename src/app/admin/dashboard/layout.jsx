@@ -58,7 +58,7 @@ export default function AdminLayout({ children }) {
     return (
         <div className="flex h-screen bg-[#F4F6FA] font-sans overflow-hidden">
             {/* Desktop Sidebar */}
-            <div className="hidden md:flex md:flex-col h-screen w-[220px] flex-shrink-0">
+            <div className="hidden md:flex md:flex-col h-screen w-[220px] flex-shrink-0 print:hidden">
                 <NewAdminSidebar />
             </div>
 
@@ -69,7 +69,7 @@ export default function AdminLayout({ children }) {
                         className="md:hidden fixed inset-0 bg-black/40 z-40"
                         onClick={() => setIsMobileMenuOpen(false)}
                     />
-                    <div className="md:hidden fixed inset-y-0 left-0 w-[220px] z-50">
+                    <div className="md:hidden fixed inset-y-0 left-0 w-[220px] z-50 print:hidden">
                         <NewAdminSidebar onClose={() => setIsMobileMenuOpen(false)} />
                     </div>
                 </>

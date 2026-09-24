@@ -57,19 +57,95 @@ export default function VariantsTab({
         <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-lg font-medium text-gray-900">Add Variant</h2>
-                    <label className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                            type="checkbox"
-                            checked={hasColorVariants}
-                            onChange={(e) => setHasColorVariants(e.target.checked)}
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        />
-                        <span className="text-sm font-medium text-gray-700">Enable Colors</span>
-                    </label>
+                    <h2 className="text-lg font-medium text-gray-900">Product Type</h2>
+                    <div className="flex bg-gray-100 p-1 rounded-lg">
+                        <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, productType: 'simple' }))}
+                            className={`px-4 py-2 text-sm font-medium rounded-md transition-colors cursor-pointer ${formData.productType === 'simple' || !formData.productType ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                        >
+                            Single Product
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, productType: 'variable' }))}
+                            className={`px-4 py-2 text-sm font-medium rounded-md transition-colors cursor-pointer ${formData.productType === 'variable' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                        >
+                            Variable Product
+                        </button>
+                    </div>
                 </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-lg border border-gray-100">
+
+                {(!formData.productType || formData.productType === 'simple') ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-lg border border-gray-100">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">SKU</label>
+                            <input
+                                type="text"
+                                value={formData.singleVariant?.sku || ''}
+                                onChange={(e) => setFormData(prev => ({
+                                    ...prev,
+                                    singleVariant: { ...(prev.singleVariant || {}), sku: e.target.value }
+                                }))}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Auto-generated if empty"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Current Price (৳) *</label>
+                            <input
+                                type="number"
+                                value={formData.singleVariant?.currentPrice || ''}
+                                onChange={(e) => setFormData(prev => ({
+                                    ...prev,
+                                    singleVariant: { ...(prev.singleVariant || {}), currentPrice: parseFloat(e.target.value) }
+                                }))}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                min="0" step="0.01"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Old Price (৳)</label>
+                            <input
+                                type="number"
+                                value={formData.singleVariant?.originalPrice || ''}
+                                onChange={(e) => setFormData(prev => ({
+                                    ...prev,
+                                    singleVariant: { ...(prev.singleVariant || {}), originalPrice: parseFloat(e.target.value) }
+                                }))}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                min="0" step="0.01"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Stock Quantity *</label>
+                            <input
+                                type="number"
+                                value={formData.singleVariant?.stockQuantity ?? ''}
+                                onChange={(e) => setFormData(prev => ({
+                                    ...prev,
+                                    singleVariant: { ...(prev.singleVariant || {}), stockQuantity: parseInt(e.target.value) }
+                                }))}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                min="0"
+                            />
+                        </div>
+                    </div>
+                ) : (
+                    <>
+                        <div className="flex justify-between items-center mb-6 mt-8">
+                            <h2 className="text-lg font-medium text-gray-900">Add Variant</h2>
+                            <label className="flex items-center space-x-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={hasColorVariants}
+                                    onChange={(e) => setHasColorVariants(e.target.checked)}
+                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                />
+                                <span className="text-sm font-medium text-gray-700">Enable Colors</span>
+                            </label>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-lg border border-gray-100">
                     {hasColorVariants && (
                         <>
                             <div>
@@ -233,6 +309,8 @@ export default function VariantsTab({
                         </button>
                     </div>
                 </div>
+                </>
+                )}
             </div>
 
             {/* Added Variants List */}

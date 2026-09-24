@@ -19,7 +19,8 @@ import {
 import toast from 'react-hot-toast'
 import Footer from '@/components/Footer/Footer'
 import { siteConfig } from '@/config/siteConfig'
-import { contactAPI } from '@/services/api'
+import { contactAPI, settingsAPI } from '@/services/api'
+import { useEffect } from 'react'
 
 export default function ContactUsPage() {
     const [loading, setLoading] = useState(false)
@@ -31,6 +32,25 @@ export default function ContactUsPage() {
         subject: '',
         message: ''
     })
+    
+    const [siteSettings, setSiteSettings] = useState(null)
+    const [settingsLoading, setSettingsLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await settingsAPI.getSiteSettings();
+                if (res.success) {
+                    setSiteSettings(res.data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch settings:", error);
+            } finally {
+                setSettingsLoading(false);
+            }
+        };
+        fetchSettings();
+    }, []);
 
     // Dynamic social media data
     const socialLinks = [
@@ -367,7 +387,9 @@ export default function ContactUsPage() {
                                     </div>
                                     <div className="ml-4">
                                         <h3 className="text-lg font-semibold text-gray-900">Email</h3>
-                                        <p className="text-gray-600">{siteConfig.contact.email}</p>
+                                        <p className="text-gray-600">
+                                            {settingsLoading ? 'Loading...' : siteSettings?.email || siteConfig.contact.email}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -381,7 +403,9 @@ export default function ContactUsPage() {
                                     </div>
                                     <div className="ml-4">
                                         <h3 className="text-lg font-semibold text-gray-900">Phone</h3>
-                                        <p className="text-gray-600">{siteConfig.contact.phone}</p>
+                                        <p className="text-gray-600">
+                                            {settingsLoading ? 'Loading...' : siteSettings?.phone || siteConfig.contact.phone}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -396,12 +420,7 @@ export default function ContactUsPage() {
                                     <div className="ml-4">
                                         <h3 className="text-lg font-semibold text-gray-900">Address</h3>
                                         <p className="text-gray-600">
-                                            {siteConfig.contact.address.split(', ').map((line, index, array) => (
-                                                <span key={index}>
-                                                    {line}
-                                                    {index < array.length - 1 && <br />}
-                                                </span>
-                                            ))}
+                                            {settingsLoading ? 'Loading...' : siteSettings?.address || siteConfig.contact.address}
                                         </p>
                                     </div>
                                 </div>
@@ -449,8 +468,6 @@ export default function ContactUsPage() {
                     </div>
                 </div>
             </div>
-
-            <Footer />
         </div>
     )
 }

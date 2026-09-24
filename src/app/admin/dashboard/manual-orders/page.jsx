@@ -234,8 +234,14 @@ export default function ManualOrderCreation() {
                                 break;
                             }
                         }
-                        if (matchingVariant) break;
+                    } else if (product.singleVariant && product.singleVariant.sku && product.singleVariant.sku.toLowerCase() === query.trim().toLowerCase()) {
+                        matchingVariant = {
+                            ...product.singleVariant,
+                            _id: 'single-' + product._id // mock ID to satisfy existingItemIndex checks
+                        };
+                        matchingProduct = product;
                     }
+                    if (matchingVariant) break;
                 }
 
                 // If SKU match found, auto-add the variant
@@ -281,9 +287,9 @@ export default function ManualOrderCreation() {
                             product: matchingProduct,
                             variant: {
                                 ...matchingVariant,
-                                size: matchingVariant.attributes?.find(attr => attr.name === 'Size')?.value || matchingVariant.size,
-                                color: matchingVariant.attributes?.find(attr => attr.name === 'Color')?.value || matchingVariant.color,
-                                colorHexCode: matchingVariant.attributes?.find(attr => attr.name === 'Color')?.hexCode
+                                size: matchingVariant.attributes?.find(attr => attr.name === 'Size')?.value || matchingVariant.size || '',
+                                color: matchingVariant.attributes?.find(attr => attr.name === 'Color')?.value || matchingVariant.color || '',
+                                colorHexCode: matchingVariant.attributes?.find(attr => attr.name === 'Color')?.hexCode || ''
                             },
                             quantity: 1,
                             price: matchingVariant.currentPrice || matchingVariant.price,
@@ -915,8 +921,11 @@ export default function ManualOrderCreation() {
                                                             e.target.src = '/images/placeholder.png';
                                                         }}
                                                     />
-                                                    <div className="flex-1">
-                                                        <h4 className={`text-sm font-medium ${hasStock ? 'text-gray-900' : 'text-gray-500'}`}>
+                                                    <div className="flex-1 min-w-0">
+                                                        <h4 
+                                                            className={`text-sm font-medium truncate ${hasStock ? 'text-gray-900' : 'text-gray-500'}`}
+                                                            title={product.title}
+                                                        >
                                                             {product.title}
                                                         </h4>
                                                         <p className="text-xs text-gray-500">
@@ -949,8 +958,10 @@ export default function ManualOrderCreation() {
                                         e.target.src = '/images/placeholder.png';
                                     }}
                                 />
-                                <div>
-                                    <h3 className="font-semibold text-gray-900">{currentProduct.title}</h3>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-semibold text-gray-900 truncate" title={currentProduct.title}>
+                                        {currentProduct.title}
+                                    </h3>
                                     <p className="text-sm text-gray-600">Select variant and quantity</p>
                                 </div>
                             </div>
@@ -1103,23 +1114,26 @@ export default function ManualOrderCreation() {
                                 <tbody className="bg-white divide-y divide-gray-200">
                                     {orderItems.map((item, index) => (
                                         <tr key={index}>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="flex items-center">
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center max-w-[300px]">
                                                     <img
                                                         src={item.product.featuredImage || '/images/placeholder.png'}
                                                         alt={item.product.title}
-                                                        className="h-10 w-10 rounded-lg object-cover"
+                                                        className="h-10 w-10 rounded-lg object-cover flex-shrink-0"
                                                         onMouseEnter={() => setHoveredImage(item.product.featuredImage || '/images/placeholder.png')}
                                                         onMouseLeave={() => setHoveredImage(null)}
                                                         onError={(e) => {
                                                             e.target.src = '/images/placeholder.png';
                                                         }}
                                                     />
-                                                    <div className="ml-4">
-                                                        <div className="text-sm font-medium text-gray-900">
+                                                    <div className="ml-4 flex-1 min-w-0">
+                                                        <div 
+                                                            className="text-sm font-medium text-gray-900 truncate"
+                                                            title={item.product.title}
+                                                        >
                                                             {item.product.title}
                                                         </div>
-                                                        <div className="text-sm text-gray-500">
+                                                        <div className="text-sm text-gray-500 truncate">
                                                             SKU: {item.variant.sku}
                                                         </div>
                                                     </div>

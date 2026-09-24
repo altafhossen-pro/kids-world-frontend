@@ -12,6 +12,7 @@ import { io } from 'socket.io-client';
 import PermissionDenied from '@/components/Common/PermissionDenied';
 import { useAppContext } from '@/context/AppContext';
 import DeleteConfirmationModal from '@/components/Common/DeleteConfirmationModal';
+import Barcode from 'react-barcode';
 
 export default function AdminOrdersPage() {
     const { hasPermission, loading: contextLoading } = useAppContext();
@@ -31,9 +32,12 @@ export default function AdminOrdersPage() {
     const buttonRefs = useRef({});
     const [contextMenu, setContextMenu] = useState({ open: false, orderId: null, x: 0, y: 0, hasSelection: false });
     const [showExportModal, setShowExportModal] = useState(false);
-    const [exportStartDate, setExportStartDate] = useState('');
-    const [exportEndDate, setExportEndDate] = useState('');
+    const [exportStartDate, setExportStartDate] = useState(new Date().toISOString().split('T')[0]);
+    const [exportEndDate, setExportEndDate] = useState(new Date().toISOString().split('T')[0]);
     const [exporting, setExporting] = useState(false);
+    const [exportType, setExportType] = useState('csv');
+    const [exportStatusFilter, setExportStatusFilter] = useState('all');
+    const [pdfOrders, setPdfOrders] = useState([]);
     const [addingToSteadfast, setAddingToSteadfast] = useState(false);
     const [orderAddingToSteadfast, setOrderAddingToSteadfast] = useState(null);
     const [showSteadfastModal, setShowSteadfastModal] = useState(false);
@@ -769,6 +773,11 @@ export default function AdminOrdersPage() {
                     params.append('search', filters.search.trim());
                 }
 
+                // If PDF export, override status filter
+                if (exportType === 'pdf' && exportStatusFilter !== 'all') {
+                    params.set('status', exportStatusFilter);
+                }
+
                 const data = await orderAPI.getAdminOrders(token, params.toString());
 
                 if (data.success && data.data && data.data.length > 0) {
@@ -795,27 +804,34 @@ export default function AdminOrdersPage() {
             toast.dismiss('export-loading');
 
             if (allOrders.length > 0) {
-                // Convert all orders to CSV
-                const csv = convertOrdersToCSV(allOrders);
+                if (exportType === 'csv') {
+                    // Convert all orders to CSV
+                    const csv = convertOrdersToCSV(allOrders);
 
-                // Create download link
-                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                const url = URL.createObjectURL(blob);
+                    // Create download link
+                    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                    const link = document.createElement('a');
+                    const url = URL.createObjectURL(blob);
 
-                link.setAttribute('href', url);
-                link.setAttribute('download', `orders_${exportStartDate}_to_${exportEndDate}.csv`);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', `orders_${exportStartDate}_to_${exportEndDate}.csv`);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
 
-                toast.success(`Exported ${allOrders.length} orders successfully!`);
-                setShowExportModal(false);
-                setExportStartDate('');
-                setExportEndDate('');
+                    toast.success(`Exported ${allOrders.length} orders successfully!`);
+                    setShowExportModal(false);
+                } else if (exportType === 'pdf') {
+                    setPdfOrders(allOrders);
+                    setShowExportModal(false);
+                    setTimeout(() => {
+                        window.print();
+                        setPdfOrders([]);
+                    }, 500);
+                }
             } else {
-                toast.error('No orders found for the selected date range');
+                toast.error('No orders found for the selected criteria');
             }
         } catch (error) {
             console.error('Error exporting orders:', error);
@@ -991,7 +1007,8 @@ export default function AdminOrdersPage() {
     // Show loading only in table area, not full page
 
     return (
-        <div className="space-y-6">
+        <>
+        <div className="space-y-6 print:hidden">
 
 
             {/* Orders Table */}
@@ -2081,8 +2098,8 @@ export default function AdminOrdersPage() {
                             <button
                                 onClick={() => {
                                     setShowExportModal(false);
-                                    setExportStartDate('');
-                                    setExportEndDate('');
+                                    setExportStartDate(new Date().toISOString().split('T')[0]);
+                                    setExportEndDate(new Date().toISOString().split('T')[0]);
                                 }}
                                 className="text-gray-400 hover:text-gray-600"
                             >
@@ -2120,8 +2137,42 @@ export default function AdminOrdersPage() {
                                 />
                             </div>
 
-                            <p className="text-sm text-gray-500">
-                                Orders within the selected date range will be exported as a CSV file.
+                            <p className="text-sm text-gray-500 mb-2">
+                                Export Type
+                            </p>
+                            <div className="flex gap-4">
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" value="csv" checked={exportType === 'csv'} onChange={(e) => setExportType(e.target.value)} className="w-4 h-4 text-blue-600" />
+                                    <span className="text-sm text-gray-700 font-medium">Normal (CSV/Excel)</span>
+                                </label>
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" value="pdf" checked={exportType === 'pdf'} onChange={(e) => setExportType(e.target.value)} className="w-4 h-4 text-blue-600" />
+                                    <span className="text-sm text-gray-700 font-medium">Export as PDF with Image</span>
+                                </label>
+                            </div>
+
+                            {exportType === 'pdf' && (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2 mt-4">
+                                        Status Filter
+                                    </label>
+                                    <select
+                                        value={exportStatusFilter}
+                                        onChange={(e) => setExportStatusFilter(e.target.value)}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    >
+                                        <option value="all">All Statuses</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="processing">Processing</option>
+                                        <option value="shipped">Shipped</option>
+                                        <option value="delivered">Delivered</option>
+                                        <option value="cancelled">Cancelled</option>
+                                    </select>
+                                </div>
+                            )}
+
+                            <p className="text-sm text-gray-500 mt-4">
+                                Orders within the selected criteria will be exported.
                             </p>
                         </div>
 
@@ -2129,8 +2180,8 @@ export default function AdminOrdersPage() {
                             <button
                                 onClick={() => {
                                     setShowExportModal(false);
-                                    setExportStartDate('');
-                                    setExportEndDate('');
+                                    setExportStartDate(new Date().toISOString().split('T')[0]);
+                                    setExportEndDate(new Date().toISOString().split('T')[0]);
                                 }}
                                 disabled={exporting}
                                 className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
@@ -2145,13 +2196,93 @@ export default function AdminOrdersPage() {
                                     : 'bg-blue-600 hover:bg-blue-700'
                                     }`}
                             >
-                                {exporting ? 'Exporting...' : 'Export CSV'}
+                                {exporting ? 'Processing...' : exportType === 'pdf' ? 'Export as PDF with Img' : 'Export CSV'}
                             </button>
                         </div>
                     </div>
                 </div>
             )}
         </div>
+
+        {/* Hidden Printable PDF View */}
+        {pdfOrders.length > 0 && (
+            <div className="hidden print:block w-full text-black bg-white p-2">
+                {/* Header with Branding */}
+                <div className="mb-8 border-b-2 border-gray-800 pb-6 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        {settings?.siteSettings?.logoUrl ? (
+                            <img src={settings.siteSettings.logoUrl} alt="Kids World" className="h-16 w-auto object-contain" />
+                        ) : (
+                            <div className="text-3xl font-black tracking-tighter text-blue-600">
+                                KIDS<span className="text-gray-800">WORLD</span>
+                            </div>
+                        )}
+                    </div>
+                    <div className="text-right">
+                        <h1 className="text-3xl font-bold uppercase tracking-wider text-gray-800">Packaging List</h1>
+                        <p className="text-sm text-gray-600 mt-2">Date: {new Date().toLocaleDateString()}</p>
+                        <p className="text-sm text-gray-600">
+                            Range: {exportStartDate} to {exportEndDate}
+                        </p>
+                    </div>
+                </div>
+
+                {/* Packaging List Table */}
+                <table className="w-full text-left border-collapse border border-gray-300 table-fixed">
+                    <thead>
+                        <tr className="bg-gray-100 text-sm font-semibold uppercase text-gray-700">
+                            <th className="border border-gray-300 px-2 py-2 text-center w-20">Image</th>
+                            <th className="border border-gray-300 px-2 py-2 w-auto">Product Name</th>
+                            <th className="border border-gray-300 px-2 py-2 w-40">SKU</th>
+                            <th className="border border-gray-300 px-2 py-2 text-center w-16">Qty</th>
+                            <th className="border border-gray-300 px-2 py-2 w-28">Order ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {pdfOrders.flatMap(order => {
+                            const customerPhone = order.phone || (order.user?.phone || order.guestInfo?.phone || order.shippingAddress?.phone || order.manualOrderInfo?.phone || 'N/A');
+                            const displayOrderId = order.orderId || order._id.slice(-8).toUpperCase();
+
+                            return order.items.map((item, idx) => {
+                                const img = item.variant?.imageUrl || item.product?.featuredImage || '/images/placeholder.png';
+                                const sku = item.variant?.sku || item.product?.sku || 'N/A';
+                                const productName = item.product?.name || item.product?.title || 'Unknown Product';
+                                const variantText = item.isManualItem ? item.variantText : (item.variant?.color ? `${item.variant.color}${item.variant.size ? ` - ${item.variant.size}` : ''}` : '');
+
+                                return (
+                                    <tr key={`${order._id}-${idx}`} className="text-sm text-gray-800 border-b border-gray-300 break-inside-avoid">
+                                        <td className="border border-gray-300 p-1 text-center">
+                                            <img src={img} alt="Product" className="w-12 h-12 object-cover mx-auto rounded border border-gray-200" />
+                                        </td>
+                                        <td className="border border-gray-300 px-2 py-2">
+                                            <div className="font-semibold line-clamp-2" title={productName}>{productName}</div>
+                                            {variantText && <div className="text-xs text-gray-500 mt-1">Variant: {variantText}</div>}
+                                        </td>
+                                        <td className="border border-gray-300 px-2 py-2 text-gray-600 text-center">
+                                            <div className="mb-1">{sku}</div>
+                                            {sku !== 'N/A' && (
+                                                <div className="flex justify-center">
+                                                    <Barcode value={sku} width={1} height={20} fontSize={9} displayValue={false} margin={0} />
+                                                </div>
+                                            )}
+                                        </td>
+                                        <td className="border border-gray-300 px-2 py-2 text-center font-bold text-base">
+                                            {item.quantity}
+                                        </td>
+                                        {idx === 0 && (
+                                            <td className="border border-gray-300 px-2 py-2 font-medium text-xs text-center align-middle bg-gray-50" rowSpan={order.items.length}>
+                                                #{displayOrderId}
+                                            </td>
+                                        )}
+                                    </tr>
+                                );
+                            });
+                        })}
+                    </tbody>
+                </table>
+            </div>
+        )}
+        </>
     );
 }
 

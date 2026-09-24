@@ -865,7 +865,7 @@ export default function OrderDetailsPage() {
                     <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                         <div className="flex items-center">
                             <div className="p-3 bg-blue-100 rounded-xl">
-                                <DollarSign className="h-6 w-6 text-blue-600" />
+                                <p className="text-3xl font-bold text-blue-600 font-sans w-6 h-6 text-center items-center flex justify-center">৳</p>
                             </div>
                             <div className="ml-4">
                                 <p className="text-sm font-medium text-slate-600">Total Amount</p>
@@ -1052,8 +1052,8 @@ export default function OrderDetailsPage() {
                                             variantImage = matchedVariant.images?.[0]?.url || matchedVariant.attributes?.find(a => a.image)?.image;
                                         }
                                     }
-                                    const displayImage = variantImage || item.image || item.product?.featuredImage || '/images/placeholder.png';
-                                    const imageType = variantImage ? 'Variant Image' : 'Featured Image';
+                                    const displayImage = variantImage || item.image || item.product?.featuredImage || item.product?.singleVariant?.images?.[0]?.url || item.product?.image || '/images/placeholder.png';
+                                    const imageType = variantImage ? 'Variant Image' : (item.image ? 'Product Image' : 'Featured Image');
 
                                     return (
                                         <div
@@ -1195,7 +1195,7 @@ export default function OrderDetailsPage() {
                         {/* Order Summary */}
                         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6 lg:p-8">
                             <h2 className="text-lg sm:text-xl font-bold text-slate-900 mb-4 sm:mb-6 flex items-center">
-                                <DollarSign className="h-6 w-6 mr-3 text-emerald-600" />
+
                                 Order Summary
                             </h2>
                             <div className="space-y-3 sm:space-y-4">
@@ -1371,7 +1371,9 @@ export default function OrderDetailsPage() {
                                             <User className="h-4 w-4 text-red-600" />
                                         </div>
                                         <div className="ml-4">
-                                            <p className="font-semibold text-slate-900">{order.shippingAddress?.name || 'N/A'}</p>
+                                            <p className="font-semibold text-slate-900">
+                                                {order.shippingAddress?.name || order.guestInfo?.name || order.manualOrderInfo?.name || 'N/A'}
+                                            </p>
                                             <p className="text-xs text-slate-500 font-medium">Recipient Name</p>
                                         </div>
                                     </div>
@@ -1380,7 +1382,9 @@ export default function OrderDetailsPage() {
                                             <Phone className="h-4 w-4 text-red-600" />
                                         </div>
                                         <div className="ml-4">
-                                            <p className="font-semibold text-slate-900">{order.shippingAddress?.phone || 'N/A'}</p>
+                                            <p className="font-semibold text-slate-900">
+                                                {order.shippingAddress?.phone || order.guestInfo?.phone || order.manualOrderInfo?.phone || 'N/A'}
+                                            </p>
                                             <p className="text-xs text-slate-500 font-medium">Recipient Phone</p>
                                         </div>
                                     </div>
@@ -1391,8 +1395,14 @@ export default function OrderDetailsPage() {
                                         <div className="ml-4">
                                             <div className="space-y-1">
                                                 <p className="font-semibold text-slate-900">{order.shippingAddress?.street}</p>
-                                                <p className="text-slate-700 text-sm font-medium">{order.shippingAddress?.city}, {order.shippingAddress?.state}</p>
-                                                <p className="text-slate-600 text-sm">{order.shippingAddress?.country}</p>
+                                                {(order.shippingAddress?.city || order.shippingAddress?.state) && (
+                                                    <p className="text-slate-700 text-sm font-medium">
+                                                        {[order.shippingAddress.city, order.shippingAddress.state].filter(Boolean).join(', ')}
+                                                    </p>
+                                                )}
+                                                {order.shippingAddress?.country && (
+                                                    <p className="text-slate-600 text-sm">{order.shippingAddress.country}</p>
+                                                )}
                                             </div>
                                             <p className="text-xs text-slate-500 font-medium mt-1">Delivery Address</p>
                                         </div>

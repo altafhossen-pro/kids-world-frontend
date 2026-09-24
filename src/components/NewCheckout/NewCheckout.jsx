@@ -217,12 +217,14 @@ export default function NewCheckout() {
         quantity: item.quantity,
         subtotal: item.price * item.quantity,
         variantSku: item.sku || null,
-        variant: item.variantData || null
+        variant: item.variantData || null,
+        image: item.image || null
       }));
 
       const orderData = {
         items: orderItems,
         shippingAddress: {
+          name: formData.fullName,
           phone: formData.phone,
           street: formData.address,
           divisionId: formData.divisionId || undefined,

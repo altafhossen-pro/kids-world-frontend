@@ -352,6 +352,18 @@ export const productAPI = {
     },
 };
 
+// Dashboard API functions
+export const dashboardAPI = {
+    getSummary: (token) => {
+        return apiCall('/dashboard/summary', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+    }
+};
+
 // Notification API functions
 export const notificationAPI = {
     // Get all notifications with pagination and filters
