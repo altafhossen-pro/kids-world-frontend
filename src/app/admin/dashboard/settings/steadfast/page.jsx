@@ -50,7 +50,8 @@ export default function SteadfastSettingsPage() {
 
   const fetchSettings = async () => {
     try {
-      const response = await settingsAPI.getSteadfastSettings();
+      const token = getCookie('token');
+      const response = await settingsAPI.getSteadfastSettings(token);
       if (response.success) {
         setSettings({
           apiKey: response.data?.apiKey || '',

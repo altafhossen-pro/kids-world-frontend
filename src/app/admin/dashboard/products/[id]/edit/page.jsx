@@ -513,7 +513,13 @@ export default function EditProductPage() {
                 const nextNumber = (maxNumber + 1).toString();
                 const nextSku = searchPrefix + nextNumber.padStart(digitsLength, '0');
 
-                if (vIndex !== null) {
+                if (vIndex === 'single') {
+                    setFormData(prev => ({
+                        ...prev,
+                        singleVariant: { ...(prev.singleVariant || {}), sku: nextSku }
+                    }));
+                    toast.success('SKU auto-generated for single variant');
+                } else if (vIndex !== null) {
                     // Update specific variant in the table
                     updateVariant(vIndex, 'sku', nextSku);
                     toast.success('SKU auto-generated for variant');

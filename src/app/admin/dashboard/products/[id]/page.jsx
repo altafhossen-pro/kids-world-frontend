@@ -277,12 +277,26 @@ export default function ProductDetailsPage() {
 
                         <div className="mt-6">
                             <label className="block text-sm font-medium text-gray-500">Short Description</label>
-                            <p className="mt-1 text-sm text-gray-900">{product.shortDescription || 'No short description'}</p>
+                            {product.shortDescription ? (
+                                <div 
+                                    className="mt-1 text-sm text-gray-900 prose prose-sm max-w-none"
+                                    dangerouslySetInnerHTML={{ __html: product.shortDescription }}
+                                />
+                            ) : (
+                                <p className="mt-1 text-sm text-gray-900">No short description</p>
+                            )}
                         </div>
 
                         <div className="mt-6">
                             <label className="block text-sm font-medium text-gray-500">Full Description</label>
-                            <p className="mt-1 text-sm text-gray-900 whitespace-pre-wrap">{product.description}</p>
+                            {product.description ? (
+                                <div 
+                                    className="mt-1 text-sm text-gray-900 prose prose-sm max-w-none whitespace-pre-wrap"
+                                    dangerouslySetInnerHTML={{ __html: product.description }}
+                                />
+                            ) : (
+                                <p className="mt-1 text-sm text-gray-900">No full description</p>
+                            )}
                         </div>
                     </div>
 

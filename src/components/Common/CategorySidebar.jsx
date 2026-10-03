@@ -1,18 +1,97 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { X, Menu, ChevronRight } from 'lucide-react';
+import { X, Menu, ChevronRight, ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { categoryAPI } from '@/services/api';
 
+const SidebarCategoryItem = ({ category, allCategories, handleCategoryClick, depth = 0, isOpen, index }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  
+  // Find children
+  const children = allCategories.filter(cat => cat.parent && (cat.parent === category._id || cat.parent._id === category._id));
+  const hasChildren = children.length > 0;
+
+  return (
+    <div className={`transition-all duration-200 ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`} style={{ transitionDelay: depth === 0 ? `${index * 50}ms` : '0ms' }}>
+      <div className={`flex items-center justify-between p-3 rounded-lg hover:bg-blue-50 transition-all duration-200 group ${depth > 0 ? 'ml-6 border-l-2 border-gray-100' : ''}`}>
+        <button
+          onClick={() => handleCategoryClick(category)}
+          className="flex items-center gap-3 flex-1 min-w-0 text-left"
+        >
+          {/* Category Image or Icon (only for top level) */}
+          {depth === 0 && (
+            category.image ? (
+              <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+                <img
+                  src={category.image}
+                  alt={category.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ) : (
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-base font-bold">
+                  {category.name?.charAt(0)?.toUpperCase() || 'C'}
+                </span>
+              </div>
+            )
+          )}
+          
+          {/* Category Name */}
+          <div className="flex-1 min-w-0">
+            <h3 className={`${depth === 0 ? 'font-medium' : 'text-sm'} text-gray-800 group-hover:text-[#2563EB] transition-colors truncate`}>
+              {category.name}
+            </h3>
+          </div>
+        </button>
+
+        {/* Chevron Icon for Expansion */}
+        {hasChildren ? (
+          <button 
+            onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded); }}
+            className="p-2 -mr-2 flex-shrink-0 text-gray-400 hover:text-[#2563EB] transition-colors"
+          >
+            {isExpanded ? (
+              <ChevronDown className="w-5 h-5" />
+            ) : (
+              <ChevronRight className="w-5 h-5" />
+            )}
+          </button>
+        ) : (
+          <div className="w-9"></div> // Placeholder for alignment
+        )}
+      </div>
+
+      {/* Children */}
+      {isExpanded && hasChildren && (
+        <div className="mt-1 flex flex-col gap-1">
+          {children.map((child, childIdx) => (
+            <SidebarCategoryItem
+              key={child._id || childIdx}
+              category={child}
+              allCategories={allCategories}
+              handleCategoryClick={handleCategoryClick}
+              depth={depth + 1}
+              isOpen={true} // child animations not needed when already open
+              index={childIdx}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default function CategorySidebar({ isOpen, onClose }) {
   const router = useRouter();
-  const [categories, setCategories] = useState([]);
+  const [allCategories, setAllCategories] = useState([]);
+  const [mainCategories, setMainCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch categories
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && allCategories.length === 0) {
       fetchCategories();
     }
   }, [isOpen]);
@@ -20,14 +99,17 @@ export default function CategorySidebar({ isOpen, onClose }) {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      const response = await categoryAPI.getMainCategories();
+      const response = await categoryAPI.getCategories({ limit: 1000 });
 
       if (response.success) {
-        setCategories(response.data || []);
+        const cats = response.data || [];
+        setAllCategories(cats);
+        setMainCategories(cats.filter(cat => !cat.parent));
       }
     } catch (error) {
       console.error('Error fetching categories:', error);
-      setCategories([]);
+      setAllCategories([]);
+      setMainCategories([]);
     } finally {
       setLoading(false);
     }
@@ -134,57 +216,30 @@ export default function CategorySidebar({ isOpen, onClose }) {
                 ></div>
               ))}
             </div>
-          ) : categories.length === 0 ? (
+          ) : mainCategories.length === 0 ? (
             <div className={`text-center py-8 px-4 transition-all duration-300 ease-out ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               <Menu className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-600 mb-2">No categories found</h3>
               <p className="text-sm text-gray-500">Categories will appear here</p>
             </div>
           ) : (
-            <div className="p-2">
-              {categories.map((category, index) => (
-                <button
+            <div className="p-2 flex flex-col gap-2">
+              {mainCategories.map((category, index) => (
+                <SidebarCategoryItem
                   key={category._id || index}
-                  onClick={() => handleCategoryClick(category)}
-                  className={`w-full flex items-center justify-between p-4 rounded-lg hover:bg-blue-50 transition-all duration-200 group ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}
-                  style={{ transitionDelay: `${index * 50}ms` }}
-                >
-                  <div className="flex items-center gap-3 flex-1 min-w-0">
-                    {/* Category Image or Icon */}
-                    {category.image ? (
-                      <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-                        <img
-                          src={category.image}
-                          alt={category.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center flex-shrink-0">
-                        <span className="text-white text-lg font-bold">
-                          {category.name?.charAt(0)?.toUpperCase() || 'C'}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Category Name */}
-                    <div className="flex-1 min-w-0 text-left">
-                      <h3 className="font-medium text-gray-800 group-hover:text-[#2563EB] transition-colors truncate">
-                        {category.name}
-                      </h3>
-                    </div>
-                  </div>
-
-                  {/* Chevron Icon */}
-                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-[#2563EB] transition-colors flex-shrink-0" />
-                </button>
+                  category={category}
+                  allCategories={allCategories}
+                  handleCategoryClick={handleCategoryClick}
+                  isOpen={isOpen}
+                  index={index}
+                />
               ))}
             </div>
           )}
         </div>
 
         {/* Footer - View All Button */}
-        {!loading && categories.length > 0 && (
+        {!loading && mainCategories.length > 0 && (
           <div className={`border-t border-gray-200 p-4 flex-shrink-0 transition-all duration-300 ease-out ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
             <button
               onClick={handleViewAll}

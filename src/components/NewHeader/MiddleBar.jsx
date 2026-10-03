@@ -14,6 +14,7 @@ const MiddleBar = ({ logoUrl }) => {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [totalResults, setTotalResults] = useState(0);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const searchRef = useRef(null);
@@ -38,6 +39,7 @@ const MiddleBar = ({ logoUrl }) => {
           const res = await productAPI.searchProducts(searchQuery, { limit: 5 });
           if (res.success) {
             setSuggestions(res.data.slice(0, 5));
+            setTotalResults(res.pagination?.total || res.data.length);
             setShowSuggestions(true);
           }
         } catch (error) {
@@ -47,6 +49,7 @@ const MiddleBar = ({ logoUrl }) => {
         }
       } else {
         setSuggestions([]);
+        setTotalResults(0);
         setShowSuggestions(false);
       }
     };
@@ -61,7 +64,7 @@ const MiddleBar = ({ logoUrl }) => {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `/search?q=${encodeURIComponent(searchQuery.trim())}`;
+      window.location.href = `/search?query=${encodeURIComponent(searchQuery.trim())}`;
     }
   };
 
@@ -123,6 +126,15 @@ const MiddleBar = ({ logoUrl }) => {
                   </div>
                 </Link>
               ))}
+              {totalResults > 5 && (
+                <Link
+                  href={`/search?query=${encodeURIComponent(searchQuery.trim())}`}
+                  onClick={() => setShowSuggestions(false)}
+                  className="block text-center py-3 text-sm font-bold text-blue-600 hover:bg-blue-50 bg-gray-50 border-t border-gray-100 transition-colors"
+                >
+                  See all {totalResults} results
+                </Link>
+              )}
             </div>
           )}
         </div>

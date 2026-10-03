@@ -374,12 +374,12 @@ export default function OrderDetails() {
 
                         {/* Shipping Address */}
                         {order.shippingAddress && (
-                            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 overflow-hidden">
                                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Delivery Address</h2>
                                 <div className="space-y-2">
-                                    <div className="flex items-start">
-                                        <MapPin className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
-                                        <div className="text-sm text-gray-700">
+                                    <div className="flex items-start w-full">
+                                        <MapPin className="h-5 w-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
+                                        <div className="text-sm text-gray-700 flex-1 min-w-0 break-all">
                                             {(order.shippingAddress.address || order.shippingAddress.street) && <div>{order.shippingAddress.address || order.shippingAddress.street}</div>}
                                             {order.shippingAddress.area && <div>{order.shippingAddress.area}</div>}
                                             {order.shippingAddress.upazila && <div>{order.shippingAddress.upazila}</div>}

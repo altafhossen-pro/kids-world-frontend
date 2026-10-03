@@ -1779,9 +1779,13 @@ export const settingsAPI = {
         });
     },
 
-    // Get steadfast settings only
-    getSteadfastSettings: () => {
-        return apiCall('/settings/steadfast');
+    // Get steadfast settings only (Admin only)
+    getSteadfastSettings: (token) => {
+        return apiCall('/settings/steadfast', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
     },
 
     // Update steadfast settings only (Admin only)

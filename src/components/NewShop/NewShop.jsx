@@ -66,17 +66,29 @@ function ShopContent() {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category');
   const sortParam = searchParams.get('sort');
+  const initialSearch = searchParams.get('query') || searchParams.get('q') || '';
+  const minPriceParam = searchParams.get('minPrice');
+  const maxPriceParam = searchParams.get('maxPrice');
 
   const [selectedCat, setSelectedCat] = useState(categoryParam || 'All');
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [search, setSearch] = useState(initialSearch);
+  const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [sort, setSort] = useState(sortParam || 'recommended');
+  
+  const [minPrice, setMinPrice] = useState(minPriceParam || '');
+  const [maxPrice, setMaxPrice] = useState(maxPriceParam || '');
+  const [debouncedMinPrice, setDebouncedMinPrice] = useState(minPriceParam || '');
+  const [debouncedMaxPrice, setDebouncedMaxPrice] = useState(maxPriceParam || '');
 
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([{ _id: 'all', name: 'All' }]);
   const [initialDataLoading, setInitialDataLoading] = useState(true);
+  
+  // Available price bounds from server
+  const [globalMinPrice, setGlobalMinPrice] = useState(0);
+  const [globalMaxPrice, setGlobalMaxPrice] = useState(10000);
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -85,14 +97,16 @@ function ShopContent() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
 
-  // Debounce search input
+  // Debounce search and price inputs
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
-      setPage(1); // Reset page on new search
+      setDebouncedMinPrice(minPrice);
+      setDebouncedMaxPrice(maxPrice);
+      setPage(1); // Reset page on new filters
     }, 500);
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [search, minPrice, maxPrice]);
 
   // Handle filter changes that should reset page
   const handleFilterChange = () => {
@@ -114,6 +128,26 @@ function ShopContent() {
     } else {
       params.delete('sort');
     }
+    
+    if (debouncedSearch) {
+      params.set('query', debouncedSearch);
+      params.delete('q'); // clean up old param
+    } else {
+      params.delete('query');
+      params.delete('q');
+    }
+    
+    if (debouncedMinPrice) {
+      params.set('minPrice', debouncedMinPrice);
+    } else {
+      params.delete('minPrice');
+    }
+    
+    if (debouncedMaxPrice) {
+      params.set('maxPrice', debouncedMaxPrice);
+    } else {
+      params.delete('maxPrice');
+    }
 
     // Only update if URL actually changed to prevent loops
     const newQueryString = params.toString();
@@ -123,15 +157,16 @@ function ShopContent() {
       const newUrl = newQueryString ? `${pathname}?${newQueryString}` : pathname;
       window.history.pushState(null, '', newUrl);
     }
-  }, [selectedCat, sort, pathname, searchParams]);
+  }, [selectedCat, sort, debouncedSearch, debouncedMinPrice, debouncedMaxPrice, pathname, searchParams]);
 
   // Fetch initial data (Categories and Brands)
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const [catRes, brandRes] = await Promise.all([
+        const [catRes, brandRes, filterRes] = await Promise.all([
           categoryAPI.getCategories({ limit: 1000 }),
-          productAPI.getBrands()
+          productAPI.getBrands(),
+          productAPI.getAvailableFilters()
         ]);
 
         if (catRes.success && catRes.data) {
@@ -140,6 +175,11 @@ function ShopContent() {
 
         if (brandRes.success && brandRes.data) {
           setBrands(brandRes.data);
+        }
+        
+        if (filterRes.success && filterRes.data) {
+          setGlobalMinPrice(filterRes.data.minPrice || 0);
+          setGlobalMaxPrice(filterRes.data.maxPrice || 10000);
         }
       } catch (err) {
         console.error('Failed to fetch initial data', err);
@@ -176,6 +216,14 @@ function ShopContent() {
         // Add Brands
         if (selectedBrands.length > 0) {
           params.brand = selectedBrands.join(',');
+        }
+        
+        // Add Price Range
+        if (debouncedMinPrice) {
+          params.minPrice = debouncedMinPrice;
+        }
+        if (debouncedMaxPrice) {
+          params.maxPrice = debouncedMaxPrice;
         }
 
         // Add Sort
@@ -222,7 +270,7 @@ function ShopContent() {
     if (categories.length > 1 || selectedCat === 'All') {
       fetchProducts();
     }
-  }, [page, debouncedSearch, selectedCat, selectedBrands, sort, categories, limit]);
+  }, [page, debouncedSearch, selectedCat, selectedBrands, sort, debouncedMinPrice, debouncedMaxPrice, categories, limit]);
 
   // Generate pagination buttons
   const renderPagination = () => {
@@ -281,8 +329,14 @@ function ShopContent() {
 
         {/* Header Section */}
         <div className="mb-8">
-          <h1 className="text-3xl lg:text-4xl font-extrabold text-gray-900 mb-2">Shop All Products</h1>
-          <p className="text-gray-500 font-medium">Find the perfect toys, rides, and learning tools for your kids.</p>
+          <h1 className="text-3xl lg:text-4xl font-extrabold text-gray-900 mb-2">
+            {debouncedSearch ? `Search Results for "${debouncedSearch}"` : "Shop All Products"}
+          </h1>
+          <p className="text-gray-500 font-medium">
+            {debouncedSearch 
+              ? "Find exactly what you're looking for." 
+              : "Find the perfect toys, rides, and learning tools for your kids."}
+          </p>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
@@ -318,6 +372,84 @@ function ShopContent() {
                     className="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                   />
                   <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                </div>
+              </div>
+
+              {/* Price Range */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-sm font-bold text-gray-800">Price Range</p>
+                  {(minPrice || maxPrice) && (
+                    <button
+                      onClick={() => {
+                        setMinPrice('');
+                        setMaxPrice('');
+                        handleFilterChange();
+                      }}
+                      className="text-xs text-blue-600 font-medium hover:underline"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+                
+                <div className="mb-6 mt-6 relative h-6 flex items-center">
+                  <div className="absolute left-0 right-0 h-1.5 bg-gray-200 rounded-full"></div>
+                  <div 
+                    className="absolute h-1.5 bg-blue-600 rounded-full" 
+                    style={{
+                      left: `${((Number(minPrice) || globalMinPrice) - globalMinPrice) / (globalMaxPrice - globalMinPrice || 1) * 100}%`,
+                      right: `${100 - ((Number(maxPrice) || globalMaxPrice) - globalMinPrice) / (globalMaxPrice - globalMinPrice || 1) * 100}%`
+                    }}
+                  ></div>
+                  <input
+                    type="range"
+                    min={globalMinPrice}
+                    max={globalMaxPrice}
+                    value={minPrice || globalMinPrice}
+                    onChange={(e) => {
+                      const val = Math.min(Number(e.target.value), (Number(maxPrice) || globalMaxPrice) - 1);
+                      setMinPrice(val);
+                    }}
+                    className="absolute inset-0 w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow"
+                    style={{ zIndex: (Number(minPrice) || globalMinPrice) > globalMaxPrice - 100 ? 5 : 3 }}
+                  />
+                  <input
+                    type="range"
+                    min={globalMinPrice}
+                    max={globalMaxPrice}
+                    value={maxPrice || globalMaxPrice}
+                    onChange={(e) => {
+                      const val = Math.max(Number(e.target.value), (Number(minPrice) || globalMinPrice) + 1);
+                      setMaxPrice(val);
+                    }}
+                    className="absolute inset-0 w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow"
+                    style={{ zIndex: 4 }}
+                  />
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">৳</span>
+                    <input
+                      type="number"
+                      placeholder={globalMinPrice.toString()}
+                      value={minPrice}
+                      onChange={(e) => setMinPrice(e.target.value)}
+                      className="w-full pl-6 pr-2 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                    />
+                  </div>
+                  <span className="text-gray-400 text-sm font-medium">-</span>
+                  <div className="relative flex-1">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">৳</span>
+                    <input
+                      type="number"
+                      placeholder={globalMaxPrice.toString()}
+                      value={maxPrice}
+                      onChange={(e) => { setMaxPrice(e.target.value); }}
+                      className="w-full pl-6 pr-2 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -471,7 +603,7 @@ function ShopContent() {
                 <h3 className="text-xl font-extrabold text-gray-900 mb-2">No products found</h3>
                 <p className="text-gray-500 font-medium">Try adjusting your filters or searching for something else.</p>
                 <button
-                  onClick={() => { setSelectedCat('All'); setSearch(''); setSelectedBrands([]); setSort('recommended'); handleFilterChange(); }}
+                  onClick={() => { setSelectedCat('All'); setSearch(''); setMinPrice(''); setMaxPrice(''); setSelectedBrands([]); setSort('recommended'); handleFilterChange(); }}
                   className="mt-6 text-blue-600 font-bold hover:underline"
                 >
                   Clear all filters

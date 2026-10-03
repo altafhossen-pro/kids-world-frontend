@@ -74,8 +74,28 @@ const ProductCard = ({ product }) => {
   const image = product.image || product.featuredImage || product.gallery?.[0]?.url || 'https://via.placeholder.com/400';
   const totalSold = product.displayTotalSold || product.totalSold || 0;
 
-  const colorOptions = [...new Set(product.variants?.flatMap(v => v.attributes.filter(a => a.name.toLowerCase() === 'color').map(a => a.value)) || [])];
-  const sizeOptions = [...new Set(product.variants?.flatMap(v => v.attributes.filter(a => a.name.toLowerCase() === 'size').map(a => a.value)) || [])];
+  // Helper to extract unique sorted attribute values based on variant sortOrder
+  const getSortedAttributeValues = (attrName) => {
+    if (!product.variants || product.variants.length === 0) {
+      return [];
+    }
+
+    // Sort variants by sortOrder
+    const sortedVariants = [...product.variants].sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+    
+    const values = [];
+    sortedVariants.forEach(v => {
+      const attr = v.attributes.find(a => a.name.toLowerCase() === attrName.toLowerCase());
+      if (attr && attr.value && !values.includes(attr.value)) {
+        values.push(attr.value);
+      }
+    });
+
+    return values;
+  };
+
+  const colorOptions = getSortedAttributeValues('color');
+  const sizeOptions = getSortedAttributeValues('size');
 
   const handleColorSelect = (color) => {
     setSelectedColor(color);
@@ -112,7 +132,8 @@ const ProductCard = ({ product }) => {
     if (hasMultipleVariants) {
       setShowModal(true);
       if (product.variants && product.variants.length > 0) {
-        const initialVariant = product.variants[0];
+        const sortedVariants = [...product.variants].sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+        const initialVariant = sortedVariants.find(v => v.stockQuantity > 0) || sortedVariants[0];
         setSelectedVariant(initialVariant);
         setSelectedColor(initialVariant.attributes.find(a => a.name.toLowerCase() === 'color')?.value || null);
         setSelectedSize(initialVariant.attributes.find(a => a.name.toLowerCase() === 'size')?.value || null);
@@ -181,7 +202,8 @@ const ProductCard = ({ product }) => {
         <div className="flex flex-col flex-1 p-3">
           <div className="flex justify-between items-center mb-2">
             <div className="flex items-center gap-1">
-              <Star className="w-4 h-4 fill-gray-300 text-gray-300" />
+              <Star className={`w-4 h-4 ${(product.averageRating || 0) > 0 ? 'fill-yellow-400 text-yellow-400' : 'fill-gray-300 text-gray-300'}`} />
+              <span className="text-xs font-bold text-gray-700">{(product.averageRating || 0).toFixed(1)}</span>
               <span className="text-xs font-medium text-gray-500">({product.totalReviews || 0})</span>
             </div>
             <span className="text-xs font-medium text-gray-500">{totalSold} Sold</span>
@@ -281,11 +303,11 @@ const ProductCard = ({ product }) => {
                         <button
                           key={c}
                           onClick={() => handleColorSelect(c)}
-                          title={c}
-                          className={`relative w-10 h-10 rounded-full border-2 transition-all cursor-pointer ${selectedColor === c ? 'border-blue-500 scale-110 shadow-md z-10' : 'border-gray-200 hover:border-blue-300'
+                          className={`relative px-4 py-2 text-sm font-bold rounded-xl border-2 transition-all cursor-pointer flex items-center justify-center ${selectedColor === c ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 text-gray-600 hover:border-blue-300'
                             }`}
-                          style={{ backgroundColor: hex }}
-                        />
+                        >
+                          {c}
+                        </button>
                       );
                     })}
                   </div>

@@ -1967,7 +1967,7 @@ export default function OrderDetailsPage() {
                                     <div style={{ fontWeight: 'bold', fontSize: '18px' }}>Kidsworldbd</div>
                                     <div style={{ fontSize: '10px', textAlign: 'right' }}>
                                         <div>Merchant ID</div>
-                                        <div style={{ fontWeight: 'bold' }}>71701</div>
+                                        <div style={{ fontWeight: 'bold' }}>1693934</div>
                                     </div>
                                 </div>
 
@@ -1991,21 +1991,13 @@ export default function OrderDetailsPage() {
                                             <tr>
                                                 <td style={{ width: '50px', color: '#555', verticalAlign: 'top', paddingBottom: '3px' }}>Name</td>
                                                 <td style={{ fontWeight: 'bold', paddingBottom: '3px', color: '#000' }}>
-                                                    {order.isGuestOrder && order.guestInfo?.name
-                                                        ? order.guestInfo.name
-                                                        : order.orderType === 'manual' && order.manualOrderInfo?.name
-                                                            ? order.manualOrderInfo.name
-                                                            : order.user ? (order.user.name || 'Registered User') : 'Guest User'}
+                                                    {order.shippingAddress?.name || order.guestInfo?.name || order.manualOrderInfo?.name || (order.user ? (order.user.name || 'Registered User') : 'Guest User')}
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td style={{ color: '#555', verticalAlign: 'top', paddingBottom: '3px' }}>Phone</td>
                                                 <td style={{ fontWeight: 'bold', paddingBottom: '3px', color: '#000' }}>
-                                                    {order.isGuestOrder && order.guestInfo?.phone
-                                                        ? order.guestInfo.phone
-                                                        : order.orderType === 'manual' && order.manualOrderInfo?.phone
-                                                            ? order.manualOrderInfo.phone
-                                                            : order.user?.phone || 'N/A'}
+                                                    {order.shippingAddress?.phone || order.guestInfo?.phone || order.manualOrderInfo?.phone || order.user?.phone || 'N/A'}
                                                 </td>
                                             </tr>
                                             <tr>

@@ -79,7 +79,18 @@ export default function VariantsTab({
                 {(!formData.productType || formData.productType === 'simple') ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-lg border border-gray-100">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">SKU</label>
+                            <div className="flex justify-between items-center mb-2">
+                                <label className="block text-sm font-medium text-gray-700">SKU</label>
+                                {onAutoGenerateSku && (
+                                    <button
+                                        type="button"
+                                        onClick={() => onAutoGenerateSku('single')}
+                                        className="text-xs text-blue-600 hover:text-blue-800 font-medium cursor-pointer"
+                                    >
+                                        Auto Generate
+                                    </button>
+                                )}
+                            </div>
                             <input
                                 type="text"
                                 value={formData.singleVariant?.sku || ''}
@@ -90,6 +101,9 @@ export default function VariantsTab({
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Auto-generated if empty"
                             />
+                            {skuSuggestion && (
+                                <p className="mt-1 text-xs text-green-600">{skuSuggestion}</p>
+                            )}
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Current Price (৳) *</label>
