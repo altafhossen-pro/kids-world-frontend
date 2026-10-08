@@ -528,12 +528,43 @@ export default function EditProductPage() {
                     setVariantForm(prev => ({ ...prev, sku: nextSku }));
                     toast.success('SKU auto-generated');
                 }
+                return;
+            }
+
+            // Fallback: Generate random unique SKU if no category skuSettings
+            const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+            const timePart = Date.now().toString(36).slice(-4).toUpperCase();
+            const fallbackSku = `KW-${randomPart}${timePart}`;
+
+            if (vIndex === 'single') {
+                setFormData(prev => ({
+                    ...prev,
+                    singleVariant: { ...(prev.singleVariant || {}), sku: fallbackSku }
+                }));
+                toast.success('Random SKU generated for single variant');
+            } else if (vIndex !== null) {
+                updateVariant(vIndex, 'sku', fallbackSku);
+                toast.success('Random SKU generated for variant');
             } else {
-                toast.error('Failed to generate SKU or no active SKU settings for this category')
+                setVariantForm(prev => ({ ...prev, sku: fallbackSku }));
+                toast.success('Random SKU generated');
             }
         } catch (error) {
-            console.error('Error auto-generating SKU:', error)
-            toast.error('Error generating SKU')
+            console.error('Error auto-generating SKU:', error);
+            const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+            const timePart = Date.now().toString(36).slice(-4).toUpperCase();
+            const fallbackSku = `KW-${randomPart}${timePart}`;
+            if (vIndex === 'single') {
+                setFormData(prev => ({
+                    ...prev,
+                    singleVariant: { ...(prev.singleVariant || {}), sku: fallbackSku }
+                }));
+            } else if (vIndex !== null) {
+                updateVariant(vIndex, 'sku', fallbackSku);
+            } else {
+                setVariantForm(prev => ({ ...prev, sku: fallbackSku }));
+            }
+            toast.success('SKU auto-generated');
         }
     }
 
