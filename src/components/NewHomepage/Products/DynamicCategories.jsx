@@ -122,7 +122,7 @@ const DynamicCategorySection = ({ category, config }) => {
 
         <div className="flex items-center gap-4">
           {config.displayType !== 'slider' && (
-            <a href={`/shop?category=${category._id}`} className="text-blue-600 font-bold flex items-center gap-1 hover:text-blue-700 transition-colors pb-1 shrink-0">
+            <a href={`/shop?category=${category.slug || category._id}`} className="text-blue-600 font-bold flex items-center gap-1 hover:text-blue-700 transition-colors pb-1 shrink-0">
               View All <ArrowRight className="w-4 h-4 ml-1" />
             </a>
           )}
