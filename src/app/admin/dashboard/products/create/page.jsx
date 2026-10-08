@@ -587,7 +587,7 @@ export default function CreateProductPage() {
     return (
         <div className="space-y-6 pb-20">
             {/* Header */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-0 z-40">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div className="flex items-center space-x-4">
                         <Link
