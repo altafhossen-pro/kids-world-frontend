@@ -234,14 +234,23 @@ export default async function ProductPage({ params }) {
             }
           }
         },
-        "hasMerchantReturnPolicy": {
-          "@type": "MerchantReturnPolicy",
-          "applicableCountry": "BD",
-          "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-          "merchantReturnDays": 7,
-          "returnMethod": "https://schema.org/ReturnByMail",
-          "returnFees": "https://schema.org/FreeReturn"
-        }
+        // Determine return policy dynamically
+        ...(product.returnPolicy?.trim()
+          ? {
+              "hasMerchantReturnPolicy": {
+                "@type": "MerchantReturnPolicy",
+                "applicableCountry": "BD",
+                "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                "merchantReturnLink": `${baseUrl}/return-refund-policy`
+              }
+            }
+          : {
+              "hasMerchantReturnPolicy": {
+                "@type": "MerchantReturnPolicy",
+                "applicableCountry": "BD",
+                "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+              }
+            })
       }
     };
 
