@@ -47,11 +47,24 @@ export async function generateMetadata({ params }) {
   // Clean description
   const description = rawDescription.slice(0, 170);
 
+  // Helper to ensure public HTTPS URL
+  const sanitizeImageUrl = (imgUrl) => {
+    if (!imgUrl) return `${baseUrl}/images/logo.png`;
+    if (imgUrl.includes('localhost') || imgUrl.includes('127.0.0.1')) {
+      return imgUrl.replace(/https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/, baseUrl);
+    }
+    if (imgUrl.startsWith('/')) {
+      return `${baseUrl}${imgUrl}`;
+    }
+    return imgUrl;
+  };
+
   // Featured Image / OG Image
-  const ogImage = product.seo?.ogImage?.trim()
+  const rawOgImage = product.seo?.ogImage?.trim()
     || product.featuredImage?.trim()
     || (product.gallery && product.gallery.length > 0 ? product.gallery[0].url : '')
     || `${baseUrl}/images/logo.png`;
+  const ogImage = sanitizeImageUrl(rawOgImage);
 
   // Keywords
   const categoryKeywords = [
@@ -133,25 +146,49 @@ export default async function ProductPage({ params }) {
       ? (product.singleVariant?.originalPrice || currentPrice)
       : (product.variants?.[0]?.originalPrice || currentPrice);
 
-    // Collect all valid image URLs
+    // Helper to ensure public HTTPS URL for Google Validator (replaces localhost)
+    const sanitizeImageUrl = (imgUrl) => {
+      if (!imgUrl) return `${baseUrl}/images/logo.png`;
+      if (imgUrl.includes('localhost') || imgUrl.includes('127.0.0.1')) {
+        // Replace localhost with live production domain for Google tester / rich snippet
+        return imgUrl.replace(/https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/, baseUrl);
+      }
+      if (imgUrl.startsWith('/')) {
+        return `${baseUrl}${imgUrl}`;
+      }
+      return imgUrl;
+    };
+
+    // Collect and format all valid image URLs
     const productImages = [];
-    if (product.featuredImage) productImages.push(product.featuredImage);
+    if (product.featuredImage) productImages.push(sanitizeImageUrl(product.featuredImage));
     if (product.gallery?.length) {
       product.gallery.forEach(img => {
-        if (img?.url && !productImages.includes(img.url)) productImages.push(img.url);
+        if (img?.url) {
+          const sanitized = sanitizeImageUrl(img.url);
+          if (!productImages.includes(sanitized)) productImages.push(sanitized);
+        }
       });
     }
 
     // Availability
     const isInStock = product.totalStock > 0 || (product.variants && product.variants.some(v => v.stockQuantity > 0));
 
+    // Plain text clean description without markdown/HTML
+    const cleanDesc = (product.shortDescription || product.description || product.title)
+      .replace(/<[^>]+>/g, '')
+      .replace(/[*_#]/g, '')
+      .trim()
+      .slice(0, 300);
+
+    const publishDate = product.createdAt ? new Date(product.createdAt).toISOString() : new Date().toISOString();
+
     jsonLd = {
       "@context": "https://schema.org/",
       "@type": "Product",
       "name": product.title,
       "image": productImages.length > 0 ? productImages : [`${baseUrl}/images/logo.png`],
-      "description": product.shortDescription?.trim() 
-        || (product.description ? product.description.replace(/<[^>]+>/g, '').trim().slice(0, 300) : product.title),
+      "description": cleanDesc,
       "sku": product.singleVariant?.sku || product.variants?.[0]?.sku || product.slug,
       "brand": {
         "@type": "Brand",
@@ -163,11 +200,47 @@ export default async function ProductPage({ params }) {
         "priceCurrency": "BDT",
         "price": currentPrice,
         "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+        "validFrom": publishDate,
         "itemCondition": "https://schema.org/NewCondition",
         "availability": isInStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
         "seller": {
           "@type": "Organization",
           "name": siteConfig.name
+        },
+        "shippingDetails": {
+          "@type": "OfferShippingDetails",
+          "shippingRate": {
+            "@type": "MonetaryAmount",
+            "value": 70,
+            "currency": "BDT"
+          },
+          "shippingDestination": {
+            "@type": "DefinedRegion",
+            "addressCountry": "BD"
+          },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "handlingTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 0,
+              "maxValue": 1,
+              "unitCode": "d"
+            },
+            "transitTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 1,
+              "maxValue": 3,
+              "unitCode": "d"
+            }
+          }
+        },
+        "hasMerchantReturnPolicy": {
+          "@type": "MerchantReturnPolicy",
+          "applicableCountry": "BD",
+          "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+          "merchantReturnDays": 7,
+          "returnMethod": "https://schema.org/ReturnByMail",
+          "returnFees": "https://schema.org/FreeReturn"
         }
       }
     };
