@@ -10,6 +10,7 @@ import CartModal from '@/components/Cart/CartModal';
 import WishlistModal from '@/components/Wishlist/WishlistModal';
 import { menuAPI, categoryAPI, settingsAPI } from '@/services/api';
 import CategoryMegamenu from './CategoryMegamenu';
+import CategorySidebar from '@/components/Common/CategorySidebar';
 import SearchBar from './SearchBar';
 
 // Fallback navigation menu
@@ -385,79 +386,12 @@ function Header({ isTrackingShow = true, logoUrl }) {
           </div>
         )}
 
-        {/* Mobile Navigation Menu */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-gray-200 bg-white">
-            <nav className="px-4 py-4 max-w-screen-2xl mx-auto">
-              <div className="flex flex-col space-y-1">
-                {menuLoading ? (
-                  <div className="space-y-3">
-                    {[...Array(6)].map((_, index) => (
-                      <div key={index} className="h-8 bg-gray-200 rounded animate-pulse" style={{ width: `${60 + index * 10}%` }}></div>
-                    ))}
-                  </div>
-                ) : (
-                  navigationMenu.map((item, index) => {
-                    const isActive = isMenuItemActive(item.href);
-
-                    if (item.showChildAsSubMenu && item.children?.length > 0) {
-                      return (
-                        <div key={item.id} className="flex flex-col mb-1" style={{ animationDelay: `${index * 0.05}s` }}>
-                          <Link
-                            href={item.href}
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className={`mobile-menu-item px-4 py-3 rounded-lg font-medium transition-all duration-200 ${isActive
-                              ? 'bg-[#2563EB] text-white shadow-sm'
-                              : 'text-gray-700 hover:bg-blue-50 hover:text-[#2563EB]'
-                              }`}
-                          >
-                            {item.name}
-                          </Link>
-                          <div className="pl-6 pr-2 py-1 flex flex-col space-y-1 mt-1 border-l-2 border-blue-100 ml-4">
-                            {item.children.map(child => {
-                              const isChildActive = isMenuItemActive(child.href);
-                              return (
-                                <Link
-                                  key={child.id}
-                                  href={child.href}
-                                  onClick={() => setIsMobileMenuOpen(false)}
-                                  className={`px-3 py-2 rounded-md text-sm transition-all duration-200 ${isChildActive
-                                    ? 'bg-blue-50 text-blue-600 font-medium'
-                                    : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'
-                                    }`}
-                                >
-                                  {child.name}
-                                </Link>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      );
-                    }
-
-                    return (
-                      <Link
-                        key={item.id}
-                        href={item.href}
-                        target={item.target}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={`mobile-menu-item px-4 py-3 rounded-lg font-medium transition-all duration-200 ${isActive
-                          ? 'bg-[#2563EB] text-white shadow-sm'
-                          : 'text-gray-700 hover:bg-blue-50 hover:text-[#2563EB]'
-                          }`}
-                        style={{
-                          animationDelay: `${index * 0.05}s`
-                        }}
-                      >
-                        {item.name}
-                      </Link>
-                    );
-                  })
-                )}
-              </div>
-            </nav>
-          </div>
-        )}
+        {/* Mobile Navigation Menu - Now using CategorySidebar */}
+        <CategorySidebar 
+          isOpen={isMobileMenuOpen} 
+          onClose={() => setIsMobileMenuOpen(false)} 
+          defaultTab="menu" 
+        />
       </div>
 
       {/* Cart Modal */}
