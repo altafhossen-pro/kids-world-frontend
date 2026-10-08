@@ -142,6 +142,15 @@ export default function CreateProductPage() {
                             }
                             return prev
                         })
+                        setFormData(prev => {
+                            if (!prev.singleVariant?.sku) {
+                                return {
+                                    ...prev,
+                                    singleVariant: { ...(prev.singleVariant || {}), sku: res.data.sku }
+                                }
+                            }
+                            return prev
+                        })
                         setSkuSuggestion(`Auto-filled next SKU. Previous highest was: ${res.data.previousMax || 0}`)
                     } else {
                         setSkuSuggestion('')
@@ -442,6 +451,92 @@ export default function CreateProductPage() {
         setFormData(prev => ({ ...prev, slug }))
     }
 
+    const handleAutoGenerateSku = async (vIndex = null) => {
+        try {
+            const token = getCookie('token') || getCookie('admin_token')
+            if (formData.category) {
+                const res = await productAPI.getNextSkuForCategory(formData.category, token)
+                if (res.success && res.data && res.data.sku) {
+                    let baseSku = res.data.sku;
+                    let maxNumber = parseInt(res.data.previousMax || 0, 10);
+                    const searchPrefix = res.data.sku.replace(/\d+$/, '');
+
+                    formData.variants.forEach(v => {
+                        if (v.sku && v.sku.startsWith(searchPrefix)) {
+                            const numStr = v.sku.substring(searchPrefix.length);
+                            const num = parseInt(numStr, 10);
+                            if (!isNaN(num) && num > maxNumber) {
+                                maxNumber = num;
+                            }
+                        }
+                    });
+
+                    if (vIndex !== null && variantForm.sku && variantForm.sku.startsWith(searchPrefix)) {
+                        const numStr = variantForm.sku.substring(searchPrefix.length);
+                        const num = parseInt(numStr, 10);
+                        if (!isNaN(num) && num > maxNumber) {
+                            maxNumber = num;
+                        }
+                    }
+
+                    const digitsLength = baseSku.length - searchPrefix.length;
+                    const nextNumber = (maxNumber + 1).toString();
+                    const nextSku = digitsLength > 0 ? (searchPrefix + nextNumber.padStart(digitsLength, '0')) : baseSku;
+
+                    if (vIndex === 'single') {
+                        setFormData(prev => ({
+                            ...prev,
+                            singleVariant: { ...(prev.singleVariant || {}), sku: nextSku }
+                        }));
+                        toast.success('SKU auto-generated for single variant');
+                    } else if (vIndex !== null) {
+                        updateVariant(vIndex, 'sku', nextSku);
+                        toast.success('SKU auto-generated for variant');
+                    } else {
+                        setVariantForm(prev => ({ ...prev, sku: nextSku }));
+                        toast.success('SKU auto-generated');
+                    }
+                    return;
+                }
+            }
+
+            // Fallback: Generate random unique SKU on client if category not chosen or no sku returned
+            const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+            const timePart = Date.now().toString(36).slice(-4).toUpperCase();
+            const fallbackSku = `KW-${randomPart}${timePart}`;
+
+            if (vIndex === 'single') {
+                setFormData(prev => ({
+                    ...prev,
+                    singleVariant: { ...(prev.singleVariant || {}), sku: fallbackSku }
+                }));
+                toast.success('Random SKU generated for single variant');
+            } else if (vIndex !== null) {
+                updateVariant(vIndex, 'sku', fallbackSku);
+                toast.success('Random SKU generated for variant');
+            } else {
+                setVariantForm(prev => ({ ...prev, sku: fallbackSku }));
+                toast.success('Random SKU generated');
+            }
+        } catch (error) {
+            console.error('Error auto-generating SKU:', error);
+            const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+            const timePart = Date.now().toString(36).slice(-4).toUpperCase();
+            const fallbackSku = `KW-${randomPart}${timePart}`;
+            if (vIndex === 'single') {
+                setFormData(prev => ({
+                    ...prev,
+                    singleVariant: { ...(prev.singleVariant || {}), sku: fallbackSku }
+                }));
+            } else if (vIndex !== null) {
+                updateVariant(vIndex, 'sku', fallbackSku);
+            } else {
+                setVariantForm(prev => ({ ...prev, sku: fallbackSku }));
+            }
+            toast.success('SKU auto-generated');
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         setLoading(true)
@@ -613,6 +708,7 @@ export default function CreateProductPage() {
                         updateVariantAttribute={updateVariantAttribute}
                         onManageStock={handleManageStock}
                         moveVariant={moveVariant}
+                        onAutoGenerateSku={handleAutoGenerateSku}
                     />
                 )}
 
