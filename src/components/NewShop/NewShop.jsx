@@ -170,7 +170,8 @@ function ShopContent() {
         ]);
 
         if (catRes.success && catRes.data) {
-          setCategories([{ _id: 'all', name: 'All' }, ...catRes.data]);
+          const sortedCats = [...catRes.data].sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+          setCategories([{ _id: 'all', name: 'All' }, ...sortedCats]);
         }
 
         if (brandRes.success && brandRes.data) {
