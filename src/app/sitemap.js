@@ -1,10 +1,39 @@
 import { siteConfig } from '@/config/siteConfig';
 
-export default async function sitemap() {
-  const baseUrl = siteConfig.url || 'https://kidsworldbd.com';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+const CHUNK_SIZE = 1000; // 1,000 products per sitemap chunk for blazing-fast indexing
 
-  // 1. Static Pages
-  const staticRoutes = [
+// 1. Generate sitemap IDs (0 is for static pages + first chunk, 1, 2, 3... for extra chunks)
+export async function generateSitemaps() {
+  try {
+    const res = await fetch(`${API_BASE_URL}/product/sitemap-slugs`, {
+      next: { revalidate: 3600 } // Cache count check for 1 hour
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      const totalProducts = Array.isArray(data?.data) ? data.data.length : 0;
+      
+      // Calculate total sitemaps needed (at least 1 sitemap)
+      const count = Math.max(1, Math.ceil(totalProducts / CHUNK_SIZE));
+      
+      return Array.from({ length: count }, (_, index) => ({ id: index }));
+    }
+  } catch (error) {
+    console.error('Error in generateSitemaps:', error);
+  }
+
+  // Fallback to single sitemap
+  return [{ id: 0 }];
+}
+
+// 2. Return URL entries for the requested sitemap id
+export default async function sitemap({ id }) {
+  const baseUrl = siteConfig.url || 'https://kidsworldbd.com';
+  const sitemapId = Number(id) || 0;
+
+  // Static routes are added ONLY to the primary sitemap (id: 0)
+  const staticRoutes = sitemapId === 0 ? [
     '',
     '/shop',
     '/categories',
@@ -21,22 +50,23 @@ export default async function sitemap() {
     lastModified: new Date().toISOString(),
     changeFrequency: route === '' ? 'daily' : 'weekly',
     priority: route === '' ? 1.0 : 0.8,
-  }));
+  })) : [];
 
-  // 2. Dynamic Product Pages
+  // Fetch product entries for this specific chunk/page
   let productRoutes = [];
   try {
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
-
-    // Fetch ONLY product slugs and update dates using the lean endpoint
     const res = await fetch(`${API_BASE_URL}/product/sitemap-slugs`, {
-      next: { revalidate: 3600 } // Cache sitemap API response for 1 hour
+      next: { revalidate: 3600 } // Cache sitemap data for 1 hour
     });
 
     if (res.ok) {
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) {
-        productRoutes = data.data.map((product) => ({
+        const start = sitemapId * CHUNK_SIZE;
+        const end = start + CHUNK_SIZE;
+        const currentBatch = data.data.slice(start, end);
+
+        productRoutes = currentBatch.map((product) => ({
           url: `${baseUrl}/product/${product.slug}`,
           lastModified: product.updatedAt ? new Date(product.updatedAt).toISOString() : new Date().toISOString(),
           changeFrequency: 'weekly',
@@ -45,9 +75,8 @@ export default async function sitemap() {
       }
     }
   } catch (error) {
-    console.error('Error fetching products for sitemap:', error);
+    console.error(`Error fetching products for sitemap id ${sitemapId}:`, error);
   }
 
-  // Combine and return all routes for the sitemap
   return [...staticRoutes, ...productRoutes];
 }
