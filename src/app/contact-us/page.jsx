@@ -32,7 +32,7 @@ export default function ContactUsPage() {
         subject: '',
         message: ''
     })
-    
+
     const [siteSettings, setSiteSettings] = useState(null)
     const [settingsLoading, setSettingsLoading] = useState(true)
 
@@ -420,7 +420,7 @@ export default function ContactUsPage() {
                                     <div className="ml-4">
                                         <h3 className="text-lg font-semibold text-gray-900">Address</h3>
                                         <p className="text-gray-600">
-                                            {settingsLoading ? 'Loading...' : siteSettings?.address || siteConfig.contact.address}
+                                            Shop:1A-013,1st Floor,(West Near Court),D.N.C.C Corner,Jamuna Future,Park,Dhaka-1229
                                         </p>
                                     </div>
                                 </div>
