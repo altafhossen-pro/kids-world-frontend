@@ -388,7 +388,7 @@ export default function ContactUsPage() {
                                     <div className="ml-4">
                                         <h3 className="text-lg font-semibold text-gray-900">Email</h3>
                                         <p className="text-gray-600">
-                                            {settingsLoading ? 'Loading...' : siteSettings?.email || siteConfig.contact.email}
+                                            support@kidsworldbd.com
                                         </p>
                                     </div>
                                 </div>
