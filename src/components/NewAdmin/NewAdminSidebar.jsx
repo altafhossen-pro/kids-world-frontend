@@ -56,6 +56,7 @@ const navigation = [
         children: [
             { name: 'All Products', href: '/admin/dashboard/products', icon: Package },
             { name: 'Create Product', href: '/admin/dashboard/products/create', icon: PlusCircle },
+            { name: 'Product Reviews', href: '/admin/dashboard/reviews', icon: Star },
         ]
     },
     {

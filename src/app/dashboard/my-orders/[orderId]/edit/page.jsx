@@ -466,7 +466,9 @@ export default function EditOrder() {
                                                     <img src={product.featuredImage || product.image || '/images/placeholder.png'} alt={product.title} className="w-10 h-10 object-cover rounded mr-3" />
                                                     <div>
                                                         <div className="text-sm font-medium">{product.title}</div>
-                                                        <div className="text-sm text-blue-600">৳{product.variants?.[0]?.currentPrice || product.basePrice}</div>
+                                                        <div className="text-sm text-blue-600">
+                                                            ৳{product.variants?.find(v => (v.currentPrice || v.price) > 0)?.currentPrice || product.singleVariant?.currentPrice || product.calculatedPriceRange?.min || product.basePrice || product.price || 0}
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <Plus className="h-4 w-4 text-gray-400" />

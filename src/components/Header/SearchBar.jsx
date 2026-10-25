@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { productAPI } from '@/services/api';
+import { getProductPrice } from '@/utils/productUtils';
 import Link from 'next/link';
 
 export default function SearchBar({ isMobile = false, onSearchSubmit, className = "" }) {
@@ -177,9 +178,21 @@ export default function SearchBar({ isMobile = false, onSearchSubmit, className 
                     <p className="text-xs text-gray-500 truncate">
                       {product.category?.name || 'Category'}
                     </p>
-                    <p className="text-sm font-semibold text-blue-600">
-                      ৳{product.variants?.[0]?.currentPrice || product.basePrice || product.price || 0}
-                    </p>
+                    {(() => {
+                      const { price, originalPrice } = getProductPrice(product);
+                      return (
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-semibold text-blue-600">
+                            {price > 0 ? `৳${price.toLocaleString()}` : 'Check Price'}
+                          </p>
+                          {originalPrice > price && (
+                            <span className="text-xs text-gray-400 line-through">
+                              ৳{originalPrice.toLocaleString()}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
               ))}

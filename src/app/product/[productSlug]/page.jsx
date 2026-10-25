@@ -1,6 +1,7 @@
 import NewProductDetails from '@/components/NewProductDetails/NewProductDetails';
 import React from 'react';
 import { siteConfig } from '@/config/siteConfig';
+import { getProductPrice } from '@/utils/productUtils';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
@@ -136,15 +137,9 @@ export default async function ProductPage({ params }) {
   let jsonLd = null;
 
   if (product) {
-    // Determine price
-    const isSingle = product.productType === 'simple' && product.singleVariant;
-    const currentPrice = isSingle 
-      ? (product.singleVariant?.salePrice || product.singleVariant?.currentPrice || 0)
-      : (product.variants?.[0]?.salePrice || product.variants?.[0]?.currentPrice || product.basePrice || 0);
-
-    const originalPrice = isSingle
-      ? (product.singleVariant?.originalPrice || currentPrice)
-      : (product.variants?.[0]?.originalPrice || currentPrice);
+    // Determine price using robust helper
+    const { price: currentPrice, originalPrice: rawOriginalPrice } = getProductPrice(product);
+    const originalPrice = rawOriginalPrice || currentPrice;
 
     // Helper to ensure public HTTPS URL for Google Validator (replaces localhost)
     const sanitizeImageUrl = (imgUrl) => {

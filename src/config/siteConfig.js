@@ -40,7 +40,7 @@ export const siteConfig = {
     email: "kidsworld6476@gmail.com",
     phone: "01633075357, 01793596476",
     address: "Jamuna Future Park Level 1 Dncc corner A-1-013 (Near West Court), Gulshan DNCC Market shop number 66",
-    hours: "Mon-Sun: 9AM-8PM",
+    hours: "(11:00 AM - 10:00PM)",
   },
 
   // Navigation

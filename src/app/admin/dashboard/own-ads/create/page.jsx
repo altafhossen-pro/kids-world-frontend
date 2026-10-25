@@ -300,7 +300,9 @@ export default function CreateAdPage() {
                         />
                         <div className="flex-1">
                           <div className="font-medium text-gray-900">{product.title}</div>
-                          <div className="text-sm text-gray-500">৳{product.variants?.[0]?.currentPrice || product.basePrice || 0}</div>
+                          <div className="text-sm text-gray-500">
+                            ৳{product.variants?.find(v => (v.currentPrice || v.price) > 0)?.currentPrice || product.singleVariant?.currentPrice || product.calculatedPriceRange?.min || product.basePrice || product.price || 0}
+                          </div>
                         </div>
                         <Package className="w-5 h-5 text-gray-400" />
                       </div>

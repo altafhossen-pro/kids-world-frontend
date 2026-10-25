@@ -7,6 +7,7 @@ import { useAppContext } from '@/context/AppContext';
 import CartModal from '@/components/Cart/CartModal';
 import MobileHeaderMenu from './MobileHeaderMenu';
 import { productAPI } from '@/services/api';
+import { getProductPrice } from '@/utils/productUtils';
 
 const MiddleBar = ({ logoUrl }) => {
   const { user, isCartOpen, setIsCartOpen, cartTotal, cartCount } = useAppContext();
@@ -117,12 +118,21 @@ const MiddleBar = ({ logoUrl }) => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-gray-800 truncate">{product.title}</p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-sm font-bold text-orange-600">৳{product.variants?.[0]?.currentPrice || 0}</span>
-                      {product.variants?.[0]?.regularPrice > product.variants?.[0]?.currentPrice && (
-                        <span className="text-xs text-gray-400 line-through">৳{product.variants?.[0]?.regularPrice}</span>
-                      )}
-                    </div>
+                    {(() => {
+                      const { price, originalPrice } = getProductPrice(product);
+                      return (
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-sm font-bold text-orange-600">
+                            {price > 0 ? `৳${price.toLocaleString()}` : 'Check Price'}
+                          </span>
+                          {originalPrice > price && (
+                            <span className="text-xs text-gray-400 line-through">
+                              ৳{originalPrice.toLocaleString()}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
                 </Link>
               ))}

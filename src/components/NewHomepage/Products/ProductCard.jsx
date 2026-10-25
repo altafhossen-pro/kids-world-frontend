@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Star, ShoppingCart, ShoppingBag, X } from 'lucide-react';
 import { useAppContext } from '@/context/AppContext';
 import { addProductToCart } from '@/utils/cartUtils';
+import { getProductPrice } from '@/utils/productUtils';
 import toast from 'react-hot-toast';
 
 const ProductCard = ({ product }) => {
@@ -36,6 +37,8 @@ const ProductCard = ({ product }) => {
     };
   }, [showModal]);
 
+  const productPriceData = getProductPrice(product);
+
   const hasMultipleVariants = product.variants && product.variants.length > 1;
   const hasAnyVariant = product.variants && product.variants.length > 0;
   
@@ -46,27 +49,27 @@ const ProductCard = ({ product }) => {
       ? !product.variants.some(v => (v.stockQuantity || 0) > 0) 
       : isSingleProduct ? (product.singleVariant?.stockQuantity || 0) <= 0 : (product.totalStock || 0) <= 0);
 
-  const availableVariants = hasAnyVariant 
-    ? product.variants.filter(v => (v.stockQuantity || 0) > 0)
+  // Filter only for variants that have a real price (> 0)
+  const validPriceVariants = hasAnyVariant
+    ? product.variants.filter(v => (v.currentPrice || v.price || v.salePrice || 0) > 0)
     : [];
-    
-  const variantsToUseForPrice = availableVariants.length > 0 ? availableVariants : (product.variants || []);
+
+  const availableInStockVariants = validPriceVariants.filter(v => (v.stockQuantity || 0) > 0);
+  const variantsToUseForPrice = availableInStockVariants.length > 0 ? availableInStockVariants : validPriceVariants;
   
   const lowestPriceVariant = variantsToUseForPrice.length > 0 
-    ? variantsToUseForPrice.reduce((prev, curr) => ((prev.currentPrice || 0) < (curr.currentPrice || 0)) ? prev : curr)
+    ? variantsToUseForPrice.reduce((prev, curr) => {
+        const prevP = prev.currentPrice || prev.price || prev.salePrice || 0;
+        const currP = curr.currentPrice || curr.price || curr.salePrice || 0;
+        return prevP < currP ? prev : curr;
+      })
     : null;
 
-  const price = isSingleProduct && product.singleVariant?.currentPrice 
-    ? product.singleVariant.currentPrice
-    : hasAnyVariant && lowestPriceVariant
-      ? lowestPriceVariant.currentPrice
-      : (product.price || product.basePrice || product.calculatedPriceRange?.min || 0);
+  const calculatedVariantPrice = lowestPriceVariant ? (lowestPriceVariant.currentPrice || lowestPriceVariant.price || lowestPriceVariant.salePrice || 0) : 0;
+  const calculatedVariantOriginalPrice = lowestPriceVariant ? (lowestPriceVariant.originalPrice || lowestPriceVariant.regularPrice || 0) : 0;
 
-  const originalPrice = isSingleProduct && product.singleVariant?.originalPrice
-    ? product.singleVariant.originalPrice
-    : hasAnyVariant && lowestPriceVariant
-      ? lowestPriceVariant.originalPrice
-      : product.originalPrice;
+  const price = calculatedVariantPrice > 0 ? calculatedVariantPrice : productPriceData.price;
+  const originalPrice = calculatedVariantOriginalPrice > price ? calculatedVariantOriginalPrice : productPriceData.originalPrice;
 
   const discount = product.discount || (originalPrice > price ? (originalPrice - price) : 0);
   const discountPercentage = originalPrice > 0 ? Math.round((discount / originalPrice) * 100) : 0;
@@ -219,7 +222,9 @@ const ProductCard = ({ product }) => {
             {originalPrice > price && (
               <span className="text-sm text-gray-400 line-through">৳ {originalPrice?.toLocaleString() || 0}</span>
             )}
-            <span className="text-base font-bold text-gray-900">৳ {price?.toLocaleString() || 0}</span>
+            <span className="text-base font-bold text-gray-900">
+              {price > 0 ? `৳ ${price?.toLocaleString()}` : 'Check Price'}
+            </span>
           </div>
 
           <div className="mt-auto flex flex-col gap-2">

@@ -1095,9 +1095,75 @@ export const transformProductData = (product) => {
 
 // Review API functions
 export const reviewAPI = {
-    // Get all reviews for a product
-    getProductReviews: (productId) => {
-        return apiCall(`/review?product=${productId}`);
+    // Get all reviews (admin)
+    getAdminReviews: (params = {}, token) => {
+        const queryString = new URLSearchParams(params).toString();
+        return apiCall(`/review/admin/list?${queryString}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+    },
+
+    // Get public product reviews
+    getProductReviews: (productId, params = {}) => {
+        const queryString = new URLSearchParams({ product: productId, ...params }).toString();
+        return apiCall(`/review?${queryString}`);
+    },
+
+    // Submit public review from product page
+    createPublicReview: (data) => {
+        return apiCall('/review/public', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+    },
+
+    // Create review (admin)
+    createReview: (data, token) => {
+        return apiCall('/review/admin', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+    },
+
+    // Update review (admin)
+    updateReview: (id, data, token) => {
+        return apiCall(`/review/admin/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+    },
+
+    // Delete review (admin)
+    deleteReview: (id, token) => {
+        return apiCall(`/review/admin/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+    },
+
+    // Toggle review status (admin)
+    toggleReviewStatus: (id, token) => {
+        return apiCall(`/review/admin/${id}/toggle-status`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
     },
 
     // Get user's reviews
@@ -1112,39 +1178,6 @@ export const reviewAPI = {
     // Get user's reviewable products (from delivered orders)
     getUserReviewableProducts: (token) => {
         return apiCall('/review/user/reviewable-products', {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-    },
-
-    // Create a new review
-    createReview: (reviewData, token) => {
-        return apiCall('/review', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(reviewData),
-        });
-    },
-
-    // Update a review
-    updateReview: (reviewId, reviewData, token) => {
-        return apiCall(`/review/${reviewId}`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify(reviewData),
-        });
-    },
-
-    // Delete a review
-    deleteReview: (reviewId, token) => {
-        return apiCall(`/review/${reviewId}`, {
-            method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`,
             },
@@ -1224,6 +1257,8 @@ export const testimonialAPI = {
         });
     },
 };
+
+
 
 // Analytics API functions
 export const analyticsAPI = {

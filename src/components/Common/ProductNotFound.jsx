@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Search, ShoppingBag, Home, Grid3X3 } from 'lucide-react';
 import { productAPI, categoryAPI } from '@/services/api';
+import { getProductPrice } from '@/utils/productUtils';
 
 export default function ProductNotFound() {
     const router = useRouter();
@@ -110,7 +111,21 @@ export default function ProductNotFound() {
                                             />
                                         </div>
                                         <h4 className="font-medium text-gray-900 mb-1 line-clamp-2">{product.title}</h4>
-                                        <p className="text-blue-600 font-semibold">৳{product.variants?.[0]?.currentPrice || product.basePrice || 0}</p>
+                                        {(() => {
+                                            const { price, originalPrice } = getProductPrice(product);
+                                            return (
+                                                <div className="flex items-center gap-2">
+                                                    <p className="text-blue-600 font-semibold">
+                                                        {price > 0 ? `৳${price.toLocaleString()}` : 'Check Price'}
+                                                    </p>
+                                                    {originalPrice > price && (
+                                                        <span className="text-xs text-gray-400 line-through">
+                                                            ৳{originalPrice.toLocaleString()}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            );
+                                        })()}
                                     </Link>
                                 ))}
                             </div>
