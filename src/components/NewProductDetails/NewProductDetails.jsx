@@ -34,7 +34,7 @@ const StarRow = ({ rating, size = 'sm' }) => {
 
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function NewProductDetails({ productSlug }) {
-  const { addToCart, setIsCartOpen, deliveryChargeSettings } = useAppContext();
+  const { addToCart, setIsCartOpen, deliveryChargeSettings, user } = useAppContext();
   const router = useRouter();
 
   const [product, setProduct] = useState(null);
@@ -135,7 +135,11 @@ export default function NewProductDetails({ productSlug }) {
           setProduct(p);
 
           // Track ViewContent for Meta Pixel & CAPI
-          trackViewContent(p, user);
+          try {
+            trackViewContent(p, user);
+          } catch (pixelErr) {
+            console.warn('ViewContent tracking error:', pixelErr);
+          }
 
           // Initialize variants based on first actual existing variant
           let initColor = null;
