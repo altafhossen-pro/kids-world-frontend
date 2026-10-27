@@ -73,7 +73,7 @@ const ProductCard = ({ product }) => {
 
   const discount = product.discount || (originalPrice > price ? (originalPrice - price) : 0);
   const discountPercentage = originalPrice > 0 ? Math.round((discount / originalPrice) * 100) : 0;
-  const rating = product.rating || product.averageRating || 5.0;
+  const rating = product.rating || product.averageRating || 0;
   const image = product.image || product.featuredImage || product.gallery?.[0]?.url || 'https://via.placeholder.com/400';
   const totalSold = product.displayTotalSold || product.totalSold || 0;
 

@@ -11,6 +11,8 @@ import {
   Users,
   Truck,
   Box,
+  Activity,
+  Headphones,
 } from 'lucide-react';
 import { useAppContext } from '@/context/AppContext';
 import PermissionDenied from '@/components/Common/PermissionDenied';
@@ -125,6 +127,22 @@ export default function AdminSettingsPage() {
       icon: Menu,
       color: 'bg-pink-100 text-pink-600',
       href: '/admin/dashboard/settings/homepage-layout'
+    },
+    {
+      id: 'meta-pixel',
+      title: 'Meta Pixel & CAPI',
+      description: 'Facebook Pixel & Server-Side Tracking',
+      icon: Activity,
+      color: 'bg-blue-600 text-white',
+      href: '/admin/dashboard/settings/meta-pixel'
+    },
+    {
+      id: 'support',
+      title: 'Floating Support Button',
+      description: 'Call, WhatsApp & Messenger',
+      icon: Headphones,
+      color: 'bg-emerald-100 text-emerald-600',
+      href: '/admin/dashboard/settings/support'
     }
   ];
 

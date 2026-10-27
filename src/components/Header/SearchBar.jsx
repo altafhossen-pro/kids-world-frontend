@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { productAPI } from '@/services/api';
 import { getProductPrice } from '@/utils/productUtils';
+import { trackSearch } from '@/utils/metaPixel';
 import Link from 'next/link';
 
 export default function SearchBar({ isMobile = false, onSearchSubmit, className = "" }) {
@@ -73,6 +74,7 @@ export default function SearchBar({ isMobile = false, onSearchSubmit, className 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      trackSearch(searchQuery.trim());
       router.push(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
       setShowSuggestions(false);
       if (onSearchSubmit) {

@@ -13,6 +13,7 @@ import { productAPI, reviewAPI } from '@/services/api';
 import { getProductPrice } from '@/utils/productUtils';
 import ProductCard from '@/components/NewHomepage/Products/ProductCard';
 import toast from 'react-hot-toast';
+import { trackViewContent } from '@/utils/metaPixel';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
@@ -132,6 +133,9 @@ export default function NewProductDetails({ productSlug }) {
         if (res.success && res.data) {
           const p = res.data;
           setProduct(p);
+
+          // Track ViewContent for Meta Pixel & CAPI
+          trackViewContent(p, user);
 
           // Initialize variants based on first actual existing variant
           let initColor = null;
@@ -394,6 +398,12 @@ export default function NewProductDetails({ productSlug }) {
     router.push('/checkout');
   };
 
+  // Rating & Review stats calculation
+  const totalReviewCount = reviews.length > 0 ? reviews.length : (product.totalReviews || 0);
+  const averageRating = reviews.length > 0
+    ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length)
+    : (product.averageRating || 0);
+
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -515,12 +525,12 @@ export default function NewProductDetails({ productSlug }) {
                 className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer text-left"
                 title="View customer reviews"
               >
-                <StarRow rating={product.averageRating || (reviews.length > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length) : 5)} size="md" />
+                <StarRow rating={averageRating} size="md" />
                 <span className="text-sm font-bold text-gray-700">
-                  {product.averageRating > 0 ? product.averageRating.toFixed(1) : (reviews.length > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1) : '5.0')}
+                  {averageRating > 0 ? averageRating.toFixed(1) : '0.0'}
                 </span>
                 <span className="text-sm text-gray-500 hover:text-blue-600 underline decoration-gray-300">
-                  ({reviews.length > 0 ? reviews.length : (product.totalReviews || 0)} reviews)
+                  ({totalReviewCount} {totalReviewCount === 1 ? 'review' : 'reviews'})
                 </span>
               </button>
               <button
@@ -655,12 +665,7 @@ export default function NewProductDetails({ productSlug }) {
               >
                 Description
               </button>
-              <button
-                onClick={() => setActiveTab('additional')}
-                className={`pb-4 text-base font-bold transition-all whitespace-nowrap cursor-pointer ${activeTab === 'additional' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-800'}`}
-              >
-                Additional information
-              </button>
+
               <button
                 onClick={() => {
                   setActiveTab('reviews');
@@ -668,7 +673,7 @@ export default function NewProductDetails({ productSlug }) {
                 }}
                 className={`pb-4 text-base font-bold transition-all whitespace-nowrap cursor-pointer ${activeTab === 'reviews' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-800'}`}
               >
-                Reviews ({reviews.length > 0 ? reviews.length : (product.totalReviews || 0)})
+                Reviews ({totalReviewCount})
               </button>
               <button
                 onClick={() => setActiveTab('delivery')}
@@ -687,22 +692,7 @@ export default function NewProductDetails({ productSlug }) {
               />
             )}
 
-            {activeTab === 'additional' && (
-              <div className="text-gray-700 leading-relaxed text-sm sm:text-base">
-                {product.highlights && product.highlights.length > 0 ? (
-                  <ul className="space-y-3">
-                    {product.highlights.map((h, i) => (
-                      <li key={i} className="flex items-start gap-3">
-                        <CheckCircle2 className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-700">{h}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-gray-500">No additional information available.</p>
-                )}
-              </div>
-            )}
+
 
             {activeTab === 'reviews' && (
               <div className="space-y-8">
@@ -711,13 +701,13 @@ export default function NewProductDetails({ productSlug }) {
                   <div className="flex items-center gap-5">
                     <div className="text-center">
                       <p className="text-4xl sm:text-5xl font-black text-gray-900 leading-none">
-                        {product.averageRating > 0 ? product.averageRating.toFixed(1) : (reviews.length > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1) : '5.0')}
+                        {averageRating > 0 ? averageRating.toFixed(1) : '0.0'}
                       </p>
                       <div className="mt-2 flex justify-center">
-                        <StarRow rating={product.averageRating > 0 ? product.averageRating : 5} size="md" />
+                        <StarRow rating={averageRating} size="md" />
                       </div>
                       <p className="text-xs text-gray-500 mt-1 font-medium">
-                        Based on {reviews.length > 0 ? reviews.length : (product.totalReviews || 0)} reviews
+                        Based on {totalReviewCount} {totalReviewCount === 1 ? 'review' : 'reviews'}
                       </p>
                     </div>
 
@@ -725,7 +715,7 @@ export default function NewProductDetails({ productSlug }) {
                     <div className="border-l border-gray-200 pl-5 space-y-1.5 min-w-[160px] sm:min-w-[200px]">
                       {[5, 4, 3, 2, 1].map((s) => {
                         const count = reviews.filter(r => r.rating === s).length;
-                        const pct = reviews.length > 0 ? Math.round((count / reviews.length) * 100) : (s === 5 ? 100 : 0);
+                        const pct = reviews.length > 0 ? Math.round((count / reviews.length) * 100) : 0;
                         return (
                           <div key={s} className="flex items-center gap-2 text-xs text-gray-600">
                             <span className="w-3 font-semibold">{s}★</span>

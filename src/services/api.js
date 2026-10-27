@@ -516,6 +516,30 @@ export const categoryAPI = {
             body: JSON.stringify({ categories }),
         });
     },
+
+    // Admin: Reorder homepage category sections
+    reorderHomepageSections: (items, token) => {
+        return apiCall('/category/reorder-homepage-sections', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                ...(token ? { Authorization: `Bearer ${token}` } : {})
+            },
+            body: JSON.stringify({ items }),
+        });
+    },
+
+    // Admin: Toggle homepage section status
+    toggleHomepageSection: (id, showHomepageAsSection, token) => {
+        return apiCall(`/category/${id}/toggle-homepage-section`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                ...(token ? { Authorization: `Bearer ${token}` } : {})
+            },
+            body: JSON.stringify({ showHomepageAsSection }),
+        });
+    },
 };
 
 // OTP API functions
@@ -1835,6 +1859,21 @@ export const settingsAPI = {
         });
     },
 
+    // Floating Support settings
+    getSupportSettings: () => {
+        return apiCall('/settings/support');
+    },
+    updateSupportSettings: (supportData, token) => {
+        return apiCall('/settings/support', {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(supportData),
+        });
+    },
+
     // Get site settings only
     getSiteSettings: () => {
         return apiCall('/settings/site-settings');
@@ -2880,6 +2919,47 @@ export const blocklistAPI = {
         return apiCall(`/blocklist/unblock/${value}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
+        });
+    }
+};
+
+export const metaPixelAPI = {
+    getAdminSettings: async (token) => {
+        return apiCall('/meta-pixel/admin', {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+    },
+    getPublicSettings: async () => {
+        return apiCall('/meta-pixel/public', {
+            method: 'GET'
+        });
+    },
+    updateSettings: async (data, token) => {
+        return apiCall('/meta-pixel', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(data)
+        });
+    },
+    sendTestEvent: async (data, token) => {
+        return apiCall('/meta-pixel/test-event', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(data)
+        });
+    },
+    trackServerEvent: async (data) => {
+        return apiCall('/meta-pixel/track', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
         });
     }
 };

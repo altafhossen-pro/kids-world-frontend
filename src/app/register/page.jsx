@@ -16,6 +16,7 @@ import {
 import toast from 'react-hot-toast'
 import { useAppContext } from '@/context/AppContext'
 import { otpAPI } from '@/services/api'
+import { trackCompleteRegistration } from '@/utils/metaPixel'
 
 const RegisterPage = () => {
     const router = useRouter()
@@ -194,6 +195,12 @@ const RegisterPage = () => {
             if (data.success) {
                 // Auto-login after successful registration
                 if (data.data && data.data.user && data.data.token) {
+                    // Track CompleteRegistration for Meta Pixel & CAPI
+                    trackCompleteRegistration({
+                        email: registerForm.email,
+                        name: registerForm.name
+                    });
+
                     login(data.data.user, data.data.token)
                     toast.success('Registration successful! Welcome!')
                     

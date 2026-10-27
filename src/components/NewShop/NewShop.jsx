@@ -5,6 +5,7 @@ import ProductCard from '@/components/NewHomepage/Products/ProductCard';
 import { Filter, Search, ChevronDown, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { productAPI, categoryAPI } from '@/services/api';
+import { trackViewCategory, trackSearch } from '@/utils/metaPixel';
 
 const CategoryTreeItem = ({ category, allCategories = [], selectedCat, setSelectedCat, handleFilterChange, depth = 0, isLast = false }) => {
   const children = allCategories.filter(cat => cat.parent && (cat.parent === category._id || cat.parent._id === category._id));
@@ -253,7 +254,15 @@ function ShopContent() {
         if (prodRes.success && prodRes.data) {
           setProducts(prodRes.data);
           setTotalPages(prodRes.pagination?.totalPages || 1);
-          setTotalProducts(prodRes.pagination?.totalProducts || prodRes.data.length);
+          const totalFound = prodRes.pagination?.totalProducts || prodRes.data.length;
+          setTotalProducts(totalFound);
+
+          // Track Search or ViewCategory for Meta Pixel & CAPI
+          if (debouncedSearch) {
+            trackSearch(debouncedSearch, totalFound);
+          } else if (selectedCat && selectedCat !== 'All') {
+            trackViewCategory(selectedCat, totalFound);
+          }
         } else {
           setProducts([]);
           setTotalPages(1);
@@ -548,8 +557,8 @@ function ShopContent() {
                   className="bg-gray-50 border border-gray-200 rounded-lg py-1.5 px-3 focus:outline-none focus:border-blue-500 text-gray-700 font-bold cursor-pointer"
                 >
                   <option value={20}>20</option>
-                  <option value={30}>30</option>
-                  <option value={50}>50</option>
+                  <option value={32}>32</option>
+                  <option value={52}>52</option>
                 </select>
               </div>
               <div className="flex items-center gap-2 text-sm font-medium">

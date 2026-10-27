@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, Trash2, Minus, Plus, CreditCard, Loader2 } from 
 import { addressAPI, orderAPI, couponAPI } from '@/services/api';
 import { useAppContext } from '@/context/AppContext';
 import toast from 'react-hot-toast';
+import { trackInitiateCheckout, trackPurchase } from '@/utils/metaPixel';
 
 export default function NewCheckout() {
   const router = useRouter();
@@ -41,6 +42,25 @@ export default function NewCheckout() {
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [appliedCoupon, setAppliedCoupon] = useState('');
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+
+  const initiatedCheckoutRef = React.useRef(false);
+  useEffect(() => {
+    if (!initiatedCheckoutRef.current) {
+      const hasStateCart = cart && cart.length > 0;
+      let hasSavedCart = false;
+      if (typeof window !== 'undefined') {
+        try {
+          const s = localStorage.getItem('cart');
+          if (s && JSON.parse(s)?.length > 0) hasSavedCart = true;
+        } catch (e) {}
+      }
+
+      if (hasStateCart || hasSavedCart) {
+        initiatedCheckoutRef.current = true;
+        trackInitiateCheckout(cart, cartTotal, user);
+      }
+    }
+  }, [cart, cartTotal, user]);
 
   useEffect(() => {
     fetchDivisions();
@@ -265,6 +285,14 @@ export default function NewCheckout() {
 
       if (response.success) {
         toast.success('Order placed successfully!');
+
+        // Track Purchase for Meta Pixel & CAPI
+        trackPurchase({
+          ...orderData,
+          orderId: response.data?.orderId || response.data?._id || '',
+          total: response.data?.total || total
+        }, user);
+
         clearCart();
 
         const orderId = response.data.orderId || response.data._id;

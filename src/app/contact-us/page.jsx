@@ -20,6 +20,7 @@ import toast from 'react-hot-toast'
 import Footer from '@/components/Footer/Footer'
 import { siteConfig } from '@/config/siteConfig'
 import { contactAPI, settingsAPI } from '@/services/api'
+import { trackContact } from '@/utils/metaPixel'
 import { useEffect } from 'react'
 
 export default function ContactUsPage() {
@@ -188,6 +189,9 @@ export default function ContactUsPage() {
             })
 
             if (response.success) {
+                // Track Contact for Meta Pixel & CAPI
+                trackContact('Contact Form', formData);
+
                 toast.success('Message sent successfully! We\'ll get back to you soon.')
                 setFormData({
                     name: '',

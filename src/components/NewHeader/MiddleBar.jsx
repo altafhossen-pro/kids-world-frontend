@@ -8,6 +8,7 @@ import CartModal from '@/components/Cart/CartModal';
 import MobileHeaderMenu from './MobileHeaderMenu';
 import { productAPI } from '@/services/api';
 import { getProductPrice } from '@/utils/productUtils';
+import { trackSearch } from '@/utils/metaPixel';
 
 const MiddleBar = ({ logoUrl }) => {
   const { user, isCartOpen, setIsCartOpen, cartTotal, cartCount } = useAppContext();
@@ -65,6 +66,7 @@ const MiddleBar = ({ logoUrl }) => {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      trackSearch(searchQuery.trim());
       window.location.href = `/search?query=${encodeURIComponent(searchQuery.trim())}`;
     }
   };

@@ -10,6 +10,8 @@ import { Suspense } from "react";
 import AffiliateTracker from "@/components/Common/AffiliateTracker";
 import Script from "next/script";
 import VisitorTracker from "@/components/VisitorTracker/VisitorTracker";
+import MetaPixelTracker from "@/components/Tracking/MetaPixelTracker";
+import FloatingContact from "@/components/Common/FloatingContact";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -93,11 +95,13 @@ export default async function RootLayout({ children }) {
           <VisitorTracker />
           <Suspense fallback={null}>
             <AffiliateTracker />
+            <MetaPixelTracker />
           </Suspense>
           <ConditionalHeader logoUrl={logoUrl} />
           {children}
           <ConditionalFooter />
           <MobileBottomNavigation />
+          <FloatingContact />
           <Toaster />
         </AppProvider>
 

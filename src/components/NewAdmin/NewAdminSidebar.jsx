@@ -39,7 +39,10 @@ import {
     Presentation,
     Rocket,
     X,
-    Clock
+    Clock,
+    Activity,
+    Layers,
+    Headphones
 } from 'lucide-react';
 
 const navigation = [
@@ -91,6 +94,7 @@ const navigation = [
         icon: Home,
         type: 'group',
         children: [
+            { name: 'Category Sections', href: '/admin/dashboard/category-sections', icon: Layers },
             { name: 'Deal of the Day', href: '/admin/dashboard/deal-of-the-day', icon: Clock },
             { name: 'Hero Banners', href: '/admin/dashboard/hero-banner', icon: Image },
             { name: 'Testimonials', href: '/admin/dashboard/testimonials', icon: Star },
@@ -127,6 +131,8 @@ const navigation = [
         type: 'group',
         children: [
             { name: 'General Settings', href: '/admin/dashboard/settings', icon: Settings },
+            { name: 'Support / Contact', href: '/admin/dashboard/settings/support', icon: Headphones },
+            { name: 'Meta Pixel & CAPI', href: '/admin/dashboard/settings/meta-pixel', icon: Activity },
             { name: 'Role Based Access Control', href: '/admin/dashboard/settings/roles', icon: KeyRound },
             { name: 'Label Print', href: '/admin/dashboard/settings/label-print', icon: Printer },
         ]
@@ -156,7 +162,7 @@ export default function NewAdminSidebar({ onClose }) {
             return pathname === '/admin/dashboard/categories' || pathname === '/admin/dashboard/categories/';
         }
         if (child.href === '/admin/dashboard/settings') {
-            return pathname === '/admin/dashboard/settings' || pathname.startsWith('/admin/dashboard/settings/');
+            return pathname === '/admin/dashboard/settings' || pathname === '/admin/dashboard/settings/';
         }
         if (child.href === '/admin/dashboard/settings/roles') {
             return pathname === '/admin/dashboard/settings/roles' || pathname.startsWith('/admin/dashboard/settings/roles/');

@@ -210,7 +210,14 @@ const DynamicCategories = () => {
                 const catRes = await categoryAPI.getCategories({ limit: 1000 });
                 
                 if (layoutRes.success && catRes.success) {
-                    const sectionCategories = catRes.data.filter(c => c.showHomepageAsSection);
+                    const sectionCategories = (catRes.data || [])
+                        .filter(c => c.showHomepageAsSection)
+                        .sort((a, b) => {
+                            const orderA = typeof a.homepageSectionOrder === 'number' ? a.homepageSectionOrder : 999;
+                            const orderB = typeof b.homepageSectionOrder === 'number' ? b.homepageSectionOrder : 999;
+                            if (orderA !== orderB) return orderA - orderB;
+                            return (a.sortOrder || 0) - (b.sortOrder || 0);
+                        });
                     const dynamics = layoutRes.data.dynamicCategories || [];
                     
                     setCategories(sectionCategories);

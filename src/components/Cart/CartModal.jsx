@@ -7,9 +7,10 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { productAPI, upsellAPI, deliveryRuleAPI } from '@/services/api';
 import toast from 'react-hot-toast';
+import { trackInitiateCheckout } from '@/utils/metaPixel';
     
 export default function CartModal({ isOpen, onClose }) {
-    const { cart = [], cartTotal, updateCartItem, removeFromCart, cartLoading, deliveryChargeSettings } = useAppContext();
+    const { cart = [], cartTotal, updateCartItem, removeFromCart, cartLoading, deliveryChargeSettings, user } = useAppContext();
     const router = useRouter();
     
     // State for stock validation
@@ -502,7 +503,10 @@ export default function CartModal({ isOpen, onClose }) {
                                 
                                 <Link 
                                     href="/checkout"
-                                    onClick={onClose}
+                                    onClick={() => {
+                                        trackInitiateCheckout(cart, cartTotal, user);
+                                        onClose();
+                                    }}
                                     className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 flex items-center justify-between cursor-pointer hover:scale-[1.02] hover:shadow-lg"
                                 >
                                     <span>Proceed To Checkout</span>

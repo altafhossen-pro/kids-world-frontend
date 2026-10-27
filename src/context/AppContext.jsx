@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import toast from 'react-hot-toast'
 import { getCookie, setCookie, deleteCookie } from 'cookies-next'
 import { userAPI, settingsAPI } from '@/services/api'
+import { trackAddToCart } from '@/utils/metaPixel'
 
 // Create context
 const AppContext = createContext()
@@ -155,6 +156,9 @@ export const AppProvider = ({ children }) => {
             setCart([...cart, cartItem]);
             toast.success('Added to cart successfully!');
         }
+
+        // Track AddToCart for Meta Pixel & CAPI
+        trackAddToCart(product, quantity, selectedVariant, user);
 
         // Auto-open cart modal after adding to cart
         if (openModal) {
