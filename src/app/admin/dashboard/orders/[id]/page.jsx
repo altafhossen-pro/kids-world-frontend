@@ -43,6 +43,7 @@ import toast from 'react-hot-toast';
 import { formatDateForTable } from '@/utils/formatDate';
 import { orderAPI } from '@/services/api';
 import OrderUpdateHistory from '@/components/Admin/OrderUpdateHistory';
+import CustomerSteadfastStats from '@/components/Admin/CustomerSteadfastStats';
 import PermissionDenied from '@/components/Common/PermissionDenied';
 import { useAppContext } from '@/context/AppContext';
 import { getCookie } from 'cookies-next';
@@ -1315,6 +1316,24 @@ export default function OrderDetailsPage() {
                                 ) : null}
                             </div>
                         </div>
+
+                        {/* Customer Courier & Fraud Record Stats */}
+                        {(order.shippingAddress?.phone || (order.isGuestOrder && order.guestInfo?.phone) || (order.orderType === 'manual' && order.manualOrderInfo?.phone) || order.user?.phone) && (
+                            <CustomerSteadfastStats 
+                                phone={
+                                    order.shippingAddress?.phone || 
+                                    (order.isGuestOrder && order.guestInfo?.phone) || 
+                                    (order.orderType === 'manual' && order.manualOrderInfo?.phone) || 
+                                    order.user?.phone
+                                }
+                                customerName={
+                                    order.shippingAddress?.name || 
+                                    (order.isGuestOrder && order.guestInfo?.name) || 
+                                    (order.orderType === 'manual' && order.manualOrderInfo?.name) || 
+                                    order.user?.name
+                                }
+                            />
+                        )}
 
                         {/* Payment Information */}
                         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6 lg:p-8">

@@ -4,7 +4,7 @@ const apiCache = new Map();
 const pendingRequests = new Map();
 
 // Generic API call function
-const apiCall = async (endpoint, options = {}) => {
+export const apiCall = async (endpoint, options = {}) => {
     try {
         const defaultHeaders = {
             'Content-Type': 'application/json',
