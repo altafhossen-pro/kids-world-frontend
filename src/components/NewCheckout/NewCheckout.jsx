@@ -9,6 +9,25 @@ import toast from 'react-hot-toast';
 import { trackInitiateCheckout, trackPurchase } from '@/utils/metaPixel';
 import { identifyVisitorProfile } from '@/utils/visitorTracker';
 
+// Sanitizes phone numbers by stripping +880, +88, 880 (from autofill/copy-paste), non-digits, and capping at 11 digits
+export const sanitizePhoneNumber = (input = '') => {
+  if (!input) return '';
+  let val = String(input).trim();
+  if (val.startsWith('+880')) {
+    val = val.substring(3);
+  } else if (val.startsWith('+88')) {
+    val = val.substring(3);
+  }
+  val = val.replace(/\D/g, '');
+  if (val.startsWith('880') && val.length > 11) {
+    val = val.substring(2);
+  }
+  if (val.length > 11) {
+    val = val.slice(0, 11);
+  }
+  return val;
+};
+
 export default function NewCheckout() {
   const router = useRouter();
   const { user, token, cart = [], cartTotal, updateCartItem, removeFromCart, cartLoading, clearCart } = useAppContext();
@@ -179,6 +198,9 @@ export default function NewCheckout() {
         areaId: value,
         areaName: selected ? selected.name : ''
       }));
+    } else if (name === 'phone') {
+      const sanitized = sanitizePhoneNumber(value);
+      setFormData(prev => ({ ...prev, phone: sanitized }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
@@ -196,11 +218,12 @@ export default function NewCheckout() {
 
   // Real-time debounced tracking of visitor identity (captures 11-digit mobile numbers & debounced addresses)
   useEffect(() => {
-    const rawDigits = (formData.phone || '').replace(/\D/g, '');
-    const isValid11DigitPhone = /^01[3-9]\d{8}$/.test(rawDigits);
-    const phone = isValid11DigitPhone ? rawDigits : null;
+    const cleanPhoneDigits = sanitizePhoneNumber(formData.phone);
+    const isValid11DigitPhone = /^01[3-9]\d{8}$/.test(cleanPhoneDigits);
+    const phone = isValid11DigitPhone ? cleanPhoneDigits : null;
 
     const name = formData.fullName?.trim() || '';
+    const hasConsecutiveRepeat = /(.)\1{2,}/iu.test(name);
     const notes = formData.notes?.trim() || '';
     const addressParts = [
       formData.address,
@@ -211,7 +234,7 @@ export default function NewCheckout() {
     ].filter(Boolean);
     const fullAddr = addressParts.join(', ').trim();
 
-    const hasValidName = name.length >= 2;
+    const hasValidName = name.length >= 2 && !hasConsecutiveRepeat;
     const hasValidAddr = fullAddr.length >= 6;
 
     // Strictly require either a complete 11-digit phone number OR a meaningful name/address
@@ -293,8 +316,29 @@ export default function NewCheckout() {
     if (cart.length === 0) {
       return toast.error('Your cart is empty');
     }
-    if (!formData.fullName.trim() || !formData.phone.trim() || !formData.address.trim()) {
-      return toast.error('Please fill in all required fields (Name, Phone, Delivery Address)');
+
+    const trimmedName = formData.fullName?.trim() || '';
+    if (!trimmedName) {
+      return toast.error('অনুগ্রহ করে আপনার পুরো নাম লিখুন (Please enter your full name)');
+    }
+
+    // Name validation: Reject if any character repeats 3 or more times consecutively
+    if (/(.)\1{2,}/iu.test(trimmedName)) {
+      return toast.error('আপনার অর্ডারটি এই মুহূর্তে নেওয়া যাচ্ছে না, দয়া করে আমাদের সাপোর্টে যোগাযোগ করুন।', { duration: 6000 });
+    }
+
+    if (trimmedName.length < 2) {
+      return toast.error('অনুগ্রহ করে আপনার সঠিক নাম লিখুন');
+    }
+
+    // Phone validation: Must start with 01 and be exactly 11 digits
+    const cleanPhone = sanitizePhoneNumber(formData.phone);
+    if (!cleanPhone || !cleanPhone.startsWith('01') || cleanPhone.length !== 11) {
+      return toast.error('১১ ডিজিটের সঠিক মোবাইল নম্বর দিন যা 01 দিয়ে শুরু (যেমন: 01XXXXXXXXX)');
+    }
+
+    if (!formData.address?.trim()) {
+      return toast.error('অনুগ্রহ করে আপনার সম্পূর্ণ ডেলিভারি ঠিকানা দিন (Please enter delivery address)');
     }
 
     setOrderError(null);
@@ -314,9 +358,9 @@ export default function NewCheckout() {
       const orderData = {
         items: orderItems,
         shippingAddress: {
-          name: formData.fullName,
-          phone: formData.phone,
-          street: formData.address,
+          name: trimmedName,
+          phone: cleanPhone,
+          street: formData.address.trim(),
           divisionId: formData.divisionId || undefined,
           districtId: formData.districtId || undefined,
           upazilaId: formData.upazilaId || undefined,
@@ -343,8 +387,8 @@ export default function NewCheckout() {
       // Add guest info if user is not logged in
       if (!user) {
         orderData.guestInfo = {
-          name: formData.fullName,
-          phone: formData.phone
+          name: trimmedName,
+          phone: cleanPhone
         };
       }
 
@@ -453,11 +497,51 @@ export default function NewCheckout() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">Full Name / আপনার পুরো নাম: <span className="text-red-500">*</span></label>
-                  <input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="Enter your full name here" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" />
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleInputChange}
+                    placeholder="Enter your full name here"
+                    className={`w-full px-4 py-3 bg-gray-50 border rounded-xl text-sm focus:outline-none focus:ring-2 transition-all ${
+                      formData.fullName && /(.)\1{2,}/iu.test(formData.fullName)
+                        ? 'border-rose-400 focus:ring-rose-500/20 focus:border-rose-500 bg-rose-50/20'
+                        : 'border-gray-200 focus:ring-blue-500/20 focus:border-blue-500'
+                    }`}
+                  />
+                  {formData.fullName && /(.)\1{2,}/iu.test(formData.fullName) && (
+                    <p className="text-xs text-rose-500 font-medium mt-1.5 flex items-center gap-1 animate-in fade-in">
+                      <span>⚠️</span>
+                      <span>আপনার অর্ডারটি এই মুহূর্তে নেওয়া যাচ্ছে না, দয়া করে আমাদের সাপোর্টে যোগাযোগ করুন।</span>
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">Mobile Number / মোবাইল নম্বর: <span className="text-red-500">*</span></label>
-                  <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Enter your mobile number here" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" />
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="01XXXXXXXXX"
+                    maxLength={16}
+                    className={`w-full px-4 py-3 bg-gray-50 border rounded-xl text-sm focus:outline-none focus:ring-2 transition-all ${
+                      formData.phone && formData.phone.length >= 2 && !formData.phone.startsWith('01')
+                        ? 'border-rose-400 focus:ring-rose-500/20 focus:border-rose-500 bg-rose-50/20'
+                        : 'border-gray-200 focus:ring-blue-500/20 focus:border-blue-500'
+                    }`}
+                  />
+                  {formData.phone && formData.phone.length >= 2 && !formData.phone.startsWith('01') && (
+                    <p className="text-xs text-rose-500 font-medium mt-1.5 flex items-center gap-1 animate-in fade-in">
+                      <span>⚠️</span>
+                      <span>নম্বরটি অবশ্যই 01 দিয়ে শুরু হতে হবে</span>
+                    </p>
+                  )}
+                  {formData.phone && formData.phone.startsWith('01') && formData.phone.length > 0 && formData.phone.length < 11 && (
+                    <p className="text-xs text-slate-500 font-medium mt-1.5">
+                      {11 - formData.phone.length} ডিজিট বাকি (মোট ১১ ডিজিট হতে হবে)
+                    </p>
+                  )}
                 </div>
 
                 <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-5">
