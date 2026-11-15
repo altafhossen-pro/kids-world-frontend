@@ -42,6 +42,7 @@ export default function NewCheckout() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [stockOutError, setStockOutError] = useState(null);
   const [orderError, setOrderError] = useState(null);
+  const [supportBlockedModal, setSupportBlockedModal] = useState(false);
 
   // Address State
   const [divisions, setDivisions] = useState([]);
@@ -322,9 +323,10 @@ export default function NewCheckout() {
       return toast.error('অনুগ্রহ করে আপনার পুরো নাম লিখুন (Please enter your full name)');
     }
 
-    // Name validation: Reject if any character repeats 3 or more times consecutively
+    // Name validation: Silently block and show modal if any character repeats 3 or more times consecutively
     if (/(.)\1{2,}/iu.test(trimmedName)) {
-      return toast.error('আপনার অর্ডারটি এই মুহূর্তে নেওয়া যাচ্ছে না, দয়া করে আমাদের সাপোর্টে যোগাযোগ করুন।', { duration: 6000 });
+      setSupportBlockedModal(true);
+      return;
     }
 
     if (trimmedName.length < 2) {
@@ -450,9 +452,11 @@ export default function NewCheckout() {
 
         router.push(redirectUrl);
       } else {
-        // Check if the error is an out of stock error
+        // Check if the error is an out of stock error or support blocked notice
         const errMsg = response?.message || 'Failed to place order';
-        if (errMsg.includes('currently out of stock')) {
+        if (errMsg.includes('সাপোর্টে যোগাযোগ করুন') || errMsg.includes('মুহূর্তে নেওয়া যাচ্ছে না')) {
+          setSupportBlockedModal(true);
+        } else if (errMsg.includes('currently out of stock')) {
           setStockOutError(errMsg);
         } else {
           setOrderError(errMsg);
@@ -467,7 +471,9 @@ export default function NewCheckout() {
         error?.message ||
         'An error occurred while placing the order. Please try again.';
 
-      if (errMsg.includes('currently out of stock')) {
+      if (errMsg.includes('সাপোর্টে যোগাযোগ করুন') || errMsg.includes('মুহূর্তে নেওয়া যাচ্ছে না')) {
+        setSupportBlockedModal(true);
+      } else if (errMsg.includes('currently out of stock')) {
         setStockOutError(errMsg);
       } else {
         setOrderError(errMsg);
@@ -503,18 +509,8 @@ export default function NewCheckout() {
                     value={formData.fullName}
                     onChange={handleInputChange}
                     placeholder="Enter your full name here"
-                    className={`w-full px-4 py-3 bg-gray-50 border rounded-xl text-sm focus:outline-none focus:ring-2 transition-all ${
-                      formData.fullName && /(.)\1{2,}/iu.test(formData.fullName)
-                        ? 'border-rose-400 focus:ring-rose-500/20 focus:border-rose-500 bg-rose-50/20'
-                        : 'border-gray-200 focus:ring-blue-500/20 focus:border-blue-500'
-                    }`}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                   />
-                  {formData.fullName && /(.)\1{2,}/iu.test(formData.fullName) && (
-                    <p className="text-xs text-rose-500 font-medium mt-1.5 flex items-center gap-1 animate-in fade-in">
-                      <span>⚠️</span>
-                      <span>আপনার অর্ডারটি এই মুহূর্তে নেওয়া যাচ্ছে না, দয়া করে আমাদের সাপোর্টে যোগাযোগ করুন।</span>
-                    </p>
-                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">Mobile Number / মোবাইল নম্বর: <span className="text-red-500">*</span></label>
@@ -525,23 +521,8 @@ export default function NewCheckout() {
                     onChange={handleInputChange}
                     placeholder="01XXXXXXXXX"
                     maxLength={16}
-                    className={`w-full px-4 py-3 bg-gray-50 border rounded-xl text-sm focus:outline-none focus:ring-2 transition-all ${
-                      formData.phone && formData.phone.length >= 2 && !formData.phone.startsWith('01')
-                        ? 'border-rose-400 focus:ring-rose-500/20 focus:border-rose-500 bg-rose-50/20'
-                        : 'border-gray-200 focus:ring-blue-500/20 focus:border-blue-500'
-                    }`}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                   />
-                  {formData.phone && formData.phone.length >= 2 && !formData.phone.startsWith('01') && (
-                    <p className="text-xs text-rose-500 font-medium mt-1.5 flex items-center gap-1 animate-in fade-in">
-                      <span>⚠️</span>
-                      <span>নম্বরটি অবশ্যই 01 দিয়ে শুরু হতে হবে</span>
-                    </p>
-                  )}
-                  {formData.phone && formData.phone.startsWith('01') && formData.phone.length > 0 && formData.phone.length < 11 && (
-                    <p className="text-xs text-slate-500 font-medium mt-1.5">
-                      {11 - formData.phone.length} ডিজিট বাকি (মোট ১১ ডিজিট হতে হবে)
-                    </p>
-                  )}
                 </div>
 
                 <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -917,6 +898,41 @@ export default function NewCheckout() {
         </div>
       </div>
       
+      {/* Support / Order Blocked Notice Modal */}
+      {supportBlockedModal && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative border border-slate-100 text-center animate-in zoom-in-95 duration-200">
+            <div className="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-amber-200 shadow-inner">
+              <AlertCircle className="w-8 h-8 text-amber-600" />
+            </div>
+            
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">
+              অর্ডার প্রক্রিয়াকরণ নোটিশ
+            </h3>
+            
+            <p className="text-sm text-gray-600 leading-relaxed mb-6 font-medium">
+              আপনার অর্ডারটি এই মুহূর্তে নেওয়া যাচ্ছে না, দয়া করে আমাদের সাপোর্টে যোগাযোগ করুন।
+            </p>
+
+            <div className="space-y-2.5">
+              <a
+                href="tel:01633075357"
+                className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-colors cursor-pointer text-sm shadow-md shadow-blue-500/20"
+              >
+                <span>কল করুন: 01633-075357</span>
+              </a>
+              <button
+                type="button"
+                onClick={() => setSupportBlockedModal(false)}
+                className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition-colors cursor-pointer text-sm"
+              >
+                বন্ধ করুন
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Stock Out Error Modal */}
       {stockOutError && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
