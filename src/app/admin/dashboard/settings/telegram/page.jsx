@@ -28,7 +28,8 @@ export default function TelegramSettingsPage() {
     notifyNewOrderExistingUser: false,
     notifyNewOrderGuestUser: false,
     notifyNewUserSignup: false,
-    notifyPasswordChange: false
+    notifyPasswordChange: false,
+    notifyPiprapayPaid: true
   });
 
   useEffect(() => {
@@ -60,7 +61,8 @@ export default function TelegramSettingsPage() {
           notifyNewOrderExistingUser: response.data.notifyNewOrderExistingUser || false,
           notifyNewOrderGuestUser: response.data.notifyNewOrderGuestUser || false,
           notifyNewUserSignup: response.data.notifyNewUserSignup || false,
-          notifyPasswordChange: response.data.notifyPasswordChange || false
+          notifyPasswordChange: response.data.notifyPasswordChange || false,
+          notifyPiprapayPaid: response.data.notifyPiprapayPaid !== false
         });
       }
     } catch (error) {
@@ -85,7 +87,8 @@ export default function TelegramSettingsPage() {
         notifyNewOrderExistingUser: settings.notifyNewOrderExistingUser,
         notifyNewOrderGuestUser: settings.notifyNewOrderGuestUser,
         notifyNewUserSignup: settings.notifyNewUserSignup,
-        notifyPasswordChange: settings.notifyPasswordChange
+        notifyPasswordChange: settings.notifyPasswordChange,
+        notifyPiprapayPaid: settings.notifyPiprapayPaid
       };
 
       const response = await settingsAPI.updateTelegramSettings(payload, token);
@@ -306,6 +309,23 @@ export default function TelegramSettingsPage() {
                     <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${settings.notifyPasswordChange ? 'transform translate-x-4' : ''}`}></div>
                   </div>
                   <div className="text-sm font-medium text-gray-700">User Password Change / Reset</div>
+                </label>
+
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={settings.notifyPiprapayPaid}
+                      onChange={(e) => setSettings({ ...settings, notifyPiprapayPaid: e.target.checked })}
+                    />
+                    <div className={`block w-10 h-6 rounded-full transition-colors ${settings.notifyPiprapayPaid ? 'bg-rose-500' : 'bg-gray-300'}`}></div>
+                    <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${settings.notifyPiprapayPaid ? 'transform translate-x-4' : ''}`}></div>
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-gray-700">PipraPay Online Payment Success</div>
+                    <div className="text-xs text-gray-500">Receive alert when customer successfully pays via PipraPay with Trx ID & customer details</div>
+                  </div>
                 </label>
               </div>
             </div>
