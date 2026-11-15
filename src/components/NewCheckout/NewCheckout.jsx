@@ -521,8 +521,31 @@ export default function NewCheckout() {
                     onChange={handleInputChange}
                     placeholder="01XXXXXXXXX"
                     maxLength={16}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                    className={`w-full px-4 py-3 bg-gray-50 border rounded-xl text-sm focus:outline-none focus:ring-2 transition-all ${
+                      formData.phone && formData.phone.length >= 2 && !formData.phone.startsWith('01')
+                        ? 'border-rose-400 focus:ring-rose-500/20 focus:border-rose-500 bg-rose-50/20'
+                        : formData.phone && formData.phone.startsWith('01') && formData.phone.length === 11
+                        ? 'border-emerald-300 focus:ring-emerald-500/20 focus:border-emerald-500 bg-emerald-50/10'
+                        : 'border-gray-200 focus:ring-blue-500/20 focus:border-blue-500'
+                    }`}
                   />
+                  {formData.phone && formData.phone.length >= 2 && !formData.phone.startsWith('01') && (
+                    <p className="text-xs text-rose-500 font-medium mt-1.5 flex items-center gap-1 animate-in fade-in">
+                      <span>⚠️</span>
+                      <span>নম্বরটি অবশ্যই 01 দিয়ে শুরু হতে হবে</span>
+                    </p>
+                  )}
+                  {formData.phone && formData.phone.startsWith('01') && formData.phone.length > 0 && formData.phone.length < 11 && (
+                    <p className="text-xs text-slate-500 font-medium mt-1.5 animate-in fade-in">
+                      {11 - formData.phone.length} ডিজিট বাকি (মোট ১১ ডিজিট হতে হবে)
+                    </p>
+                  )}
+                  {formData.phone && formData.phone.startsWith('01') && formData.phone.length === 11 && (
+                    <p className="text-xs text-emerald-600 font-semibold mt-1.5 flex items-center gap-1 animate-in fade-in">
+                      <span>✓</span>
+                      <span>সঠিক ১১ ডিজিটের নম্বর</span>
+                    </p>
+                  )}
                 </div>
 
                 <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-5">
