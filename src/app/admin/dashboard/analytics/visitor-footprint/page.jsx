@@ -843,8 +843,18 @@ function VisitorFootprintContent() {
                             <span className="text-slate-300">•</span>
                             <span className="text-slate-500">{s.browser || 'Browser'}</span>
                           </div>
-                          <div className="text-[11px] text-slate-400 font-mono">
-                            {s.ip || '127.0.0.1'}
+                          <div>
+                            <a
+                              href={`https://ipinfo.io/${String(s.ip || '127.0.0.1').replace(/^::ffff:/, '').trim()}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="inline-flex items-center gap-1 text-[11px] font-mono text-slate-500 hover:text-blue-600 hover:underline transition-colors group cursor-pointer"
+                              title={`Inspect IP details on ipinfo.io: ${String(s.ip || '127.0.0.1').replace(/^::ffff:/, '').trim()}`}
+                            >
+                              <span>{s.ip || '127.0.0.1'}</span>
+                              <ExternalLink className="w-2.5 h-2.5 opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
+                            </a>
                           </div>
                         </div>
                       </td>
@@ -931,6 +941,21 @@ function VisitorFootprintContent() {
                   </h3>
                   <div className="flex items-center gap-2 text-xs text-slate-500 font-mono mt-0.5">
                     <span>{selectedSession.visitorId}</span>
+                    {selectedSession.ip && (
+                      <>
+                        <span>•</span>
+                        <a
+                          href={`https://ipinfo.io/${String(selectedSession.ip).replace(/^::ffff:/, '').trim()}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-blue-600 hover:underline inline-flex items-center gap-0.5 text-blue-600 font-mono"
+                          title="View on ipinfo.io"
+                        >
+                          <span>{selectedSession.ip}</span>
+                          <ExternalLink className="w-2.5 h-2.5" />
+                        </a>
+                      </>
+                    )}
                     {selectedSession.totalDaysCount > 1 && (
                       <>
                         <span>•</span>

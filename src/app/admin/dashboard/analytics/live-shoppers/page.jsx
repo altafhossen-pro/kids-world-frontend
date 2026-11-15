@@ -826,8 +826,18 @@ export default function LiveShoppersPage() {
                             <span className="text-slate-300">•</span>
                             <span className="text-slate-500">{shopper.browser || 'Browser'}</span>
                           </div>
-                          <div className="text-[11px] text-slate-400 font-mono">
-                            {shopper.ip || '127.0.0.1'}
+                          <div>
+                            <a
+                              href={`https://ipinfo.io/${String(shopper.ip || '127.0.0.1').replace(/^::ffff:/, '').trim()}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="inline-flex items-center gap-1 text-[11px] font-mono text-slate-500 hover:text-blue-600 hover:underline transition-colors group cursor-pointer"
+                              title={`Inspect IP details on ipinfo.io: ${String(shopper.ip || '127.0.0.1').replace(/^::ffff:/, '').trim()}`}
+                            >
+                              <span>{shopper.ip || '127.0.0.1'}</span>
+                              <ExternalLink className="w-2.5 h-2.5 opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
+                            </a>
                           </div>
                         </div>
                       </td>
@@ -895,6 +905,21 @@ export default function LiveShoppersPage() {
                   </div>
                   <div className="flex items-center gap-2 text-xs text-slate-500 font-mono mt-0.5">
                     <span>{selectedJourneySession.visitorId}</span>
+                    {selectedJourneySession.ip && (
+                      <>
+                        <span>•</span>
+                        <a
+                          href={`https://ipinfo.io/${String(selectedJourneySession.ip).replace(/^::ffff:/, '').trim()}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-blue-600 hover:underline inline-flex items-center gap-0.5 text-blue-600 font-mono"
+                          title="View on ipinfo.io"
+                        >
+                          <span>{selectedJourneySession.ip}</span>
+                          <ExternalLink className="w-2.5 h-2.5" />
+                        </a>
+                      </>
+                    )}
                     <span>•</span>
                     <span className="text-blue-600 font-semibold">{journeyEvents.length} actions logged</span>
                   </div>
