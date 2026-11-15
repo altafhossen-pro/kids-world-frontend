@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { createPortal } from 'react-dom';
 import { Eye, Trash2, Package, Calendar, User, MapPin, CreditCard, Mail, Edit, MoreVertical, Copy, Download, Truck, CheckCircle2, AlertTriangle, X, Phone } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { formatDateForTable } from '@/utils/formatDate';
 import { orderAPI, settingsAPI } from '@/services/api';
@@ -14,7 +15,7 @@ import { useAppContext } from '@/context/AppContext';
 import DeleteConfirmationModal from '@/components/Common/DeleteConfirmationModal';
 import Barcode from 'react-barcode';
 
-export default function AdminOrdersPage() {
+function OrdersContent() {
     const { hasPermission, loading: contextLoading } = useAppContext();
     const [orders, setOrders] = useState([]);
     const [filteredOrders, setFilteredOrders] = useState([]);
@@ -52,10 +53,21 @@ export default function AdminOrdersPage() {
     const [orderSourceColors, setOrderSourceColors] = useState({});
     const [ordersPresence, setOrdersPresence] = useState({}); // orderId -> Array of active viewers
 
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+
+    const pageParam = parseInt(searchParams?.get('page') || '1', 10);
+    const initialPage = !isNaN(pageParam) && pageParam > 0 ? pageParam : 1;
+    const limitParam = parseInt(searchParams?.get('limit') || '10', 10);
+    const initialLimit = !isNaN(limitParam) && limitParam > 0 ? limitParam : 10;
+    const initialStatus = searchParams?.get('status') || 'all';
+    const initialSearch = searchParams?.get('search') || '';
+
     // Filter states
     const [filters, setFilters] = useState({
-        search: '', // Unified search for orderId, email, phone
-        status: 'all',
+        search: initialSearch, // Unified search for orderId, email, phone
+        status: initialStatus,
         startDate: '', // Date range start
         endDate: '', // Date range end
         orderSource: 'all', // Order source filter
@@ -64,13 +76,25 @@ export default function AdminOrdersPage() {
 
     // Pagination states
     const [pagination, setPagination] = useState({
-        currentPage: 1,
+        currentPage: initialPage,
         totalPages: 1,
         totalItems: 0,
-        itemsPerPage: 10,
+        itemsPerPage: initialLimit,
         hasNextPage: false,
         hasPrevPage: false
     });
+
+    // Synchronize page when browser back/forward or URL changes
+    useEffect(() => {
+        const pageFromUrl = parseInt(searchParams?.get('page') || '1', 10);
+        const validPage = !isNaN(pageFromUrl) && pageFromUrl > 0 ? pageFromUrl : 1;
+        setPagination(prev => {
+            if (prev.currentPage !== validPage) {
+                return { ...prev, currentPage: validPage };
+            }
+            return prev;
+        });
+    }, [searchParams]);
 
     // Check permission and fetch settings on mount
     useEffect(() => {
@@ -239,6 +263,11 @@ export default function AdminOrdersPage() {
                 ...prev,
                 currentPage: 1
             }));
+            const currentParams = new URLSearchParams(searchParams ? searchParams.toString() : window.location.search);
+            currentParams.delete('page');
+            const queryString = currentParams.toString();
+            const newUrl = queryString ? `${pathname}?${queryString}` : pathname;
+            router.push(newUrl, { scroll: false });
         }
     };
 
@@ -294,6 +323,11 @@ export default function AdminOrdersPage() {
             dateRange: range
         }));
         setPagination(prev => ({ ...prev, currentPage: 1 }));
+        const currentParams = new URLSearchParams(searchParams ? searchParams.toString() : window.location.search);
+        currentParams.delete('page');
+        const queryString = currentParams.toString();
+        const newUrl = queryString ? `${pathname}?${queryString}` : pathname;
+        router.push(newUrl, { scroll: false });
     };
 
     const clearFilters = () => {
@@ -309,6 +343,7 @@ export default function AdminOrdersPage() {
             ...prev,
             currentPage: 1
         }));
+        router.push(pathname, { scroll: false });
     };
 
     const handlePageChange = (newPage) => {
@@ -316,14 +351,36 @@ export default function AdminOrdersPage() {
             ...prev,
             currentPage: newPage
         }));
+
+        const currentParams = new URLSearchParams(searchParams ? searchParams.toString() : window.location.search);
+        if (newPage > 1) {
+            currentParams.set('page', newPage.toString());
+        } else {
+            currentParams.delete('page');
+        }
+        const queryString = currentParams.toString();
+        const newUrl = queryString ? `${pathname}?${queryString}` : pathname;
+        router.push(newUrl, { scroll: false });
     };
 
     const handleItemsPerPageChange = (newItemsPerPage) => {
+        const limitNum = parseInt(newItemsPerPage);
         setPagination(prev => ({
             ...prev,
-            itemsPerPage: parseInt(newItemsPerPage),
+            itemsPerPage: limitNum,
             currentPage: 1
         }));
+
+        const currentParams = new URLSearchParams(searchParams ? searchParams.toString() : window.location.search);
+        currentParams.delete('page');
+        if (limitNum !== 10) {
+            currentParams.set('limit', limitNum.toString());
+        } else {
+            currentParams.delete('limit');
+        }
+        const queryString = currentParams.toString();
+        const newUrl = queryString ? `${pathname}?${queryString}` : pathname;
+        router.push(newUrl, { scroll: false });
     };
 
     const getStatusColor = (status) => {
@@ -1048,6 +1105,11 @@ export default function AdminOrdersPage() {
                                 onChange={(e) => {
                                     handleFilterChange('search', e.target.value);
                                     setPagination(prev => ({ ...prev, currentPage: 1 }));
+                                    const currentParams = new URLSearchParams(searchParams ? searchParams.toString() : window.location.search);
+                                    currentParams.delete('page');
+                                    const queryString = currentParams.toString();
+                                    const newUrl = queryString ? `${pathname}?${queryString}` : pathname;
+                                    router.push(newUrl, { scroll: false });
                                 }}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                             />
@@ -1128,6 +1190,11 @@ export default function AdminOrdersPage() {
                                 onChange={(e) => {
                                     handleFilterChange('startDate', e.target.value);
                                     setPagination(prev => ({ ...prev, currentPage: 1 }));
+                                    const currentParams = new URLSearchParams(searchParams ? searchParams.toString() : window.location.search);
+                                    currentParams.delete('page');
+                                    const queryString = currentParams.toString();
+                                    const newUrl = queryString ? `${pathname}?${queryString}` : pathname;
+                                    router.push(newUrl, { scroll: false });
                                 }}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                             />
@@ -1144,6 +1211,11 @@ export default function AdminOrdersPage() {
                                 onChange={(e) => {
                                     handleFilterChange('endDate', e.target.value);
                                     setPagination(prev => ({ ...prev, currentPage: 1 }));
+                                    const currentParams = new URLSearchParams(searchParams ? searchParams.toString() : window.location.search);
+                                    currentParams.delete('page');
+                                    const queryString = currentParams.toString();
+                                    const newUrl = queryString ? `${pathname}?${queryString}` : pathname;
+                                    router.push(newUrl, { scroll: false });
                                 }}
                                 min={filters.startDate || undefined}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
@@ -2283,6 +2355,18 @@ export default function AdminOrdersPage() {
             </div>
         )}
         </>
+    );
+}
+
+export default function AdminOrdersPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+        }>
+            <OrdersContent />
+        </Suspense>
     );
 }
 

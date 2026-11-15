@@ -18,6 +18,23 @@ import ShopperCartModal from '@/components/Admin/Analytics/ShopperCartModal';
 import OrderAsCustomerModal from '@/components/Admin/Analytics/OrderAsCustomerModal';
 import OfferHistoryModal from '@/components/Admin/Analytics/OfferHistoryModal';
 
+// Stable ordering helper:
+// 1. Maintain serial ID descending: latest arrival (highest dailySerial) on top
+// 2. Tiebreaker: firstSeenAt descending (latest arrival first)
+// 3. Fallback: visitorId deterministic string sort
+const sortShoppers = (list) => {
+  if (!Array.isArray(list)) return [];
+  return [...list].sort((a, b) => {
+    const serialA = Number(a?.dailySerial || 0);
+    const serialB = Number(b?.dailySerial || 0);
+    if (serialB !== serialA) return serialB - serialA;
+    const timeA = a?.firstSeenAt ? new Date(a.firstSeenAt).getTime() : 0;
+    const timeB = b?.firstSeenAt ? new Date(b.firstSeenAt).getTime() : 0;
+    if (timeB !== timeA) return timeB - timeA;
+    return String(b?.visitorId || '').localeCompare(String(a?.visitorId || ''));
+  });
+};
+
 export default function LiveShoppersPage() {
   const [shoppers, setShoppers] = useState([]);
   const [todayTotal, setTodayTotal] = useState(0);
@@ -171,7 +188,7 @@ export default function LiveShoppersPage() {
           const list = Array.isArray(res.data) 
             ? res.data 
             : (Array.isArray(res.data?.shoppers) ? res.data.shoppers : []);
-          setShoppers(list);
+          setShoppers(sortShoppers(list));
           if (res.data?.todayTotal !== undefined) {
             setTodayTotal(res.data.todayTotal);
           }
@@ -212,11 +229,12 @@ export default function LiveShoppersPage() {
 
     // Receive live stream snapshot from server
     socket.on('live_shoppers_stream', (liveData) => {
-      if (Array.isArray(liveData)) {
-        setShoppers(liveData);
-      } else if (liveData && Array.isArray(liveData.shoppers)) {
-        setShoppers(liveData.shoppers);
-        if (liveData.todayTotal !== undefined) {
+      const list = Array.isArray(liveData) 
+        ? liveData 
+        : (liveData && Array.isArray(liveData.shoppers) ? liveData.shoppers : null);
+      if (list) {
+        setShoppers(sortShoppers(list));
+        if (liveData?.todayTotal !== undefined) {
           setTodayTotal(liveData.todayTotal);
         }
       }
@@ -289,28 +307,54 @@ export default function LiveShoppersPage() {
         });
       }
 
-      // 2. Also update live table row immediately
-      setShoppers(prev => prev.map(s => {
-        if (s.visitorId === eventData.visitorId) {
-          return {
-            ...s,
-            url: eventData.url || s.url,
-            title: eventData.title || s.title,
-            lastUrl: eventData.url || s.lastUrl,
-            lastTitle: eventData.title || s.lastTitle,
+      // 2. Also update live table row immediately without changing row order
+      setShoppers(prev => {
+        const exists = prev.some(s => s.visitorId === eventData.visitorId);
+        if (!exists) {
+          const newShopper = {
+            visitorId: eventData.visitorId,
+            dailySerial: eventData.dailySerial,
+            url: eventData.url,
+            title: eventData.title,
+            lastUrl: eventData.url,
+            lastTitle: eventData.title,
             lastSeenTimestamp: Date.now(),
-            customerName: eventData.customerName || s.customerName,
-            customerPhone: eventData.customerPhone || s.customerPhone,
-            customerAddress: eventData.customerAddress || s.customerAddress,
-            hasCart: eventData.hasCart !== undefined ? eventData.hasCart : s.hasCart,
-            cartTotal: eventData.cartTotal !== undefined ? eventData.cartTotal : s.cartTotal,
-            isOrderPlaced: eventData.isOrderPlaced !== undefined ? eventData.isOrderPlaced : s.isOrderPlaced,
-            placedOrderId: eventData.placedOrderId !== undefined ? eventData.placedOrderId : s.placedOrderId,
-            placedOrderAmount: eventData.placedOrderAmount !== undefined ? eventData.placedOrderAmount : s.placedOrderAmount,
+            firstSeenAt: eventData.timestamp || new Date(),
+            customerName: eventData.customerName,
+            customerPhone: eventData.customerPhone,
+            customerAddress: eventData.customerAddress,
+            hasCart: eventData.hasCart,
+            cartTotal: eventData.cartTotal,
+            cartItems: eventData.cartItems || [],
+            isOrderPlaced: eventData.isOrderPlaced,
+            placedOrderId: eventData.placedOrderId,
+            placedOrderAmount: eventData.placedOrderAmount,
           };
+          return sortShoppers([newShopper, ...prev]);
         }
-        return s;
-      }));
+        return prev.map(s => {
+          if (s.visitorId === eventData.visitorId) {
+            return {
+              ...s,
+              url: eventData.url || s.url,
+              title: eventData.title || s.title,
+              lastUrl: eventData.url || s.lastUrl,
+              lastTitle: eventData.title || s.lastTitle,
+              lastSeenTimestamp: Date.now(),
+              customerName: eventData.customerName || s.customerName,
+              customerPhone: eventData.customerPhone || s.customerPhone,
+              customerAddress: eventData.customerAddress || s.customerAddress,
+              hasCart: eventData.hasCart !== undefined ? eventData.hasCart : s.hasCart,
+              cartTotal: eventData.cartTotal !== undefined ? eventData.cartTotal : s.cartTotal,
+              cartItems: eventData.cartItems !== undefined ? eventData.cartItems : s.cartItems,
+              isOrderPlaced: eventData.isOrderPlaced !== undefined ? eventData.isOrderPlaced : s.isOrderPlaced,
+              placedOrderId: eventData.placedOrderId !== undefined ? eventData.placedOrderId : s.placedOrderId,
+              placedOrderAmount: eventData.placedOrderAmount !== undefined ? eventData.placedOrderAmount : s.placedOrderAmount,
+            };
+          }
+          return s;
+        });
+      });
     });
 
     // Fallback polling interval every 15s to keep time sync
