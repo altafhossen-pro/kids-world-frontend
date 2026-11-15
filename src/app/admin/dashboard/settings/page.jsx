@@ -13,6 +13,8 @@ import {
   Box,
   Activity,
   Headphones,
+  CreditCard,
+  AlertOctagon,
 } from 'lucide-react';
 import { useAppContext } from '@/context/AppContext';
 import PermissionDenied from '@/components/Common/PermissionDenied';
@@ -143,6 +145,22 @@ export default function AdminSettingsPage() {
       icon: Headphones,
       color: 'bg-emerald-100 text-emerald-600',
       href: '/admin/dashboard/settings/support'
+    },
+    {
+      id: 'piprapay',
+      title: 'PipraPay Gateway',
+      description: 'Online payment & checkout settings',
+      icon: CreditCard,
+      color: 'bg-rose-100 text-rose-600',
+      href: '/admin/dashboard/settings/piprapay'
+    },
+    {
+      id: 'piprapay-logs',
+      title: 'PipraPay Error Logs',
+      description: 'Callback & payment error tracking',
+      icon: AlertOctagon,
+      color: 'bg-red-100 text-red-600',
+      href: '/admin/dashboard/settings/piprapay/logs'
     }
   ];
 

@@ -20,6 +20,7 @@ function OrderConfirmation() {
     const affiliateDiscount = searchParams.get('affiliateDiscount');
     const affiliateCode = searchParams.get('affiliateCode');
     const coupon = searchParams.get('coupon');
+    const paymentStatus = searchParams.get('paymentStatus');
     const isGuestOrder = searchParams.get('isGuestOrder') === 'true';
 
     // total from query params is already the final paid amount
@@ -160,6 +161,11 @@ function OrderConfirmation() {
                                 <p className={`text-sm font-bold capitalize ${getStatusColor(status).split(' ')[0]}`}>
                                     {status}
                                 </p>
+                                {paymentStatus === 'paid' && (
+                                    <span className="inline-block mt-1 text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                                        ● Paid Online
+                                    </span>
+                                )}
                             </div>
                         )}
 

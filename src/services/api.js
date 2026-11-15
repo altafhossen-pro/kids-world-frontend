@@ -361,6 +361,14 @@ export const dashboardAPI = {
                 'Authorization': `Bearer ${token}`
             }
         });
+    },
+    adminSearch: (query, token) => {
+        return apiCall(`/dashboard/search?q=${encodeURIComponent(query)}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
     }
 };
 
@@ -1874,6 +1882,28 @@ export const settingsAPI = {
         });
     },
 
+    // PipraPay Settings
+    getPiprapaySettings: (token) => {
+        return apiCall('/settings/piprapay', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+    },
+    updatePiprapaySettings: (piprapayData, token) => {
+        return apiCall('/settings/piprapay', {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(piprapayData),
+        });
+    },
+    getPublicPaymentSettings: () => {
+        return apiCall('/settings/public-payment-settings');
+    },
+
     // Get site settings only
     getSiteSettings: () => {
         return apiCall('/settings/site-settings');
@@ -2962,4 +2992,42 @@ export const metaPixelAPI = {
             body: JSON.stringify(data)
         });
     }
+};
+
+export const paymentAPI = {
+    initiatePiprapayPayment: async (orderId) => {
+        return apiCall(`/payment/piprapay/initiate/${orderId}`, {
+            method: 'POST',
+        });
+    },
+
+    // PipraPay Error Logs API (File-based)
+    getLogs: async (token) => {
+        return apiCall('/payment/piprapay/logs', {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+    },
+
+    updateLogs: async (content, token) => {
+        return apiCall('/payment/piprapay/logs', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ content }),
+        });
+    },
+
+    clearLogs: async (token) => {
+        return apiCall('/payment/piprapay/logs', {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+    },
 };

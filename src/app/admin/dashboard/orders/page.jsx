@@ -918,7 +918,7 @@ export default function AdminOrdersPage() {
                 order.discount || 0,
                 order.status || 'N/A',
                 order.paymentStatus || 'N/A',
-                order.paymentMethod === 'cod' ? 'Cash on Delivery' : order.paymentMethod || 'N/A',
+                order.paymentMethod === 'cod' ? 'Cash on Delivery' : (order.paymentMethod === 'bank' || order.paymentMethod === 'bank_transfer') ? 'Bank Transfer' : order.paymentMethod || 'N/A',
                 getOrderSourceLabel(order.orderSource),
                 order.items?.length || 0,
                 itemsDetails
@@ -1364,7 +1364,7 @@ export default function AdminOrdersPage() {
                                                     {order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1)}
                                                 </span>
                                                 <span className="text-xs text-gray-500">
-                                                    {order.paymentMethod === 'cod' ? 'Cash on Delivery' : order.paymentMethod}
+                                                    {order.paymentMethod === 'cod' ? 'Cash on Delivery' : (order.paymentMethod === 'bank' || order.paymentMethod === 'bank_transfer') ? 'Bank Transfer' : order.paymentMethod}
                                                 </span>
                                             </div>
                                         </td>

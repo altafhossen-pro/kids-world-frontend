@@ -44,6 +44,7 @@ import { formatDateForTable } from '@/utils/formatDate';
 import { orderAPI } from '@/services/api';
 import OrderUpdateHistory from '@/components/Admin/OrderUpdateHistory';
 import CustomerSteadfastStats from '@/components/Admin/CustomerSteadfastStats';
+import SteadfastTimeline from '@/components/Admin/SteadfastTimeline';
 import PermissionDenied from '@/components/Common/PermissionDenied';
 import { useAppContext } from '@/context/AppContext';
 import { getCookie } from 'cookies-next';
@@ -1187,6 +1188,14 @@ export default function OrderDetailsPage() {
                             </div>
                         )}
 
+                        {/* Courier Tracking Log & Financial Settlement (Steadfast) */}
+                        {(order.isAddedIntoSteadfast || order.steadfastConsignmentId || order.steadfastTrackingCode) && (
+                            <SteadfastTimeline 
+                                order={order} 
+                                onOpenPrintModal={() => setIsPrintModalOpen(true)} 
+                            />
+                        )}
+
                         {/* Order Update History */}
                         <OrderUpdateHistory updateHistory={order.updateHistory} />
                     </div>
@@ -1348,9 +1357,14 @@ export default function OrderDetailsPage() {
                                     </div>
                                     <div className="ml-4">
                                         <p className="font-semibold text-slate-900">
-                                            {order.paymentMethod === 'cod' ? 'Cash on Delivery' : order.paymentMethod}
+                                            {order.paymentMethod === 'cod' ? 'Cash on Delivery' : (order.paymentMethod === 'bank' || order.paymentMethod === 'bank_transfer') ? 'Bank Transfer' : order.paymentMethod === 'piprapay' ? 'PipraPay (Online Payment)' : order.paymentMethod === 'card' ? 'Credit/Debit Card' : (order.paymentMethod || 'N/A')}
                                         </p>
                                         <p className="text-xs text-slate-500 font-medium">Payment Method</p>
+                                        {order.piprapayDetails?.ppId && (
+                                            <p className="text-[11px] font-mono text-emerald-600 mt-0.5">
+                                                Trx ID: {order.piprapayDetails.ppId}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
 
@@ -1429,62 +1443,6 @@ export default function OrderDetailsPage() {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Steadfast Tracking Information */}
-                        {(order.status === 'shipped' || order.status === 'delivered') && order.isAddedIntoSteadfast && order.steadfastConsignmentId && (
-                            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6 lg:p-8">
-                                <h2 className="text-lg sm:text-xl font-bold text-slate-900 mb-4 sm:mb-6 flex items-center">
-                                    <Truck className="h-6 w-6 mr-3 text-blue-600" />
-                                    Steadfast Courier Tracking
-                                </h2>
-                                <div className="bg-gradient-to-r from-blue-50 to-rose-50 rounded-xl p-6 border border-blue-200">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center">
-                                            <div className="p-2 bg-blue-100 rounded-lg">
-                                                <Truck className="h-5 w-5 text-blue-600" />
-                                            </div>
-                                            <div className="ml-4">
-                                                <p className="font-bold text-slate-900">Consignment ID: {order.steadfastConsignmentId}</p>
-                                                <p className="text-xs text-slate-500 font-medium mt-1">Steadfast Tracking</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={() => setIsPrintModalOpen(true)}
-                                                className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors text-sm font-medium flex items-center"
-                                            >
-                                                <Printer className="h-4 w-4 mr-2" />
-                                                Print Label
-                                            </button>
-                                            <a
-                                                href={`https://steadfast.com.bd/user/consignment/${order.steadfastConsignmentId}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex items-center"
-                                            >
-                                                <Truck className="h-4 w-4 mr-2" />
-                                                Track Order
-                                            </a>
-                                        </div>
-                                    </div>
-                                    {order.steadfastTrackingCode && (
-                                        <div className="mt-4 pt-4 border-t border-blue-200">
-                                            <p className="text-sm text-slate-600 mb-2">
-                                                <span className="font-medium">Tracking Code:</span> {order.steadfastTrackingCode}
-                                            </p>
-                                            <a
-                                                href={`https://steadfast.com.bd/t/${order.steadfastTrackingCode}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-sm text-blue-600 hover:text-blue-700 hover:underline"
-                                            >
-                                                View Tracking Details →
-                                            </a>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        )}
 
                         {/* Quick Actions */}
                         {order.status !== 'shipped' && (

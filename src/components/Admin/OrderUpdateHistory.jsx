@@ -143,6 +143,19 @@ const OrderUpdateHistory = ({ updateHistory }) => {
             return `৳${value}`;
         }
         
+        if (field === 'paymentMethod') {
+            const methodMap = {
+                'cod': 'Cash on Delivery',
+                'card': 'Credit/Debit Card',
+                'bkash': 'bKash',
+                'nagad': 'Nagad',
+                'rocket': 'Rocket',
+                'bank': 'Bank Transfer',
+                'bank_transfer': 'Bank Transfer'
+            };
+            return methodMap[value] || String(value || 'N/A');
+        }
+        
         return String(value);
     };
 

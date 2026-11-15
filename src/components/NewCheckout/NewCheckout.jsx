@@ -2,11 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, ArrowRight, Trash2, Minus, Plus, CreditCard, Loader2 } from 'lucide-react';
-import { addressAPI, orderAPI, couponAPI } from '@/services/api';
+import { ArrowLeft, ArrowRight, Trash2, Minus, Plus, CreditCard, Loader2, AlertCircle, X } from 'lucide-react';
+import { addressAPI, orderAPI, couponAPI, settingsAPI } from '@/services/api';
 import { useAppContext } from '@/context/AppContext';
 import toast from 'react-hot-toast';
 import { trackInitiateCheckout, trackPurchase } from '@/utils/metaPixel';
+import { identifyVisitorProfile } from '@/utils/visitorTracker';
 
 export default function NewCheckout() {
   const router = useRouter();
@@ -14,8 +15,14 @@ export default function NewCheckout() {
 
   const [deliveryType, setDeliveryType] = useState('inside');
   const [paymentMethod, setPaymentMethod] = useState('cod');
+  const [piprapayConfig, setPiprapayConfig] = useState({
+    isEnabled: false,
+    showOnCheckout: false,
+    displayName: 'Online Payment (bKash / Nagad / Rocket / Cards)',
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [stockOutError, setStockOutError] = useState(null);
+  const [orderError, setOrderError] = useState(null);
 
   // Address State
   const [divisions, setDivisions] = useState([]);
@@ -64,7 +71,19 @@ export default function NewCheckout() {
 
   useEffect(() => {
     fetchDivisions();
+    fetchPaymentSettings();
   }, []);
+
+  const fetchPaymentSettings = async () => {
+    try {
+      const response = await settingsAPI.getPublicPaymentSettings();
+      if (response.success && response.data?.piprapay) {
+        setPiprapayConfig(response.data.piprapay);
+      }
+    } catch (error) {
+      console.warn('Failed to fetch payment settings:', error);
+    }
+  };
 
   useEffect(() => {
     if (formData.districtId) {
@@ -175,6 +194,56 @@ export default function NewCheckout() {
   const deliveryCharge = deliveryCharges[deliveryType] || 0;
   const total = Math.max(0, subtotal + deliveryCharge - couponDiscount);
 
+  // Real-time debounced tracking of visitor identity (captures 11-digit mobile numbers & debounced addresses)
+  useEffect(() => {
+    const rawDigits = (formData.phone || '').replace(/\D/g, '');
+    const isValid11DigitPhone = /^01[3-9]\d{8}$/.test(rawDigits);
+    const phone = isValid11DigitPhone ? rawDigits : null;
+
+    const name = formData.fullName?.trim() || '';
+    const notes = formData.notes?.trim() || '';
+    const addressParts = [
+      formData.address,
+      formData.areaName,
+      formData.upazilaName,
+      formData.districtName,
+      formData.divisionName
+    ].filter(Boolean);
+    const fullAddr = addressParts.join(', ').trim();
+
+    const hasValidName = name.length >= 2;
+    const hasValidAddr = fullAddr.length >= 6;
+
+    // Strictly require either a complete 11-digit phone number OR a meaningful name/address
+    if (isValid11DigitPhone || hasValidName || hasValidAddr) {
+      const timer = setTimeout(() => {
+        identifyVisitorProfile({
+          phone: phone || null,
+          fullName: hasValidName ? name : null,
+          address: hasValidAddr ? fullAddr : null,
+          notes: notes || null,
+          customerNotes: notes || null,
+          deliveryCharge: deliveryCharge || 0,
+          cartTotal: total > 0 ? total : subtotal
+        });
+      }, 2500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [
+    formData.phone,
+    formData.fullName,
+    formData.address,
+    formData.areaName,
+    formData.upazilaName,
+    formData.districtName,
+    formData.divisionName,
+    formData.notes,
+    total,
+    deliveryCharge,
+    subtotal
+  ]);
+
   const handleUpdateQty = (id, delta) => {
     const item = cart.find(i => i.id === id);
     if (item) {
@@ -228,6 +297,7 @@ export default function NewCheckout() {
       return toast.error('Please fill in all required fields (Name, Phone, Delivery Address)');
     }
 
+    setOrderError(null);
     setIsSubmitting(true);
     try {
       const orderItems = cart.map(item => ({
@@ -263,6 +333,13 @@ export default function NewCheckout() {
         orderData.coupon = appliedCoupon;
       }
 
+      if (typeof window !== 'undefined') {
+        const storedVisitorId = localStorage.getItem('kw_visitor_id');
+        if (storedVisitorId) {
+          orderData.visitorId = storedVisitorId;
+        }
+      }
+
       // Add guest info if user is not logged in
       if (!user) {
         orderData.guestInfo = {
@@ -284,6 +361,23 @@ export default function NewCheckout() {
       }
 
       if (response.success) {
+        // If online payment via PipraPay is selected, redirect directly to gateway without showing pending order confirmation
+        if (paymentMethod === 'piprapay') {
+          if (response.data?.paymentUrl) {
+            clearCart();
+            toast.success('Redirecting to PipraPay payment gateway...');
+            window.location.href = response.data.paymentUrl;
+            return;
+          } else {
+            const msg = response?.message || 'Payment gateway failed to initialize. Please try again.';
+            setOrderError(msg);
+            toast.error(msg, { duration: 6000 });
+            setIsSubmitting(false);
+            return;
+          }
+        }
+
+        // Standard COD Order Confirmation:
         toast.success('Order placed successfully!');
 
         // Track Purchase for Meta Pixel & CAPI
@@ -313,19 +407,27 @@ export default function NewCheckout() {
         router.push(redirectUrl);
       } else {
         // Check if the error is an out of stock error
-        if (response.message && response.message.includes('currently out of stock')) {
-          setStockOutError(response.message);
+        const errMsg = response?.message || 'Failed to place order';
+        if (errMsg.includes('currently out of stock')) {
+          setStockOutError(errMsg);
         } else {
-          toast.error(response.message || 'Failed to place order');
+          setOrderError(errMsg);
+          toast.error(errMsg, { duration: 6000 });
         }
         setIsSubmitting(false);
       }
     } catch (error) {
       console.error('Order creation error:', error);
-      if (error?.response?.data?.message?.includes('currently out of stock')) {
-         setStockOutError(error.response.data.message);
+      const errMsg =
+        error?.response?.data?.message ||
+        error?.message ||
+        'An error occurred while placing the order. Please try again.';
+
+      if (errMsg.includes('currently out of stock')) {
+        setStockOutError(errMsg);
       } else {
-         toast.error('An error occurred while placing the order. Please try again.');
+        setOrderError(errMsg);
+        toast.error(errMsg, { duration: 6000 });
       }
       setIsSubmitting(false);
     }
@@ -455,20 +557,74 @@ export default function NewCheckout() {
               <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
                 <span className="text-blue-600">03.</span> Payment Method <span className="text-red-500">*</span>
               </h2>
-              <label className={`inline-flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${paymentMethod === 'cod' ? 'border-blue-600 bg-blue-50/50' : 'border-gray-100 hover:border-blue-200'}`}>
-                <input
-                  type="radio"
-                  name="payment"
-                  checked={paymentMethod === 'cod'}
-                  onChange={() => setPaymentMethod('cod')}
-                  className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                />
-                <div className="flex items-center gap-2">
-                  <CreditCard className="w-5 h-5 text-gray-400" />
-                  <p className="font-bold text-gray-800 text-sm">Cash On Delivery</p>
-                </div>
-              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${paymentMethod === 'cod' ? 'border-blue-600 bg-blue-50/50' : 'border-gray-100 hover:border-blue-200'}`}>
+                  <input
+                    type="radio"
+                    name="payment"
+                    checked={paymentMethod === 'cod'}
+                    onChange={() => {
+                      setPaymentMethod('cod');
+                      setOrderError(null);
+                    }}
+                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  />
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-gray-100 rounded-lg text-gray-600">
+                      <CreditCard className="w-5 h-5 text-gray-500" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-gray-800 text-sm">Cash On Delivery</p>
+                      <p className="text-[11px] text-gray-500">Pay cash upon delivery</p>
+                    </div>
+                  </div>
+                </label>
+
+                {piprapayConfig?.isEnabled && piprapayConfig?.showOnCheckout && (
+                  <label className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${paymentMethod === 'piprapay' ? 'border-rose-600 bg-rose-50/40' : 'border-gray-100 hover:border-rose-200'}`}>
+                    <input
+                      type="radio"
+                      name="payment"
+                      checked={paymentMethod === 'piprapay'}
+                      onChange={() => {
+                        setPaymentMethod('piprapay');
+                        setOrderError(null);
+                      }}
+                      className="w-4 h-4 text-rose-600 border-gray-300 focus:ring-rose-500"
+                    />
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-rose-100 rounded-lg text-rose-600">
+                        <CreditCard className="w-5 h-5 text-rose-600" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-gray-800 text-sm">{piprapayConfig.displayName || 'Online Payment'}</p>
+                        <p className="text-[11px] text-gray-500">bKash, Nagad, Rocket, Cards</p>
+                      </div>
+                    </div>
+                  </label>
+                )}
+              </div>
             </div>
+
+            {/* Payment / Order Error Banner (Desktop) */}
+            {orderError && (
+              <div className="hidden lg:flex items-start gap-3 p-4 bg-rose-50 border-2 border-rose-300 rounded-2xl text-rose-900 shadow-sm animate-in fade-in duration-200">
+                <div className="p-1.5 bg-rose-100 rounded-xl text-rose-600 shrink-0">
+                  <AlertCircle className="w-5 h-5 text-rose-600" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-bold text-sm text-rose-900">Payment Error</h4>
+                  <p className="text-xs text-rose-700 mt-0.5 leading-relaxed font-medium">{orderError}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOrderError(null)}
+                  className="text-rose-400 hover:text-rose-700 cursor-pointer p-1 rounded-lg hover:bg-rose-100 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
 
             {/* Action Buttons (Desktop) */}
             <div className="hidden lg:flex flex-row gap-4 pt-4 lg:pb-0 lg:mb-0">
@@ -478,14 +634,20 @@ export default function NewCheckout() {
               <button
                 onClick={handleConfirmOrder}
                 disabled={isSubmitting}
-                className="flex-[2] flex items-center justify-center gap-2 py-2 h-16 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-200 disabled:bg-blue-400 disabled:shadow-none text-base"
+                className={`flex-[2] flex items-center justify-center gap-2 py-2 h-16 text-white font-bold rounded-xl transition-all text-base disabled:opacity-50 cursor-pointer ${
+                  paymentMethod === 'piprapay'
+                    ? 'bg-rose-600 hover:bg-rose-700 shadow-lg shadow-rose-200'
+                    : 'bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200'
+                }`}
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin" /> Processing...
+                    <Loader2 className="w-5 h-5 animate-spin" /> {paymentMethod === 'piprapay' ? 'Connecting to Gateway...' : 'Processing...'}
                   </>
+                ) : paymentMethod === 'piprapay' ? (
+                  <>Proceed to Pay <CreditCard className="w-5 h-5 ml-1" /></>
                 ) : (
-                  <>Confirm Order <ArrowRight className="w-4 h-4" /></>
+                  <>Confirm Order <ArrowRight className="w-4 h-4 ml-1" /></>
                 )}
               </button>
             </div>
@@ -619,6 +781,26 @@ export default function NewCheckout() {
                 </div>
               </div>
 
+              {/* Payment / Order Error Banner (Mobile) */}
+              {orderError && (
+                <div className="flex lg:hidden items-start gap-2.5 p-3 mt-4 bg-rose-50 border-2 border-rose-300 rounded-xl text-rose-900 shadow-sm animate-in fade-in duration-200">
+                  <div className="p-1 bg-rose-100 rounded-lg text-rose-600 shrink-0">
+                    <AlertCircle className="w-4 h-4 text-rose-600" />
+                  </div>
+                  <div className="flex-1 text-xs">
+                    <h4 className="font-bold text-rose-900">Payment Error</h4>
+                    <p className="text-rose-700 mt-0.5 leading-relaxed font-medium">{orderError}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setOrderError(null)}
+                    className="text-rose-400 hover:text-rose-700 cursor-pointer p-0.5 rounded hover:bg-rose-100 transition-colors"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+
               {/* Action Buttons (Mobile) */}
               <div className="flex lg:hidden flex-row gap-2 pt-8 pb-20">
                 <Link href="/shop" className="flex-1 flex items-center justify-center gap-1 h-14 bg-white border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-gray-700 font-bold rounded-xl transition-all disabled:opacity-50 pointer-events-auto text-xs" style={{ pointerEvents: isSubmitting ? 'none' : 'auto' }}>
@@ -627,14 +809,20 @@ export default function NewCheckout() {
                 <button
                   onClick={handleConfirmOrder}
                   disabled={isSubmitting}
-                  className="flex-1 flex items-center justify-center gap-1 h-14 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-200 disabled:bg-blue-400 disabled:shadow-none text-xs"
+                  className={`flex-1 flex items-center justify-center gap-1 h-14 text-white font-bold rounded-xl transition-all text-xs disabled:opacity-50 cursor-pointer ${
+                    paymentMethod === 'piprapay'
+                      ? 'bg-rose-600 hover:bg-rose-700 shadow-lg shadow-rose-200'
+                      : 'bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200'
+                  }`}
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" /> Wait...
+                      <Loader2 className="w-4 h-4 animate-spin" /> {paymentMethod === 'piprapay' ? 'Wait...' : 'Wait...'}
                     </>
+                  ) : paymentMethod === 'piprapay' ? (
+                    <>Proceed to Pay <CreditCard className="w-4 h-4 ml-1" /></>
                   ) : (
-                    <>Confirm Order <ArrowRight className="w-3 h-3" /></>
+                    <>Confirm Order <ArrowRight className="w-3 h-3 ml-1" /></>
                   )}
                 </button>
               </div>

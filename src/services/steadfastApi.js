@@ -33,6 +33,13 @@ export const steadfastAPI = {
         });
     },
 
+    // Live step-by-step courier tracking & financial settlement
+    getLiveTracking: (invoice, token) => {
+        return apiCall(`/steadfast/live-tracking/${encodeURIComponent(invoice)}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+    },
+
     // Book single order in Steadfast
     addOrderToSteadfast: (orderId, token) => {
         return apiCall(`/order/${orderId}/add-to-steadfast`, {

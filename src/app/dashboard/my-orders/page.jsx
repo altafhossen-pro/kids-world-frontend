@@ -382,6 +382,7 @@ export default function MyOrders() {
                                     <option value="bkash">bKash</option>
                                     <option value="nagad">Nagad</option>
                                     <option value="rocket">Rocket</option>
+                                    <option value="bank_transfer">Bank Transfer</option>
                                 </select>
                             </div>
                         </div>

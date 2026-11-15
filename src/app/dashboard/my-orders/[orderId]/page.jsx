@@ -344,7 +344,7 @@ export default function OrderDetails() {
                                     <div>
                                         <p className="text-sm text-gray-500">Payment Method</p>
                                         <p className="text-sm font-medium text-gray-900 capitalize">
-                                            {order.paymentMethod === 'cod' ? 'Cash on Delivery' : (order.paymentMethod || 'N/A')}
+                                            {order.paymentMethod === 'cod' ? 'Cash on Delivery' : (order.paymentMethod === 'bank' || order.paymentMethod === 'bank_transfer') ? 'Bank Transfer' : (order.paymentMethod || 'N/A')}
                                         </p>
                                     </div>
                                 </div>

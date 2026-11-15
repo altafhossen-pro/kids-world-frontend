@@ -311,21 +311,28 @@ export default function NewAdminDashboard() {
                 <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-base font-extrabold text-gray-900">Low Stock Alert</h2>
-                        <Link href="/admin/dashboard/inventory" className="text-xs font-bold text-blue-600 hover:underline">View All</Link>
+                        <Link href="/admin/dashboard/low-stock" className="text-xs font-bold text-blue-600 hover:underline">View All</Link>
                     </div>
                     <div className="space-y-4">
-                        {lowStockItems.map((item, idx) => (
-                            <div key={item.id || item.name || `low-${idx}`} className="flex items-center gap-3">
-                                <img src={item.img} alt={item.name} className="w-10 h-10 rounded-xl object-cover bg-gray-100 flex-shrink-0" />
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-bold text-gray-800 truncate">{item.name}</p>
-                                    <p className="text-xs text-red-500 font-bold mt-0.5">Stock: {item.stock}</p>
+                        {lowStockItems.length === 0 ? (
+                            <p className="text-xs text-gray-400 py-4 text-center">No low stock items currently</p>
+                        ) : (
+                            lowStockItems.map((item, idx) => (
+                                <div key={item.id || item.name || `low-${idx}`} className="flex items-center gap-3">
+                                    <img src={item.img} alt={item.name} className="w-10 h-10 rounded-xl object-cover bg-gray-100 flex-shrink-0" />
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-bold text-gray-800 truncate">{item.name}</p>
+                                        <p className="text-xs text-red-500 font-bold mt-0.5">Stock: {item.stock}</p>
+                                    </div>
+                                    <Link 
+                                        href={`/admin/dashboard/products/${item.id}/edit`}
+                                        className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1 transition-colors cursor-pointer"
+                                    >
+                                        <RotateCcw className="w-3 h-3" /> Restock
+                                    </Link>
                                 </div>
-                                <button className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1 transition-colors">
-                                    <RotateCcw className="w-3 h-3" /> Restock
-                                </button>
-                            </div>
-                        ))}
+                            ))
+                        )}
                     </div>
                 </div>
             </div>

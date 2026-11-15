@@ -697,7 +697,7 @@ export default function OrderHistoryPage() {
                                                     {order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1)}
                                                 </span>
                                                 <span className="text-xs text-gray-500">
-                                                    {order.paymentMethod === 'cod' ? 'Cash on Delivery' : order.paymentMethod}
+                                                    {order.paymentMethod === 'cod' ? 'Cash on Delivery' : (order.paymentMethod === 'bank' || order.paymentMethod === 'bank_transfer') ? 'Bank Transfer' : order.paymentMethod}
                                                 </span>
                                             </div>
                                         </td>

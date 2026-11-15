@@ -42,7 +42,10 @@ import {
     Clock,
     Activity,
     Layers,
-    Headphones
+    Headphones,
+    Footprints,
+    Sparkles,
+    AlertTriangle
 } from 'lucide-react';
 
 const navigation = [
@@ -58,6 +61,7 @@ const navigation = [
         type: 'group',
         children: [
             { name: 'All Products', href: '/admin/dashboard/products', icon: Package },
+            { name: 'Low Stock Alert', href: '/admin/dashboard/low-stock', icon: AlertTriangle },
             { name: 'Create Product', href: '/admin/dashboard/products/create', icon: PlusCircle },
             { name: 'Product Reviews', href: '/admin/dashboard/reviews', icon: Star },
         ]
@@ -135,6 +139,16 @@ const navigation = [
             { name: 'Meta Pixel & CAPI', href: '/admin/dashboard/settings/meta-pixel', icon: Activity },
             { name: 'Role Based Access Control', href: '/admin/dashboard/settings/roles', icon: KeyRound },
             { name: 'Label Print', href: '/admin/dashboard/settings/label-print', icon: Printer },
+        ]
+    },
+    {
+        name: 'Analytics',
+        icon: BarChart3,
+        type: 'group',
+        children: [
+            { name: 'Live Shoppers', href: '/admin/dashboard/analytics/live-shoppers', icon: Activity },
+            { name: 'Visitor Footprint', href: '/admin/dashboard/analytics/visitor-footprint', icon: Footprints },
+            { name: 'Offer Templates', href: '/admin/dashboard/analytics/offer-templates', icon: Sparkles },
         ]
     },
 ];

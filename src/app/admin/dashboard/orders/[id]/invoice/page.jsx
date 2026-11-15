@@ -382,18 +382,49 @@ export default function OrderInvoicePage() {
                                         </div>
                                     </div>
 
-                                    {/* Customer Info */}
-                                    <div>
-                                        <h3 className="text-sm font-semibold text-gray-900 mb-1">Bill To:</h3>
-                                        <div className="text-gray-700 text-sm">
-                                            <div className="font-semibold">{order.user?.name || 'Customer'}</div>
-                                            <div>{order.user?.email || 'customer@email.com'}</div>
+                                    {/* Customer / Shipping Info - Right Aligned */}
+                                    <div className="text-right flex flex-col items-end">
+                                        <h3 className="text-sm font-semibold text-gray-900 mb-1">Ship To:</h3>
+                                        <div className="text-gray-700 text-sm space-y-0.5">
+                                            {/* Recipient Name from Shipping Info */}
+                                            <div className="font-semibold text-gray-900">
+                                                {order.shippingAddress?.name || order.guestInfo?.name || order.manualOrderInfo?.name || 'Customer'}
+                                            </div>
+
+                                            {/* Recipient Phone from Shipping Info */}
+                                            {(order.shippingAddress?.phone || order.guestInfo?.phone || order.manualOrderInfo?.phone) && (
+                                                <div className="flex items-center justify-end gap-1">
+                                                    <Phone className="h-3 w-3 text-gray-500" />
+                                                    <span>{order.shippingAddress?.phone || order.guestInfo?.phone || order.manualOrderInfo?.phone}</span>
+                                                </div>
+                                            )}
+
+                                            {/* Email if explicitly present in shipping info */}
+                                            {(order.shippingAddress?.email || order.guestInfo?.email || order.manualOrderInfo?.email) && (
+                                                <div className="flex items-center justify-end gap-1">
+                                                    <Mail className="h-3 w-3 text-gray-500" />
+                                                    <span>{order.shippingAddress?.email || order.guestInfo?.email || order.manualOrderInfo?.email}</span>
+                                                </div>
+                                            )}
+
+                                            {/* Delivery Address */}
                                             {order.shippingAddress && (
-                                                <div className="mt-1">
-                                                    <div className="font-medium text-gray-600">Delivery Address:</div>
-                                                    <div>{order.shippingAddress.street}</div>
-                                                    <div>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.postalCode}</div>
-                                                    <div>{order.shippingAddress.country}</div>
+                                                <div className="mt-1 pt-1 border-t border-gray-100">
+                                                    <div className="font-medium text-gray-600 text-xs">Delivery Address:</div>
+                                                    {order.shippingAddress.street && (
+                                                        <div>{order.shippingAddress.street}</div>
+                                                    )}
+                                                    {order.shippingAddress.address && !order.shippingAddress.street && (
+                                                        <div>{order.shippingAddress.address}</div>
+                                                    )}
+                                                    {[order.shippingAddress.city, order.shippingAddress.state, order.shippingAddress.postalCode].filter(Boolean).length > 0 && (
+                                                        <div>
+                                                            {[order.shippingAddress.city, order.shippingAddress.state, order.shippingAddress.postalCode].filter(Boolean).join(', ')}
+                                                        </div>
+                                                    )}
+                                                    {order.shippingAddress.country && (
+                                                        <div>{order.shippingAddress.country}</div>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>
@@ -511,7 +542,7 @@ export default function OrderInvoicePage() {
                                                 <CreditCard className="h-3 w-3 mr-2" />
                                                 <span className="font-medium">Payment Method:</span>
                                                 <span className="ml-2 capitalize">
-                                                    {order.paymentMethod === 'cod' ? 'Cash on Delivery' : (order.paymentMethod || 'N/A')}
+                                                    {order.paymentMethod === 'cod' ? 'Cash on Delivery' : (order.paymentMethod === 'bank' || order.paymentMethod === 'bank_transfer') ? 'Bank Transfer' : (order.paymentMethod || 'N/A')}
                                                 </span>
                                             </div>
                                             {!!order.loyaltyPointsUsed && order.loyaltyPointsUsed > 0 && (

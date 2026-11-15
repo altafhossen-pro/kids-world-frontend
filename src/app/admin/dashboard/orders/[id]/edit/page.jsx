@@ -95,7 +95,7 @@ export default function OrderEditPage() {
                     billingAddress: data.data.billingAddress || {},
                     status: data.data.status || '',
                     paymentStatus: data.data.paymentStatus || '',
-                    paymentMethod: data.data.paymentMethod || '',
+                    paymentMethod: (data.data.paymentMethod === 'bank' ? 'bank_transfer' : data.data.paymentMethod) || '',
                     total: data.data.total || 0,
                     shippingCost: data.data.shippingCost || 0,
                     discount: data.data.discount || 0,
@@ -678,11 +678,17 @@ export default function OrderEditPage() {
                                         onChange={(e) => handleInputChange('paymentMethod', e.target.value)}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                     >
+                                        <option value="">Select Payment Method</option>
                                         <option value="cod">Cash on Delivery</option>
                                         <option value="card">Credit/Debit Card</option>
                                         <option value="bkash">bKash</option>
                                         <option value="nagad">Nagad</option>
                                         <option value="rocket">Rocket</option>
+                                        <option value="bank_transfer">Bank Transfer</option>
+                                        <option value="piprapay">PipraPay (Online Payment)</option>
+                                        {formData.paymentMethod === 'bank' && (
+                                            <option value="bank">Bank Transfer</option>
+                                        )}
                                     </select>
                                     <input
                                         type="text"
